@@ -4,106 +4,140 @@ Created on Feb 10, 2019
 @author: Kyle Gilde
 """
 import os
-import re
 import gc
 from datetime import datetime
+
+from urllib.parse import urlparse
+import re
+import string
+
 import sys
 import numpy as np
 import pandas as pd
+from pandas.io.json import json_normalize
+from pandas.api.types import is_numeric_dtype, is_string_dtype
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from pandas.io.json import json_normalize
+
 import json
 import psutil
 import multiprocessing as mp
 
-mp.cpu_count()
-TRAIN_TEST_CATEGORIES = ['Computers_and_Accessories', 'Camera_and_Photo', 'Shoes']
+TRAIN_TEST_CATEGORIES = ['Computers_and_Accessories', 'Camera_and_Photo', 'Shoes', 'Jewelry']
+CHARS_TO_REMOVE_CLASS = re.compile('[\xa0Â°â€™Ã©´"¨' + r''.join([chr(i) for i in range(32)]) + r']+')
+#+ ''.join([chr(i) for i in range(128, 200)])
+CHARS_TO_KEEP_CLASS = r'([]' + ''.join([chr(i).replace(']','') for i in range(32, 127)]) + ']*)'
+[chr(i).replace(']','') for i in range(32, 127)]# if i not in [']']] # not in ['[', ']']]
+#.replace('[','\[')
+type(CHARS_TO_KEEP_CLASS)
+string.printable
+string.printable
+# new_chunk[columns_with_json].iloc[0, 2].replace(CHARS_TO_REMOVE_CLASS, '').reset_index(drop=True)
+# json_normalize(new_chunk[columns_with_json].iloc[0, 2])
+
+# new_chunk[columns_with_json].info()
+#
+# print(new_chunk[columns_with_json].iloc[4:5, 0].values)
+# print(new_chunk[columns_with_json].iloc[4:5, 1].values)
+# print(new_chunk[columns_with_json].iloc[4:5, 2].values)
+#
+# parse_json_column(json_columns_df.identifiers.apply(json_normalize))
+
+#pd.concat([json_columns_df.identifiers, json_columns_df['schema.org_properties']], axis=1).apply(json_normalize)
+#json_columns_df[column].str.replace(CHARS_TO_REMOVE_CLASS, '')
+
 os.chdir('D:/Documents/Large-Scale Product Matching/')
-def reduce_mem_usage(df, n_unique_object_threshold=0.5):
+def reduce_mem_usage(df, n_unique_object_threshold=0.30, replace_int_nans=False):
     """
     source: https://www.kaggle.com/arjanso/reducing-dataframe-memory-size-by-65
     :param df:
     :return:
     """
+    print("------------------------------------")
     start_mem_usg = df.memory_usage().sum() / 1024**2
-    print("Starting memory usage is:", int(start_mem_usg)," MB")
-    NAlist = [] # Keeps track of columns that have missing values filled in.
-    original_dtypes = df.dtypes
+    print("Starting memory usage is %s MB" % "{0:}".format(start_mem_usg))
+    NA_list = [] # Keeps track of columns that have missing values filled in.
+    # record the dtype changes
+    dtype_df = pd.DataFrame(df.dtypes.astype('str'), columns=['original'])
+
 
     for col in df.columns:
-        if not isinstance(df[col].dtype, object):  # Exclude strings
-
+        if is_numeric_dtype(df[col]):
             # Print current column type
-            # print("******************************")
+            #
             # print("Column: ",col)
             # print("dtype before: ", df[col].dtype)
 
-            # make variables for Int, max and min
-            IsInt = False
+            # make variables for max, min
             mx, mn = df[col].max(), df[col].min()
 
             # Integer does not support NA, therefore, NA needs to be filled
-            if not np.isfinite(df[col]).all():
-                NAlist.append(col)
-                df[col].fillna(mn - 1,inplace=True)
+            if replace_int_nans:
+                if not np.isfinite(df[col]).all():
+                    NA_list.append(col)
+                    df[col].fillna(mn - 1, inplace=True)
 
-            # test if column can be converted to an integer
-            asint = df[col].fillna(0).astype(np.int64)
-            result = (df[col] - asint)
-            result = result.sum()
-            if result > -0.01 and result < 0.01:
-                IsInt = True
+            # If no NaNs, proceed to reduce the int
+            if np.isfinite(df[col]).all():
+                # test if column can be converted to an integer
+                # as_int = df[col].fillna(0).astype(np.int64)
+                # result = (df[col] - asint).sum()
+                # if result > -0.01 and result < 0.01:
+                #     is_int = True
+                as_int = df[col].astype(np.int64)
+                delta = (df[col] - as_int).sum()
 
-
-            # Make Integer/unsigned Integer datatypes
-            if IsInt:
-                if mn >= 0:
-                    if mx < 255:
-                        df[col] = df[col].astype(np.uint8)
-                    elif mx < 65535:
-                        df[col] = df[col].astype(np.uint16)
-                    elif mx < 4294967295:
-                        df[col] = df[col].astype(np.uint32)
+                # Make Integer/unsigned Integer datatypes
+                if delta == 0:
+                    if mn >= 0:
+                        if mx < 255:
+                            df[col] = df[col].astype(np.uint8)
+                        elif mx < 65535:
+                            df[col] = df[col].astype(np.uint16)
+                        elif mx < 4294967295:
+                            df[col] = df[col].astype(np.uint32)
+                        else:
+                            df[col] = df[col].astype(np.uint64)
                     else:
-                        df[col] = df[col].astype(np.uint64)
+                        if mn > np.iinfo(np.int8).min and mx < np.iinfo(np.int8).max:
+                            df[col] = df[col].astype(np.int8)
+                        elif mn > np.iinfo(np.int16).min and mx < np.iinfo(np.int16).max:
+                            df[col] = df[col].astype(np.int16)
+                        elif mn > np.iinfo(np.int32).min and mx < np.iinfo(np.int32).max:
+                            df[col] = df[col].astype(np.int32)
+                        elif mn > np.iinfo(np.int64).min and mx < np.iinfo(np.int64).max:
+                            df[col] = df[col].astype(np.int64)
+
+                # Make float datatypes 32 bit
                 else:
-                    if mn > np.iinfo(np.int8).min and mx < np.iinfo(np.int8).max:
-                        df[col] = df[col].astype(np.int8)
-                    elif mn > np.iinfo(np.int16).min and mx < np.iinfo(np.int16).max:
-                        df[col] = df[col].astype(np.int16)
-                    elif mn > np.iinfo(np.int32).min and mx < np.iinfo(np.int32).max:
-                        df[col] = df[col].astype(np.int32)
-                    elif mn > np.iinfo(np.int64).min and mx < np.iinfo(np.int64).max:
-                        df[col] = df[col].astype(np.int64)
+                    df[col] = df[col].astype(np.float32)
 
-            # Make float datatypes 32 bit
-            else:
-                df[col] = df[col].astype(np.float32)
-
-            # Print new column type
-            # print("dtype after: ", df[col].dtype)
-            # print("******************************")
-        elif isinstance(df[col].dtype, object) and df[col].astype(str).nunique() / len(df) < n_unique_object_threshold:
-            df[col] = df[col].astype('category')
+                # Print new column type
+                # print("dtype after: ", df[col].dtype)
+        elif isinstance(df[col], object):
+            if df[col].astype(str).nunique() / len(df) < n_unique_object_threshold:
+                df[col] = df[col].astype('category')
 
     # Print final result
-    new_dtypes = df.dtypes
-    dtype_changes = original_dtypes != new_dtypes
+    dtype_df['new'] = df.dtypes.astype('str')
+    dtype_changes = dtype_df.original != dtype_df.new
 
     if dtype_changes.sum():
-        mem_usg = df.memory_usage().sum() / 1024**2
-        print("Ending memory usage is: ", int(mem_usg)," MB")
-        print("Reduced by", int(100 * (1 - mem_usg / start_mem_usg)), "%")
+        new_mem_usg = df.memory_usage().sum() / 1024**2
+        print("Ending memory usage is %s MB" % "{0:}".format(new_mem_usg))
+        print("Reduced by", int(100 * (1 - new_mem_usg / start_mem_usg)), "%")
 
-        dtype_changes_df = pd.concat([df.columns, original_dtypes, new_dtypes], axis=1)
-        # print(dtype_changes_df.filter[dtype_changes])
-        if NAlist:
-            print('columns with NAs:', NAlist)
+        print(dtype_df.loc[dtype_changes])
+
+        if NA_list:
+            print('columns with NAs:', NA_list)
     else:
         print('No reductions possible')
+
+    print("------------------------------------")
     return df
+
 
 def read_train_test_files(file_dir, delimitor='_', category_position=0,
                           col_names=['offer_id_1', 'offer_id_2', 'label']):
@@ -128,82 +162,111 @@ def read_train_test_files(file_dir, delimitor='_', category_position=0,
 def merge_nan_rows(df):
     """
     Merges rows with NaNs into one
+    It's passed the parse_json_column() function
     :param df: a DataFrame
     :return: one row without NaNs
     """
-    s = df.apply(lambda x: x.dropna().max())
-    return pd.DataFrame(s).transpose()
+    try:
+        s = df.apply(lambda x: x.dropna().max())
+        return pd.DataFrame(s).transpose()
+    except Exception as e:
+        print('merge_nan_rows', e)
 
-def parse_json_column(s, column_prefix=None):
+def parse_json_column(a_series):
     """
     Parses the remaining JSON into a DF
-    :param s: a pandas Series
+    :param a_series: a pandas Series
     :return: a DF
     """
-    # Normalize JSON
-    s2 = s.str.replace('"', '')\
-        .str.replace("'", '"')\
-        .apply(json.loads)\
-        .apply(lambda x: json_normalize(x))
-    # Concatenate DFs and remove brackets
-    df = pd.concat([merge_nan_rows(x) for x in s2], sort=True)\
+
+    # Concatenate DFs and remove the beginning & ending brackets
+    df = pd.concat([merge_nan_rows(x) for x in a_series], sort=True)\
         .apply(lambda x: x.str.replace('^\[|\]$', ''))
     # clean column names
     df.columns = df.columns.str.strip('/')
 
-    if column_prefix:
-        df.columns = column_prefix + '_' + df.columns
+    return df
 
+def coalesce_gtin_columns(df):
+    """
+    Since a product can have only one gtin,
+    this function coalesces these columns to one column
+    :param df:
+    :return:
+    """
+    # select the gtin columns
+    gtin_df = df.filter(regex='gtin')
+    gtin = gtin_df.iloc[:, 0]
+    if len(gtin_df.columns) > 1:
+        # start the loop on the 2nd column
+        for col in gtin_df.columns[1:]:
+            gtin = gtin.mask(pd.isnull, gtin_df[col])
+    df['gtin'] = gtin
+    df.drop(gtin_df.columns, axis=1, inplace=True)
+    return df
+
+def parse_domain(url):
+    """
+
+    :param url:
+    :return:
+    """
+    return urlparse(url).netloc
+
+def parse_price(df):
+    """
+
+    :param price_series:
+    :return:
+    """
+    price_series = df.loc[:, df.columns == 'price'].iloc[:, 0]\
+        .str.replace(r'[a-zA-Z",]+', '')\
+        .str.strip()\
+        .str.replace(r' (\d\d)$', r'.\1')\
+        .str.replace(r'\s', '')
+
+    df.loc[df.columns =='price'] = pd.to_numeric(price_series)
     return reduce_mem_usage(df)
 
-# product_categoreies_df.head()
-# product_categoreies_df.info()
-# product_categoreies_df.select_dtypes(include=['object']).describe()
-# plt.gcf().clear()
-# product_categoreies_df.category.value_counts().plot.bar()
-# product_categoreies_df.id
-
 # Load Train Data
-train_df = read_train_test_files('D:/Documents/Large-Scale Product Matching/training-data/')
-plt.gcf().clear()
-train_df.category.value_counts().plot.bar()
-
-# Load Test Data
-test_df = read_train_test_files('D:/Documents/Large-Scale Product Matching/test-data/',
-                                category_position=1)
-plt.gcf().clear()
-test_df.category.value_counts().plot.bar()
-
-# Aggregate the IDs
-train_test_offer_ids = pd.concat([test_df.offer_id_1, test_df.offer_id_2, train_df.offer_id_1, train_df.offer_id_2], axis=0,
-                           ignore_index=True)
+# train_df = read_train_test_files('D:/Documents/Large-Scale Product Matching/training-data/')
+# plt.gcf().clear()
+# train_df.category.value_counts().plot.bar()
+#
+# # Load Test Data
+# test_df = read_train_test_files('D:/Documents/Large-Scale Product Matching/test-data/',
+#                                 category_position=1)
+# plt.gcf().clear()
+# test_df.category.value_counts().plot.bar()
+#
+# # Aggregate the IDs
+# train_test_offer_ids = pd.concat([test_df.offer_id_1, test_df.offer_id_2, train_df.offer_id_1, train_df.offer_id_2], axis=0,
+#                            ignore_index=True)
 
 # del test_df
-# # del train_df
+# del train_df
 gc.collect()
 print(psutil.virtual_memory())
 
 # Read or Create the Product-Category Mappings (category_cluster_ids)
-try:
-    os.chdir('D:/Documents/Large-Scale Product Matching/')
+os.chdir('D:/Documents/Large-Scale Product Matching/')
+if 'category_cluster_ids.csv' in os.listdir():
     category_cluster_ids = reduce_mem_usage(pd.read_csv('category_cluster_ids.csv',
                                                         index_col='cluster_id'))
-    print(category_cluster_ids.info(memory_usage='deep'))
-except Exception as e:
-    print(e)
 else:
     product_categories_df = reduce_mem_usage(pd.read_json('D:/Documents/Large-Scale Product Matching/clusters_english.json',
                                           lines=True))
 
-    print(product_categories_df.info(memory_usage='deep'))
-    print(product_categories_df.info(memory_usage='deep'))
-    # product_categories_df['category']= product_categories_df.category.astype('category')
-    product_categories_df = product_categories_df.rename(columns={'id':'cluster_id'}).set_index('cluster_id')
-    print(product_categories_df.info(memory_usage='deep'))
+
+    category_cluster_ids = product_categories_df\
+        .rename(columns={'id':'cluster_id'})\
+        .set_index('cluster_id').loc[product_categories_df.category.isin(TRAIN_TEST_CATEGORIES).values, ['category']]
+
+    print(category_cluster_ids.info(memory_usage='deep'))
 
     # get only the cluster ids needed for the train-test categories
-    category_cluster_ids = product_categories_df[['category']]# [product_categories_df.category.isin(TRAIN_TEST_CATEGORIES)]
-    print(category_cluster_ids.info(memory_usage='deep'))
+
+
     category_cluster_ids.to_csv('category_cluster_ids.csv')
     del(product_categories_df)
     gc.collect()
@@ -211,68 +274,170 @@ else:
 
 #######################################
 #### Clean & Tidy the Offers data ####
-start = datetime.now()
-try:
-    os.chdir('D:/Documents/Large-Scale Product Matching/')
-    category_offers_df = reduce_mem_usage(pd.read_csv('category_offers_df.csv', index_col='offer_id'))
-    print(category_offers_df.info(memory_usage='deep'))
-except Exception as e:
-    print(e)
-else:
+#######################################
 
+if 'category_offers_df.csv' in os.listdir():
+    category_offers_df = reduce_mem_usage(pd.read_csv('category_offers_df.csv',
+                                                      index_col='offer_id'))
+    print(category_offers_df.info(memory_usage='deep'))
+else:
+    pd.set_option('display.max_columns', 1000)
+    pd.set_option('display.width', 1000)
     # get offers data for train-test categories
+    start = datetime.now()
+
     os.chdir('D:/Documents/Large-Scale Product Matching/')
     offers_reader = pd.read_json('offers_consWgs_english.json',
                                  orient='records',
-                                 chunksize=1e6,
+                                 chunksize=1e4,
                                  lines=True)
 
-    start = datetime.now()
+    columns_with_json = ['identifiers', 'schema_org_properties', 'parent_schema_org_properties']
+    columns_to_drop = ['parent_NodeID', 'relationToParent',] + columns_with_json
+    more_cols_to_drop = ['identifier', 'productID', 'sku', 'availability']
+
     offers_df_list = []
     for i, chunk in enumerate(offers_reader):
         print(i)
-        offers_df_list.append(reduce_mem_usage(chunk)\
+        # chunk = next(offers_reader)
+        # inner join on the cluster ids for the 4 train-test categories
+        new_chunk = reduce_mem_usage(chunk)\
                        .set_index('cluster_id')\
                        .join(category_cluster_ids, how='inner')
-                       )
-  
 
-    category_offers_df = pd.concat(offers_df_list, axis=0)
+        # clean column names
+        new_chunk.columns = new_chunk.columns.str.replace('.', '_')
+        # create the unique offer_id
+        new_chunk['offer_id'] = new_chunk.nodeID.str.cat(new_chunk.url, sep=' ')
+        # parse the website domain into column
+        new_chunk['domain'] = new_chunk.url.apply(parse_domain)
+        # set offer_id to index and drop its components
+        new_chunk = new_chunk.reset_index()\
+            .set_index('offer_id')\
+            .drop(['nodeID', 'url'], axis=1)
 
-    category_offers_df['offer_id'] = category_offers_df.nodeID.str.cat(category_offers_df.url, sep=' ')
+        parsed_df_list = []
+        json_columns_df = new_chunk[columns_with_json]
+        for column in columns_with_json:
+            # column = columns_with_json[2]
+            print(column)
+            df = parse_json_column(json_columns_df[column].apply(json_normalize))\
+                .apply(lambda x: x.str.strip() if x.dtype == "object" else x)\
+                .replace('null', np.nan)
+            print(df.columns)
 
-    category_offers_df = category_offers_df.reset_index()\
-        .set_index('offer_id')\
-        .drop(['nodeID', 'url'], axis=1)
+            df.index = new_chunk.index
+            # coalesce the gtins
+            if column == 'identifiers':
+                df = coalesce_gtin_columns(df)
+            elif column == 'parent_schema_org_properties':
+                df.columns = 'parent_' + df.columns
+            # parse the price columns
+            if np.sum(df.columns == 'price'):
+                df = parse_price(df)
 
-    category_offers_df.to_csv('category_offers_df.csv')
+            parsed_df_list.append(df)
 
-print(datetime.now() - start)
+        print(datetime.now() - start)
+        # Drop the 3 parsed columns
+        new_chunk.drop(columns_to_drop, axis=1, inplace=True)
+        # Concatenate the chunk to the 3 parsed columns & add it to the df list
+        parsed_df_list.append(new_chunk)
+        new_chunk = reduce_mem_usage(pd.concat(parsed_df_list, axis=1, sort=False))
+        offers_df_list.append(new_chunk)
+
+    print('Saving as CSV...')
+    reduce_mem_usage(pd.concat(offers_df_list, axis=0).drop(more_cols_to_drop, axis=1))\
+        .reset_index()\
+        .to_csv('category_offers_df.csv')
+
+    print(datetime.now() - start)
 
 
-category_offers_df.info(memory_usage='deep')
-gc.collect()
-print(psutil.virtual_memory())
+    category_offers_df = reduce_mem_usage(pd.concat(offers_df_list, axis=0, sort=False))
+    category_offers_df = category_offers_df.loc[category_offers_df.cluster_id.notnull()]
+    print(category_offers_df.info(memory_usage=True))
+    category_offers_df.describe(include='all')
 
-# df = parse_json_column(category_offers_df['parent_schema.org_properties'][:200])
+    category_offers_df = category_offers_df.apply(lambda x: x.str.strip() if x.dtype == "object" else x).replace('^null$', np.nan)
+    category_offers_df.head()
+    category_offers_df.isnull().sum() / len(category_offers_df) * 100
+    np.sum(category_offers_df.index.duplicated())
+    len(category_offers_df.index.unique())
 
-columns_with_json = ['identifiers', 'schema.org_properties', 'parent_schema.org_properties']
+    print(df['brand'].dtype)
+    isinstance(df['brand'], object)
+#######################################
+# Parse the remaining JSON in 3 columns
+#######################################
+# Read in Chunked CSV
+# start = datetime.now()
 
-parsed_df_list = []
-for column in columns_with_json:
-    df = parse_json_column(category_offers_df[column], column_prefix=column)
-    parsed_df_list.append(df)
+#
+# category_offers_df = pd.read_csv('category_offers_df.csv', chunksize=5e5)
+# type(category_offers_df)
+#
+# columns_with_json = ['identifiers', 'schema.org_properties', 'parent_schema.org_properties']
+# columns_to_drop = ['parent_NodeID', 'relationToParent'] + columns_with_json
+#
+# new_df_list = []
+# for i, chunk in enumerate(category_offers_df):
+#     # Parse each column
+#     print(i)
+#     #chunk = next(category_offers_df)
+#     parsed_df_list = []
+#     # json_columns_df = clean_json_columns(chunk.loc[:, columns_with_json])
+#     json_columns_df = clean_json_columns(chunk[columns_with_json])
+#     for column in columns_with_json:
+#         print(column)
+#         df = parse_json_column(json_columns_df[column], column_prefix=column)\
+#             .reset_index(drop=True)
+#         # coalesce the gtins
+#         if column == 'identifiers':
+#             df = coalesce_gtin_columns(df)
+#         parsed_df_list.append(df)
+#         #sys.getsizeof(parsed_df_list)
+#     # Drop the 3 parsed columns
+#     chunk.drop(columns_to_drop, axis=1, inplace=True)
+#     # Concatenate the chunk to the 3 parsed columns & add it to the df list
+#     parsed_df_list.append(chunk)
+#     new_df = pd.concat(parsed_df_list, axis=1, sort=False)
+#     new_df_list.append(new_df)
+#
+#
+# # my_df = reduce_mem_usage(pd.concat(new_df_list, axis=0))
+# print('Saving as CSV...')
+# reduce_mem_usage(pd.concat(new_df_list, axis=0)).to_csv('category_offers_df_v2.csv')
+# print(datetime.now() - start)
 
 
-parsed_df = reduce_mem_usage(pd.concat(parsed_df_list, sort=False))
-parsed_df.info(memory_usage='deep')
-parsed_df.to_csv('parsed_df.csv')
+# my_df[['schema.org_properties_price', 'parent_schema.org_properties_price']]
+# new_price = my_df['parent_schema.org_properties_price'].str.replace('(usd|,|gbp)', '')\
+#     .str.strip()\
+#     .str.replace(' ', '.')\
+#     .astype('float')
+#
+# new_price.value_counts()
 
-print(datetime.now() - start)
 
-# check the dupe gtins
-parsed_df_list[0].filter(regex='gtin').notnull().sum(axis=1).value_counts()
-parsed_df_list[0][parsed_df_list[0].filter(regex='gtin').notnull().sum(axis=1) > 1].head()
+# gc.collect()
+# print(psutil.virtual_memory())
+# parsed_df_list = []
+#
+#
+# gc.collect()
+#
+# print(datetime.now() - start)
+#
+#
+# parsed_df.info(memory_usage='deep')
+# print('Saving as CSV...')
+# parsed_df.to_csv('parsed_df.csv')
+
+
+
+
+
 
 
 # Load the Offers
@@ -334,6 +499,28 @@ parsed_df_list[0][parsed_df_list[0].filter(regex='gtin').notnull().sum(axis=1) >
 # offers_df.to_csv('D:/Documents/Large-Scale Product Matching/offers_df.csv', index=False)
 # offers_df = pd.concat(offers_json, ignore_index=True)
 #offers_df = pd.DataFrame([flatten(record) for record in offers_json])
-# pd.set_option('display.max_columns', 500)
+#
 # offers_df.info()
 # # offers_df.head()
+# def clean_json_columns(df, removal_class=CHARS_TO_REMOVE_CLASS):
+#     """
+#
+#     :param df:
+#     :param removal_class:
+#     :return:
+#     """
+#     for col in df.columns:
+#         try:
+#             df.loc[:, col] = df.loc[:, col].str.replace(removal_class, '')\
+#                 .str.replace("'", '"')\
+#                 .apply(load_and_normalize_json)
+#         except Exception as e:
+#             print('clean_json_columns:', e)
+#
+#     return df
+# def load_and_normalize_json(a_string):
+#     try:
+#         return json_normalize(json.loads(a_string))
+#     except Exception as e:
+#         print(e)
+#         print(a_string)
