@@ -25,14 +25,7 @@ import psutil
 import multiprocessing as mp
 
 TRAIN_TEST_CATEGORIES = ['Computers_and_Accessories', 'Camera_and_Photo', 'Shoes', 'Jewelry']
-CHARS_TO_REMOVE_CLASS = re.compile('[\xa0Â°â€™Ã©´"¨' + r''.join([chr(i) for i in range(32)]) + r']+')
-#+ ''.join([chr(i) for i in range(128, 200)])
-CHARS_TO_KEEP_CLASS = r'([]' + ''.join([chr(i).replace(']','') for i in range(32, 127)]) + ']*)'
-[chr(i).replace(']','') for i in range(32, 127)]# if i not in [']']] # not in ['[', ']']]
-#.replace('[','\[')
-type(CHARS_TO_KEEP_CLASS)
-string.printable
-string.printable
+
 # new_chunk[columns_with_json].iloc[0, 2].replace(CHARS_TO_REMOVE_CLASS, '').reset_index(drop=True)
 # json_normalize(new_chunk[columns_with_json].iloc[0, 2])
 
@@ -48,7 +41,7 @@ string.printable
 #json_columns_df[column].str.replace(CHARS_TO_REMOVE_CLASS, '')
 
 os.chdir('D:/Documents/Large-Scale Product Matching/')
-def reduce_mem_usage(df, n_unique_object_threshold=0.30, replace_int_nans=False):
+def reduce_mem_usage(df, n_unique_object_threshold=0.30):
     """
     source: https://www.kaggle.com/arjanso/reducing-dataframe-memory-size-by-65
     :param df:
@@ -57,7 +50,6 @@ def reduce_mem_usage(df, n_unique_object_threshold=0.30, replace_int_nans=False)
     print("------------------------------------")
     start_mem_usg = df.memory_usage().sum() / 1024**2
     print("Starting memory usage is %s MB" % "{0:}".format(start_mem_usg))
-    NA_list = [] # Keeps track of columns that have missing values filled in.
     # record the dtype changes
     dtype_df = pd.DataFrame(df.dtypes.astype('str'), columns=['original'])
 
@@ -71,12 +63,6 @@ def reduce_mem_usage(df, n_unique_object_threshold=0.30, replace_int_nans=False)
 
             # make variables for max, min
             mx, mn = df[col].max(), df[col].min()
-
-            # Integer does not support NA, therefore, NA needs to be filled
-            if replace_int_nans:
-                if not np.isfinite(df[col]).all():
-                    NA_list.append(col)
-                    df[col].fillna(mn - 1, inplace=True)
 
             # If no NaNs, proceed to reduce the int
             if np.isfinite(df[col]).all():
@@ -124,14 +110,11 @@ def reduce_mem_usage(df, n_unique_object_threshold=0.30, replace_int_nans=False)
     dtype_changes = dtype_df.original != dtype_df.new
 
     if dtype_changes.sum():
+        print(dtype_df.loc[dtype_changes])
         new_mem_usg = df.memory_usage().sum() / 1024**2
         print("Ending memory usage is %s MB" % "{0:}".format(new_mem_usg))
         print("Reduced by", int(100 * (1 - new_mem_usg / start_mem_usg)), "%")
 
-        print(dtype_df.loc[dtype_changes])
-
-        if NA_list:
-            print('columns with NAs:', NA_list)
     else:
         print('No reductions possible')
 
@@ -289,7 +272,7 @@ else:
     os.chdir('D:/Documents/Large-Scale Product Matching/')
     offers_reader = pd.read_json('offers_consWgs_english.json',
                                  orient='records',
-                                 chunksize=1e4,
+                                 chunksize=1e6,
                                  lines=True)
 
     columns_with_json = ['identifiers', 'schema_org_properties', 'parent_schema_org_properties']
