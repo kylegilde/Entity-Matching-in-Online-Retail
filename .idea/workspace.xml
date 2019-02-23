@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f7d760b9-f4cb-4f2d-831d-97e304e88e4c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/explore.py" beforeDir="false" afterPath="$PROJECT_DIR$/explore.py" afterDir="false" />
     </list>
@@ -15,14 +16,14 @@
     <session id="-1193020893">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="3" />
+          <entry key="project.closed" value="4" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.13" value="1" />
           <entry key="project.open.time.6" value="2" />
-          <entry key="project.open.time.7" value="3" />
+          <entry key="project.open.time.7" value="4" />
           <entry key="project.open.time.8" value="1" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="9" />
+          <entry key="project.opened" value="10" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -38,13 +39,13 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="Python Console" value="883" />
-          <entry key="py" value="12912" />
+          <entry key="Python Console" value="894" />
+          <entry key="py" value="15437" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="13790" />
+          <entry key="Python" value="16326" />
           <entry key="Scratch" value="5" />
         </counts>
       </usages-collector>
@@ -55,21 +56,20 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/explore.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="294">
-              <caret line="26" column="93" lean-forward="true" selection-start-line="26" selection-start-column="93" selection-end-line="26" selection-end-column="93" />
+            <state relative-caret-position="462">
+              <caret line="379" lean-forward="true" selection-start-line="379" selection-end-line="379" />
               <folding>
-                <element signature="e#78#87#0" expanded="true" />
-                <element signature="e#1293#4701#0" />
-                <element signature="e#731#850#1" />
-                <element signature="e#4603#5109#0" />
-                <element signature="e#5139#5409#0" />
-                <element signature="e#6445#6826#0" />
-                <element signature="e#6523#7017#0" />
-                <element signature="e#7046#7119#0" />
-                <element signature="e#7588#7960#0" />
-                <element signature="e#14191#14208#0" />
-                <marker date="1550813927603" expanded="true" signature="6537:6616" ph="..." />
-                <marker date="1550813927603" expanded="true" signature="6637:6993" ph="..." />
+                <element signature="e#793#3700#0" />
+                <element signature="e#3855#4366#0" />
+                <element signature="e#4421#5131#0" />
+                <element signature="e#4470#5363#0" />
+                <element signature="e#5394#5713#0" />
+                <element signature="e#5753#6133#0" />
+                <element signature="e#6171#6665#0" />
+                <element signature="e#6695#6768#0" />
+                <element signature="e#6835#7293#0" />
+                <marker date="1550899266640" expanded="true" signature="7446:7525" ph="..." />
+                <marker date="1550899266640" expanded="false" signature="8081:8127" ph="..." />
               </folding>
             </state>
           </provider>
@@ -98,6 +98,9 @@
       <find>endswith</find>
       <find>column_prefix</find>
       <find>NA_list</find>
+      <find>price_column_names</find>
+      <find>PRICE_COLUMN_NAMES</find>
+      <find>train_test_offers_df</find>
     </findStrings>
     <replaceStrings>
       <replace>df</replace>
@@ -115,17 +118,16 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="76" />
-    <option name="width" value="1853" />
-    <option name="height" value="1031" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="75" />
+    <option name="width" value="1854" />
+    <option name="height" value="1032" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Course" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -137,6 +139,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Course" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -164,10 +167,10 @@
     <configuration />
   </component>
   <component name="ToolWindowManager">
-    <frame x="51" y="0" width="1235" height="687" extended-state="0" />
+    <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.0034042553" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.0032388663" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -177,7 +180,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info active="true" anchor="bottom" x="-1673" y="0" width="1279" height="809" id="Python Console" order="8" type="FLOATING" visible="true" weight="0.3285968" />
+      <window_info active="true" anchor="bottom" x="-1634" y="1" width="1239" height="813" id="Python Console" order="8" type="FLOATING" visible="true" weight="0.3285968" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -216,21 +219,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/explore.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="26" column="93" lean-forward="true" selection-start-line="26" selection-start-column="93" selection-end-line="26" selection-end-column="93" />
+        <state relative-caret-position="462">
+          <caret line="379" lean-forward="true" selection-start-line="379" selection-end-line="379" />
           <folding>
-            <element signature="e#78#87#0" expanded="true" />
-            <element signature="e#1293#4701#0" />
-            <element signature="e#731#850#1" />
-            <element signature="e#4603#5109#0" />
-            <element signature="e#5139#5409#0" />
-            <element signature="e#6445#6826#0" />
-            <element signature="e#6523#7017#0" />
-            <element signature="e#7046#7119#0" />
-            <element signature="e#7588#7960#0" />
-            <element signature="e#14191#14208#0" />
-            <marker date="1550813927603" expanded="true" signature="6537:6616" ph="..." />
-            <marker date="1550813927603" expanded="true" signature="6637:6993" ph="..." />
+            <element signature="e#793#3700#0" />
+            <element signature="e#3855#4366#0" />
+            <element signature="e#4421#5131#0" />
+            <element signature="e#4470#5363#0" />
+            <element signature="e#5394#5713#0" />
+            <element signature="e#5753#6133#0" />
+            <element signature="e#6171#6665#0" />
+            <element signature="e#6695#6768#0" />
+            <element signature="e#6835#7293#0" />
+            <marker date="1550899266640" expanded="true" signature="7446:7525" ph="..." />
+            <marker date="1550899266640" expanded="false" signature="8081:8127" ph="..." />
           </folding>
         </state>
       </provider>
