@@ -4,14 +4,10 @@ Created on Feb 10, 2019
 @author: Kyle Gilde
 """
 import os
-import gc
 from datetime import datetime
 
 from urllib.parse import urlparse
-import re
-import string
 
-import sys
 import numpy as np
 import pandas as pd
 from pandas.io.json import json_normalize
@@ -26,9 +22,13 @@ import multiprocessing as mp
 
 TRAIN_TEST_CATEGORIES = ['Computers_and_Accessories', 'Camera_and_Photo', 'Shoes', 'Jewelry']
 PRICE_COLUMN_NAMES = ['price','parent_price']
-os.chdir('D:/Documents/Large-Scale Product Matching/')
-pd.set_option('display.max_columns', 1000)
-pd.set_option('display.width', 1000)
+DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
+os.chdir(DATA_DIRECTORY)
+
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 500)
+
 
 def reduce_mem_usage(df, n_unique_object_threshold=0.30):
     """
@@ -100,8 +100,7 @@ def reduce_mem_usage(df, n_unique_object_threshold=0.30):
     return df
 
 
-def read_train_test_files(file_dir, delimitor='_', category_position=0,
-                          col_names=['offer_id_1', 'offer_id_2', 'label']):
+def read_train_test_files(file_dir, sep='#####', col_names=['offer_id_1', 'offer_id_2', 'label']):
     """
     Read all files from the director & use the file name for the category column
     :param file_dir:
@@ -109,16 +108,21 @@ def read_train_test_files(file_dir, delimitor='_', category_position=0,
     :param category_position:
     :return:
     """
+    original_wd = os.getcwd()
     os.chdir(file_dir)
     files = os.listdir()
 
     df_list = []
     for file in files:
-        df = pd.read_csv(file, names=col_names, sep = '#####', engine='python')
-        df['category_file'] = re.split(delimitor, file)[category_position]
+        df = pd.read_csv(file, names=col_names, sep=sep, engine='python')
+        df['filename'] = file
+        if 'train' in file:
+            df['dataset'] = 'train'
+        elif 'gs_' in file:
+            df['dataset'] = 'test'
         df_list.append(df)
-
-    return pd.concat(df_list, axis = 0, ignore_index = True)
+    os.chdir(original_wd)
+    return reduce_mem_usage(pd.concat(df_list, axis = 0, ignore_index=True))
 
 
 def rbind_train_test_offers(train_df, test_df):
@@ -129,10 +133,10 @@ def rbind_train_test_offers(train_df, test_df):
     :return:
     """
     # row bind all the offer ids
-    df1, df2, df3, df4 = test_df[['offer_id_1', 'category_file']].rename(columns={'offer_id_1': 'offer_id'}),\
-        test_df[['offer_id_2', 'category_file']].rename(columns={'offer_id_2': 'offer_id'}),\
-        train_df[['offer_id_1', 'category_file']].rename(columns={'offer_id_1': 'offer_id'}),\
-        train_df[['offer_id_2', 'category_file']].rename(columns={'offer_id_2': 'offer_id'})
+    df1, df2, df3, df4 = test_df[['offer_id_1', 'filename', 'dataset']].rename(columns={'offer_id_1': 'offer_id'}),\
+        test_df[['offer_id_2', 'filename', 'dataset']].rename(columns={'offer_id_2': 'offer_id'}),\
+        train_df[['offer_id_1', 'filename', 'dataset']].rename(columns={'offer_id_1': 'offer_id'}),\
+        train_df[['offer_id_2', 'filename', 'dataset']].rename(columns={'offer_id_2': 'offer_id'})
 
     # Aggregate the IDs
     train_test_offer_ids = pd.concat([df1, df2, df3, df4], axis=0, ignore_index=True, sort=False)\
@@ -224,7 +228,7 @@ def parse_domain(url):
     return urlparse(url).netloc
 
 
-def parse_price(df, price_column_names=PRICE_COLUMN_NAMES):
+def parse_price_columns(df, price_column_names=PRICE_COLUMN_NAMES):
     """
 
     :param price_series:
@@ -242,47 +246,75 @@ def parse_price(df, price_column_names=PRICE_COLUMN_NAMES):
 
     return df
 
-def count_nulls_by_column(df):
+
+def coalesce_parent_child_columns(df):
     """
 
     :param df:
     :return:
     """
-    print(np.round(df.isnull().sum() / len(df) * 100), 1)
+    parent_columns = df.columns[df.columns.astype(str).str.startswith('parent_')]
+    nonparent_columns = df.columns[~df.columns.isin(parent_columns)]
+
+    child_parent_pairs = []
+    for parent_column in parent_columns:
+        for nonparent_column in nonparent_columns:
+            if parent_column.endswith('_' + nonparent_column):
+                child_parent_pairs.append((parent_column, nonparent_column))
+
+    for child_parent_pair in child_parent_pairs:
+        parent, child = child_parent_pair
+        df[child] = df[child].combine_first(df[parent])
+        df.drop(parent, axis=1, inplace=True)
+
+    return df
+
+
+def calculate_percent_nulls(df):
+    """
+
+    :param df:
+    :return:
+    """
+    print(df.isnull().sum() / len(df) * 100)
 
 ##################################
 #### Load Train and Test Data ####
 ##################################
-# Load Train Data
-train_df = reduce_mem_usage(read_train_test_files('D:/Documents/Large-Scale Product Matching/training-data/'))
-plt.gcf().clear()
-train_df.category_file.value_counts().plot.bar()
+# Load Train & Test Data
+train_df, test_df = read_train_test_files(DATA_DIRECTORY + '/training-data/'),\
+                    read_train_test_files(DATA_DIRECTORY + '/test-data/')
 
-# Load Test Data
-test_df = reduce_mem_usage(read_train_test_files('D:/Documents/Large-Scale Product Matching/test-data/',
-                                category_position=1))
-plt.gcf().clear()
 
-test_df.category_file.value_counts().plot.bar()
+print(train_df.info(memory_usage='deep'))
+print(test_df.info(memory_usage='deep'))
+
+plt.gcf().clear()
+train_df.filename.value_counts().plot.bar()
 
 train_test_df = pd.concat([train_df, test_df], axis=0)
+print(train_test_df.info())
 
 train_test_offer_ids = rbind_train_test_offers(train_df, test_df)
+print(train_test_offer_ids.info())
+
+unique_train_test_offer_ids = pd.DataFrame({'offer_id' : train_test_offer_ids.index.unique()}).set_index('offer_id')
+print(len(unique_train_test_offer_ids))
 
 
 #######################################
 #### Clean & Tidy the Offers data ####
 #######################################
+
 # if file exists read it, otherwise create it
-if 'category_offers_df.csv' in os.listdir():
-    category_offers_df = reduce_mem_usage(pd.read_csv('category_offers_df.csv',
-                                                      index_col='offer_id')).drop('Unnamed: 0', axis=1)
+if 'train_test_offers_df.csv' in os.listdir():
+    category_offers_df = reduce_mem_usage(pd.read_csv('train_test_offers_df.csv',
+                                                      index_col='offer_id'))
     print(category_offers_df.info(memory_usage='deep'))
 else:
-
     start = datetime.now()
     # Read or Create the Cluster ID-Category Mappings
-    category_cluster_ids = get_cluster_ids()
+    # category_cluster_ids = get_cluster_ids()
 
     # get offers data for train-test categories
     offers_reader = pd.read_json('offers_consWgs_english.json',
@@ -291,110 +323,213 @@ else:
                                  lines=True)
 
     columns_with_json = ['identifiers', 'schema_org_properties', 'parent_schema_org_properties']
-    columns_to_drop = ['parent_NodeID', 'relationToParent',] + columns_with_json
-    more_cols_to_drop = ['identifier', 'productID', 'sku', 'parent_availability', 'availability']
+    columns_to_drop = ['parent_NodeID'] + columns_with_json # , 'relationToParent'
+    more_cols_to_drop = ['availability']
 
 
     offers_df_list = []
     for i, chunk in enumerate(offers_reader):
         print(i)
         # chunk = next(offers_reader)
-        # inner join on the cluster ids for the 4 train-test categories
-        new_chunk = reduce_mem_usage(chunk)\
-                       .set_index('cluster_id')\
-                       .join(category_cluster_ids, how='inner')
 
-        # clean column names
-        new_chunk.columns = new_chunk.columns.str.replace('.', '_')
+
         # create the unique offer_id
-        new_chunk['offer_id'] = new_chunk.nodeID.str.cat(new_chunk.url, sep=' ')
-        # parse the website domain into column
-        new_chunk['domain'] = new_chunk.url.apply(parse_domain)
-        # set offer_id to index and drop its components
-        new_chunk = new_chunk.reset_index()\
-            .set_index('offer_id')\
-            .drop(['nodeID', 'url'], axis=1)
+        chunk['offer_id'] = chunk.nodeID.str.cat(chunk.url, sep=' ')
+        # inner join on the train-test offer ids
+        new_chunk = reduce_mem_usage(chunk)\
+                       .set_index('offer_id')\
+                       .join(unique_train_test_offer_ids, how='inner')
 
-        parsed_df_list = []
-        json_columns_df = new_chunk[columns_with_json]
-        for column in columns_with_json:
-            # column = columns_with_json[2]
-            print(column)
-            df = parse_json_column(json_columns_df[column].apply(json_normalize))\
-                .apply(lambda x: x.str.strip() if x.dtype == "object" else x)\
-                .replace('null', np.nan)
-            print(df.columns)
+        # if any rows remain after inner join, parse the data
+        if len(new_chunk):
+            # clean column names
+            new_chunk.columns = new_chunk.columns.str.replace('.', '_')
+            # parse the website domain into column
+            new_chunk['domain'] = new_chunk.url.apply(parse_domain)
+            # set offer_id to index and drop its components
+            new_chunk = new_chunk.reset_index()\
+                .set_index('offer_id')\
+                .drop(['nodeID', 'url'], axis=1)
 
-            df.index = new_chunk.index
-            # coalesce the gtins
-            if column == 'identifiers':
-                df = coalesce_gtin_columns(df)
-            elif column == 'parent_schema_org_properties':
-                df.columns = 'parent_' + df.columns
-            # parse the price columns
-            if np.sum(df.columns.isin(price_column_names)):
-                df = parse_price(df, price_column_names)
+            parsed_df_list = []
+            json_columns_df = new_chunk[columns_with_json]
+            for column in columns_with_json:
+                # column = columns_with_json[2]
+                print(column)
+                df = parse_json_column(json_columns_df[column].apply(json_normalize))\
+                    .apply(lambda x: x.str.strip() if x.dtype == "object" else x)\
+                    .replace('null', np.nan)
+                print(df.columns)
 
-            parsed_df_list.append(df)
+                df.index = new_chunk.index
+                # coalesce the gtins
+                if column == 'identifiers':
+                    df = coalesce_gtin_columns(df)
+                elif column == 'parent_schema_org_properties':
+                    df.columns = 'parent_' + df.columns
+                # parse the price columns
+                if np.sum(df.columns.isin(PRICE_COLUMN_NAMES)):
+                    df = parse_price_columns(df)
 
-        print(datetime.now() - start)
-        # Drop the 3 parsed columns
-        new_chunk.drop(columns_to_drop, axis=1, inplace=True)
-        # Concatenate the chunk to the 3 parsed columns & add it to the df list
-        parsed_df_list.append(new_chunk)
-        new_chunk = reduce_mem_usage(pd.concat(parsed_df_list, axis=1, sort=False))
-        offers_df_list.append(new_chunk)
+                parsed_df_list.append(df)
 
-    # save the output
+            print(datetime.now() - start)
+            # Drop the 3 parsed columns
+            new_chunk.drop(columns_to_drop, axis=1, inplace=True)
+            # Concatenate the chunk to the 3 parsed columns & add it to the df list
+            parsed_df_list.append(new_chunk)
+            # combine the parent child columns
+            new_chunk = coalesce_parent_child_columns(pd.concat(parsed_df_list, axis=1, sort=False))
+
+            # Remove the terms null and description
+            new_chunk['name'] = new_chunk.name.combine_first(df.parent_title)\
+                .str.replace('^null\s*?,|,\s*?null$', '')
+            new_chunk['description'] = new_chunk.description.str.replace('^description', '')
+            offers_df_list.append(new_chunk)
+
+
+    # Combine all the offers & save the output
     print('Saving as CSV...')
-    category_offers_df = reduce_mem_usage(pd.concat(offers_df_list, axis=0).drop(more_cols_to_drop, axis=1))
-    category_offers_df.to_csv('category_offers_df.csv', index_label='offer_id')
+    train_test_offers_df = reduce_mem_usage(pd.concat(offers_df_list, axis=0)\
+                                          .drop(more_cols_to_drop, axis=1)\
+                                          .dropna(axis=1, how='all'))
+    train_test_offers_df.to_csv('train_test_offers_df.csv', index_label='offer_id')
 
-    print(category_offers_df.describe(include='all'))
-    print(category_offers_df.info(memory_usage=True))
-    print(category_offers_df.isnull().sum() / len(category_offers_df) * 100)
+    print(train_test_offers_df.describe(include='all'))
+    print(train_test_offers_df.info(memory_usage='deep'))
+    calculate_percent_nulls(train_test_offers_df)
+
+    ################################
+    # Add the Category Attribute
+    ################################
+    print('Adding the category from clusters file...')
+    english_clusters_reader = pd.read_json('clusters_english.json',
+                                                    lines=True,
+                                                    orient='records',
+                                                    chunksize=1e6)
+    english_cluster_list = []
+    for i, chunk in enumerate(english_clusters_reader):
+        print(i)
+
+        another_chunk = chunk[['id', 'category', 'id_values']]\
+            .rename(columns={'id':'cluster_id'})\
+            .set_index('cluster_id')
+
+        english_cluster_list.append(another_chunk)
+
+    train_test_offers_df = train_test_offers_df\
+        .reset_index()\
+        .set_index('cluster_id', drop=False)\
+        .join(pd.concat(english_cluster_list, axis=0))\
+        .set_index('offer_id')
+
+    # Save df
+    print('Saving as CSV...')
+    train_test_offers_df.to_csv('train_test_offers_df.csv', index_label='offer_id')
+    # missingness plot
+    # sns.heatmap(train_test_offers_df[['brand', 'manufacturer']].isnull(), cbar=False)
 
 
-# create df for only the offers in the train and test sets
-train_test_offers_df = category_offers_df.join(train_test_offer_ids, how='inner')
-
-print(train_test_offers_df.describe(include='all'))
-print(train_test_offers_df.info(memory_usage=True))
 
 
+###########################################################
+if 'train_test_offer_specs.csv' in os.listdir():
+    train_test_offer_specs = reduce_mem_usage(pd.read_csv('train_test_offer_specs.csv'))
 
-train_test_df_details = train_test_df.set_index('offer_id_1')\
-    .join(train_test_offers_df.add_suffix('_1'), how='left')\
-    .reset_index()\
-    .set_index('offer_id_2')\
-    .join(train_test_offers_df.add_suffix('_2'), how='left')\
-    .sort_index(axis=1)\
-    .set_index('label')\
-    .sort_index(axis=0)\
-    .reset_index()\
-    .dropna(axis=1)#.drop(columns=['availability_1', 'availability_2'])
+else:
+    offer_specs_reader = pd.read_json('specTablesConsistent', lines=True, orient='records',
+                                      chunksize=1e6)
 
-print(train_test_df_details.describe(include='all'))
-print(train_test_df_details.info(memory_usage=True))
-count_nulls_by_column(train_test_df_details)
+    temp_df = unique_train_test_offer_ids\
+        .reset_index()
+
+    #unique_train_test_offer_urls = pd.DataFrame()
+    unique_train_test_offer_urls = temp_df.offer_id.str.split(' ', 1, expand=True)\
+        .rename(columns={1:'url'})\
+        .drop(0, axis=1)\
+        .set_index('url')
+
+    new_df_list = []
+    for i, chunk in enumerate(offer_specs_reader):
+        print(i)
+        # chunk = next(offer_specs_reader)
+
+        new_chunk = chunk.set_index('url')[['keyValuePairs']]\
+            .loc[chunk.keyValuePairs.str.len().values > 0, :]\
+            .join(unique_train_test_offer_urls, how='inner')
+
+        if len(new_chunk):
+            new_df = pd.concat([json_normalize(line) for line in new_chunk.keyValuePairs], sort=True)
+            new_df.index = new_chunk.index
+            new_df_list.append(new_df)
+
+    specs_df = pd.concat(new_df_list, sort=True)
+###################################################################
+#### Create the df for only the offers in train/test set ##########
+###################################################################
+# if file exists read it, otherwise create it
+
+if 'train_test_df_features.csv' in os.listdir():
+    train_test_df_features = reduce_mem_usage(pd.read_csv('train_test_df_features.csv'))
+
+else:
+    # join the offer details to the pair of offer ids
+    # and add suffixes to them
+    # move label column to 1st position
+    # drop completely null columns
+    train_test_df_features = train_test_df.set_index('offer_id_1', drop=False)\
+        .join(train_test_offers_df.add_suffix('_1'), how='left')\
+        .set_index('offer_id_2', drop=False)\
+        .join(train_test_offers_df.add_suffix('_2'), how='left')\
+        .sort_index(axis=1)\
+        .set_index('label')\
+        .reset_index()
+
+    train_test_df_features.to_csv('train_test_df_features.csv', index=False)
+
+    calculate_percent_nulls(train_test_df_features)
 
 
 
 
 
-    print(category_offers_df.info(memory_usage=True))
 
-
-
-
-
-    category_offers_df.head()
-
-    np.sum(category_offers_df.index.duplicated())
-    len(category_offers_df.index.unique())
-
-    print(df['brand'].dtype)
-    isinstance(df['brand'], object)
+#train_test_df_features.index
+        #.sort_index(axis=0)\
+# train_test_offers_df
+#
+#     # save the output
+#     print('Saving as CSV...')
+#     train_test_df_features.to_csv('train_test_df_features.csv')
+# os.getcwd()
+# print(train_test_df_features.describe(include='all'))
+# print(train_test_df_features.info(memory_usage='deep'))
+# calculate_percent_nulls(train_test_df_features)
+#
+# train_test_df_features.groupby(['filename', 'filename_1', 'filename_2']).size()
+#
+#
+#
+# if 'train_test_offers_df.csv' in os.listdir():
+#     train_test_offers_df = reduce_mem_usage(pd.read_csv('train_test_offers_df.csv',
+#                                                       index_col='offer_id'))
+#
+#
+# else:
+#     # From category_offers_df, select the train_test offers and drop completely empty colums
+#     train_test_offers_df = category_offers_df.join(train_test_offer_ids, how='inner')\
+#         .dropna(axis=1, how='all')\
+#         .drop_duplicates()
+#
+#     train_test_offers_df.loc[train_test_offers_df.index.duplicated(keep=False), :].sort_index(axis=0)
+#
+#     # save the output
+#     print('Saving as CSV...')
+#     train_test_offers_df.to_csv('train_test_offers_df.csv', index_label='offer_id')
+#
+# print(train_test_offers_df.describe(include='all'))
+# print(train_test_offers_df.info(memory_usage='deep'))
+# calculate_percent_nulls(train_test_offers_df)
 #######################################
 # Parse the remaining JSON in 3 columns
 #######################################

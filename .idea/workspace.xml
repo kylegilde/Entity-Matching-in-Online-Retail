@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f7d760b9-f4cb-4f2d-831d-97e304e88e4c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/feature-engineering" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/explore.py" beforeDir="false" afterPath="$PROJECT_DIR$/explore.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parse-json-to-dfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/parse-json-to-dfs.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,33 +20,36 @@
           <entry key="project.closed" value="4" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.13" value="1" />
+          <entry key="project.open.time.5" value="1" />
           <entry key="project.open.time.6" value="2" />
           <entry key="project.open.time.7" value="4" />
           <entry key="project.open.time.8" value="1" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="10" />
+          <entry key="project.opened" value="11" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="4" />
+          <entry key="feature-engineering" value="1" />
+          <entry key="py" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="3" />
+          <entry key="Python" value="5" />
           <entry key="Scratch" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="Python Console" value="894" />
-          <entry key="py" value="15437" />
+          <entry key="Python Console" value="978" />
+          <entry key="feature-engineering" value="101" />
+          <entry key="py" value="21187" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="16326" />
+          <entry key="Python" value="22261" />
           <entry key="Scratch" value="5" />
         </counts>
       </usages-collector>
@@ -54,22 +58,34 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/explore.py">
+        <entry file="file://$PROJECT_DIR$/parse-json-to-dfs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="462">
-              <caret line="379" lean-forward="true" selection-start-line="379" selection-end-line="379" />
+            <state relative-caret-position="172">
+              <caret line="453" column="16" lean-forward="true" selection-start-line="453" selection-start-column="16" selection-end-line="453" selection-end-column="16" />
               <folding>
-                <element signature="e#793#3700#0" />
-                <element signature="e#3855#4366#0" />
-                <element signature="e#4421#5131#0" />
-                <element signature="e#4470#5363#0" />
-                <element signature="e#5394#5713#0" />
-                <element signature="e#5753#6133#0" />
-                <element signature="e#6171#6665#0" />
-                <element signature="e#6695#6768#0" />
-                <element signature="e#6835#7293#0" />
-                <marker date="1550899266640" expanded="true" signature="7446:7525" ph="..." />
-                <marker date="1550899266640" expanded="false" signature="8081:8127" ph="..." />
+                <element signature="e#875#3782#0" />
+                <element signature="e#3888#4546#0" />
+                <element signature="e#4601#5323#0" />
+                <element signature="e#5428#6323#0" />
+                <element signature="e#6354#6673#0" />
+                <element signature="e#6713#7093#0" />
+                <element signature="e#7131#7625#0" />
+                <element signature="e#7655#7728#0" />
+                <element signature="e#7803#8261#0" />
+                <element signature="e#8307#8968#0" />
+                <element signature="e#9008#9093#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/feature-engineering">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="232">
+              <caret line="47" lean-forward="true" selection-start-line="47" selection-end-line="47" />
+              <folding>
+                <element signature="e#78#87#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -93,17 +109,24 @@
       <find>dropna().max())</find>
       <find>json_columns_df</find>
       <find>op</find>
-      <find>parse_json_column</find>
       <find>.dtype</find>
       <find>endswith</find>
       <find>column_prefix</find>
       <find>NA_list</find>
-      <find>price_column_names</find>
       <find>PRICE_COLUMN_NAMES</find>
+      <find>dropna</find>
+      <find>get_cluster_ids</find>
       <find>train_test_offers_df</find>
+      <find>price_column_names</find>
+      <find>to_csv</find>
+      <find>test-data</find>
+      <find>chdir</find>
+      <find>train_test_df_details</find>
+      <find>parse_json_column</find>
     </findStrings>
     <replaceStrings>
       <replace>df</replace>
+      <replace>train_test_df_features</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -115,13 +138,16 @@
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_5.py" />
         <option value="$PROJECT_DIR$/reduce_mem_usage.py" />
         <option value="$PROJECT_DIR$/explore.py" />
+        <option value="$PROJECT_DIR$/feature-engineering" />
+        <option value="$PROJECT_DIR$/parse-json-to-dfs.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="75" />
+    <option name="y" value="156" />
     <option name="width" value="1854" />
-    <option name="height" value="1032" />
+    <option name="height" value="627" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -144,7 +170,16 @@
   </component>
   <component name="PropertiesComponent">
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/.idea/workspace.xml" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/parse-json-to-dfs.py" />
+    <property name="settings.editor.selected.configurable" value="PyConsoleConfigurable.Python Console" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings module-name="Entity-Matching-in-Online-Retail" is-module-sdk="true">
+        <option name="myUseModuleSdk" value="true" />
+        <option name="myModuleName" value="Entity-Matching-in-Online-Retail" />
+      </console-settings>
+    </option>
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -170,7 +205,7 @@
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.0032388663" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.0031796503" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -179,8 +214,8 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info active="true" anchor="bottom" x="-1634" y="1" width="1239" height="813" id="Python Console" order="8" type="FLOATING" visible="true" weight="0.3285968" />
+      <window_info anchor="bottom" id="Version Control" order="7" visible="true" weight="0.0" />
+      <window_info active="true" anchor="bottom" x="-1631" y="2" width="1237" height="814" id="Python Console" order="8" type="FLOATING" visible="true" weight="0.3285968" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -217,22 +252,33 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/explore.py">
+    <entry file="file://$PROJECT_DIR$/explore.py" />
+    <entry file="file://$PROJECT_DIR$/feature-engineering">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
-          <caret line="379" lean-forward="true" selection-start-line="379" selection-end-line="379" />
+        <state relative-caret-position="232">
+          <caret line="47" lean-forward="true" selection-start-line="47" selection-end-line="47" />
           <folding>
-            <element signature="e#793#3700#0" />
-            <element signature="e#3855#4366#0" />
-            <element signature="e#4421#5131#0" />
-            <element signature="e#4470#5363#0" />
-            <element signature="e#5394#5713#0" />
-            <element signature="e#5753#6133#0" />
-            <element signature="e#6171#6665#0" />
-            <element signature="e#6695#6768#0" />
-            <element signature="e#6835#7293#0" />
-            <marker date="1550899266640" expanded="true" signature="7446:7525" ph="..." />
-            <marker date="1550899266640" expanded="false" signature="8081:8127" ph="..." />
+            <element signature="e#78#87#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/parse-json-to-dfs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="172">
+          <caret line="453" column="16" lean-forward="true" selection-start-line="453" selection-start-column="16" selection-end-line="453" selection-end-column="16" />
+          <folding>
+            <element signature="e#875#3782#0" />
+            <element signature="e#3888#4546#0" />
+            <element signature="e#4601#5323#0" />
+            <element signature="e#5428#6323#0" />
+            <element signature="e#6354#6673#0" />
+            <element signature="e#6713#7093#0" />
+            <element signature="e#7131#7625#0" />
+            <element signature="e#7655#7728#0" />
+            <element signature="e#7803#8261#0" />
+            <element signature="e#8307#8968#0" />
+            <element signature="e#9008#9093#0" />
           </folding>
         </state>
       </provider>
