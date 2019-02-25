@@ -308,9 +308,9 @@ print(len(unique_train_test_offer_ids))
 
 # if file exists read it, otherwise create it
 if 'train_test_offers_df.csv' in os.listdir():
-    category_offers_df = reduce_mem_usage(pd.read_csv('train_test_offers_df.csv',
+    train_test_offers_df = reduce_mem_usage(pd.read_csv('train_test_offers_df.csv',
                                                       index_col='offer_id'))
-    print(category_offers_df.info(memory_usage='deep'))
+    print(train_test_offers_df.info(memory_usage='deep'))
 else:
     start = datetime.now()
     # Read or Create the Cluster ID-Category Mappings
@@ -430,10 +430,11 @@ else:
     # sns.heatmap(train_test_offers_df[['brand', 'manufacturer']].isnull(), cbar=False)
 
 
-
+    train_test_offers_df.domain.value_counts()
+    train_test_offers_df.brand.value_counts()
 
 ###########################################################
-if 'train_test_offer_specs.csv' in os.listdir():
+if 'specs_df.csv' in os.listdir():
     train_test_offer_specs = reduce_mem_usage(pd.read_csv('train_test_offer_specs.csv'))
 
 else:
@@ -449,6 +450,8 @@ else:
         .drop(0, axis=1)\
         .set_index('url')
 
+    unique_train_test_offer_urls['offer_id'] = temp_df.offer_id.values
+
     new_df_list = []
     for i, chunk in enumerate(offer_specs_reader):
         print(i)
@@ -463,7 +466,14 @@ else:
             new_df.index = new_chunk.index
             new_df_list.append(new_df)
 
-    specs_df = pd.concat(new_df_list, sort=True)
+
+    specs_df = reduce_mem_usage(pd.concat(new_df_list, sort=True))
+    #specs_df.columns = pd.Series(specs_df.columns).apply(clean_text) #.str.replace('[^\x00-\x7F]','')
+
+    specs_df.info(memory_usage='deep')
+    # Save df
+    print('Saving as CSV...')
+    specs_df.to_csv('specs_df.csv', index_label='offer_id')
 ###################################################################
 #### Create the df for only the offers in train/test set ##########
 ###################################################################
