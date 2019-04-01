@@ -1,0 +1,31 @@
+---
+output: 
+  pdf_document:
+    keep_tex: true
+    fig_caption: true
+    latex_engine: pdflatex
+title: "Entity Matching for Online Marketplaces"
+subtitle: "Applying Text Embeddings & Machine Learning to Product Matching"
+
+author: | 
+        | Kyle Gilde
+        | Master of Science in Data Science
+        | City University of New York
+
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+
+abstract: "My abstract"
+keywords: "pandoc, r markdown, knitr"
+
+geometry: margin=1in     
+bibliography: bibliography.bib 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

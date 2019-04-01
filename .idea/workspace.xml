@@ -2,13 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f7d760b9-f4cb-4f2d-831d-97e304e88e4c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/feature-engineering.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/util_functions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Entity-Matching-in-Online-Retail.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Entity-Matching-in-Online-Retail.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/feature-engineering" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/feature-engineering.py" beforeDir="false" afterPath="$PROJECT_DIR$/feature-engineering.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parse-json-to-dfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/parse-json-to-dfs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util_functions.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -20,42 +20,42 @@
     <session id="-1193020893">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="4" />
+          <entry key="project.closed" value="6" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.12" value="1" />
           <entry key="project.open.time.13" value="1" />
           <entry key="project.open.time.5" value="1" />
           <entry key="project.open.time.6" value="2" />
-          <entry key="project.open.time.7" value="4" />
-          <entry key="project.open.time.8" value="1" />
-          <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="12" />
+          <entry key="project.open.time.7" value="5" />
+          <entry key="project.open.time.8" value="2" />
+          <entry key="project.open.time.9" value="2" />
+          <entry key="project.opened" value="15" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="feature-engineering" value="1" />
-          <entry key="py" value="9" />
+          <entry key="py" value="12" />
           <entry key="util_functions" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="10" />
+          <entry key="Python" value="13" />
           <entry key="Scratch" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="Python Console" value="1019" />
+          <entry key="Python Console" value="1048" />
           <entry key="feature-engineering" value="393" />
-          <entry key="py" value="24374" />
+          <entry key="py" value="24628" />
           <entry key="util_functions" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="25786" />
+          <entry key="Python" value="26069" />
           <entry key="Scratch" value="5" />
         </counts>
       </usages-collector>
@@ -63,11 +63,34 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/parse-json-to-dfs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="189">
-              <caret line="449" column="7" lean-forward="true" selection-start-line="449" selection-start-column="7" selection-end-line="449" selection-end-column="7" />
+            <state relative-caret-position="207">
+              <caret line="213" column="95" selection-start-line="213" selection-start-column="91" selection-end-line="213" selection-end-column="95" />
+              <folding>
+                <element signature="e#78#87#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/utility_functions.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="357">
+              <caret line="245" lean-forward="true" selection-start-line="245" selection-end-line="245" />
+              <folding>
+                <element signature="e#0#33#0" expanded="true" />
+                <element signature="e#63#2970#0" />
+                <element signature="e#3076#3734#0" />
+                <element signature="e#3789#4511#0" />
+                <element signature="e#4616#5511#0" />
+                <element signature="e#6319#6813#0" />
+                <element signature="e#6843#6916#0" />
+                <element signature="e#6991#7449#0" />
+                <element signature="e#7495#8156#0" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -75,21 +98,25 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/feature-engineering.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="329">
-              <caret line="215" lean-forward="true" selection-start-line="215" selection-end-line="215" />
+            <state relative-caret-position="-164">
+              <caret line="33" selection-start-line="33" selection-end-line="33" />
               <folding>
                 <element signature="e#78#87#0" expanded="true" />
-                <element signature="e#1187#1749#0" />
-                <element signature="e#5117#5364#0" />
-                <element signature="e#7185#7979#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/__init__.py">
-          <provider selected="true" editor-type-id="text-editor" />
+        <entry file="file://$PROJECT_DIR$/models.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="76">
+              <caret line="16" column="46" lean-forward="true" selection-start-line="16" selection-start-column="46" selection-end-line="16" selection-end-column="46" />
+              <folding>
+                <element signature="e#1#28#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
         </entry>
       </file>
     </leaf>
@@ -103,15 +130,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>timer</find>
-      <find>timeit</find>
-      <find>memory_usage</find>
-      <find>psutil</find>
-      <find>option</find>
-      <find>offers_df_list</find>
-      <find>is_int</find>
-      <find>dtype_changes</find>
-      <find>category_cluster_ids</find>
       <find>dropna().max())</find>
       <find>json_columns_df</find>
       <find>op</find>
@@ -133,6 +151,15 @@
       <find>domain</find>
       <find>offer_id</find>
       <find>distance_vectors_df</find>
+      <find>is_numeric_dtype</find>
+      <find>datetime</find>
+      <find>plt</find>
+      <find>train_test_df_features</find>
+      <find>json_normalize</find>
+      <find>is_string_dtype</find>
+      <find>parse_price_columns</find>
+      <find>urlparse</find>
+      <find>sort</find>
     </findStrings>
     <replaceStrings>
       <replace>df</replace>
@@ -149,25 +176,29 @@
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_5.py" />
         <option value="$PROJECT_DIR$/reduce_mem_usage.py" />
         <option value="$PROJECT_DIR$/explore.py" />
-        <option value="$PROJECT_DIR$/parse-json-to-dfs.py" />
         <option value="$PROJECT_DIR$/__init__.py" />
         <option value="$PROJECT_DIR$/util_functions" />
         <option value="$PROJECT_DIR$/feature-engineering" />
         <option value="$PROJECT_DIR$/util_functions.py" />
+        <option value="$PROJECT_DIR$/old-code.py" />
+        <option value="$PROJECT_DIR$/models.py" />
         <option value="$PROJECT_DIR$/feature-engineering.py" />
+        <option value="$PROJECT_DIR$/parse-json-to-dfs.py" />
+        <option value="$PROJECT_DIR$/utility_functions.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="273" />
-    <option name="width" value="1649" />
-    <option name="height" value="1031" />
+    <option name="x" value="-1930" />
+    <option name="width" value="1575" />
+    <option name="height" value="1039" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Course" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -179,13 +210,12 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Course" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/parse-json-to-dfs.py" />
-    <property name="settings.editor.selected.configurable" value="PyConsoleConfigurable.Python Console" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/utility_functions.py" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -216,10 +246,27 @@
     <configuration />
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="0" width="1099" height="687" extended-state="0" />
+    <frame x="-1928" y="0" width="1260" height="831" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.0037664783" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.0024529845" />
+      <window_info id="Structure" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.3285968" />
+      <window_info active="true" anchor="bottom" x="-1911" y="30" width="861" height="786" id="Python Console" order="8" type="WINDOWED" visible="true" weight="0.3285968" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" x="0" y="0" width="547" height="495" id="Documentation" order="3" visible="true" weight="0.0" />
+    </layout>
+    <layout-to-restore>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.0028632784" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -234,7 +281,7 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" x="0" y="0" width="547" height="495" id="Documentation" order="3" visible="true" weight="0.0" />
-    </layout>
+    </layout-to-restore>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
@@ -269,9 +316,6 @@
     <entry file="file://$PROJECT_DIR$/explore.py" />
     <entry file="file://$PROJECT_DIR$/util_functions" />
     <entry file="file://$PROJECT_DIR$/feature-engineering" />
-    <entry file="file://$PROJECT_DIR$/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/util_functions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="63">
@@ -286,23 +330,61 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/feature-engineering.py">
+    <entry file="file://$PROJECT_DIR$/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/old-code.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="329">
-          <caret line="215" lean-forward="true" selection-start-line="215" selection-end-line="215" />
+        <state relative-caret-position="59">
+          <caret line="164" lean-forward="true" selection-end-line="193" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="16" column="46" lean-forward="true" selection-start-line="16" selection-start-column="46" selection-end-line="16" selection-end-column="46" />
           <folding>
-            <element signature="e#78#87#0" expanded="true" />
-            <element signature="e#1187#1749#0" />
-            <element signature="e#5117#5364#0" />
-            <element signature="e#7185#7979#0" />
+            <element signature="e#1#28#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/parse-json-to-dfs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="449" column="7" lean-forward="true" selection-start-line="449" selection-start-column="7" selection-end-line="449" selection-end-column="7" />
+        <state relative-caret-position="207">
+          <caret line="213" column="95" selection-start-line="213" selection-start-column="91" selection-end-line="213" selection-end-column="95" />
+          <folding>
+            <element signature="e#78#87#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/feature-engineering.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-164">
+          <caret line="33" selection-start-line="33" selection-end-line="33" />
+          <folding>
+            <element signature="e#78#87#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utility_functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="245" lean-forward="true" selection-start-line="245" selection-end-line="245" />
+          <folding>
+            <element signature="e#0#33#0" expanded="true" />
+            <element signature="e#63#2970#0" />
+            <element signature="e#3076#3734#0" />
+            <element signature="e#3789#4511#0" />
+            <element signature="e#4616#5511#0" />
+            <element signature="e#6319#6813#0" />
+            <element signature="e#6843#6916#0" />
+            <element signature="e#6991#7449#0" />
+            <element signature="e#7495#8156#0" />
+          </folding>
         </state>
       </provider>
     </entry>
