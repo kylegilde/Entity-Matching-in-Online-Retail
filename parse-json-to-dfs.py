@@ -39,9 +39,13 @@ train_df.filename.value_counts().plot.bar()
 
 train_test_df = pd.concat([train_df, test_df], axis=0)
 print(train_test_df.info())
+train_test_df = create_file_categories(train_test_df)
+train_test_df.to_csv('train_test_df.csv')
 
 train_test_offer_ids = rbind_train_test_offers(train_df, test_df)
 print(train_test_offer_ids.info())
+
+
 
 unique_train_test_offer_ids = pd.DataFrame({'offer_id' : train_test_offer_ids.index.unique()}).set_index('offer_id')
 print(len(unique_train_test_offer_ids))
@@ -169,13 +173,16 @@ else:
         .join(pd.concat(english_cluster_list, axis=0))\
         .set_index('offer_id')
 
+    #
+    train_test_offers_df = create_file_categories[train_test_offers_df]
+
     # Save df
     print('Saving as CSV...')
     train_test_offers_df.to_csv('train_test_offers_df.csv', index_label='offer_id')
     # missingness plot
     # sns.heatmap(train_test_offers_df[['brand', 'manufacturer']].isnull(), cbar=False)
 
-
+    calculate_percent_nulls(train_test_offers_df)
     train_test_offers_df.domain.value_counts()
     train_test_offers_df.brand.value_counts()
 
@@ -184,7 +191,8 @@ else:
 ####################################################################
 
 if 'specs_df.csv' in os.listdir():
-    train_test_offer_specs = reduce_mem_usage(pd.read_csv('train_test_offer_specs.csv'))
+    train_test_offer_specs = reduce_mem_usage(pd.read_csv('specs_df.csv'))
+    calculate_percent_nulls(train_test_offer_specs)
 
 else:
     offer_specs_reader = pd.read_json('specTablesConsistent', lines=True, orient='records',
@@ -193,7 +201,6 @@ else:
     temp_df = unique_train_test_offer_ids\
         .reset_index()
 
-    #unique_train_test_offer_urls = pd.DataFrame()
     unique_train_test_offer_urls = temp_df.offer_id.str.split(' ', 1, expand=True)\
         .rename(columns={1:'url'})\
         .drop(0, axis=1)\
@@ -227,8 +234,8 @@ else:
 ###################################################################
 #### Create the df for only the offers in train/test set ##########
 ###################################################################
-# if file exists read it, otherwise create it
 
+# if file exists read it, otherwise create it
 if 'train_test_df_features.csv' in os.listdir():
     train_test_df_features = reduce_mem_usage(pd.read_csv('train_test_df_features.csv'))
 

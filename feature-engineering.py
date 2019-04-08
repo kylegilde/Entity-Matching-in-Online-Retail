@@ -5,33 +5,21 @@ Created on Feb 23, 2019
 """
 import os
 import sys
-import gc
 from datetime import datetime
 
 from urllib.parse import urlparse
 import re
 import string
 
-import sys
 import numpy as np
 import pandas as pd
-from pandas.io.json import json_normalize
-from pandas.api.types import is_numeric_dtype, is_string_dtype
-
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 from utility_functions import *
 
-import json
-import psutil
-import multiprocessing as mp
 from sklearn.decomposition import PCA, TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-
-
-
-
 
 # initialize constants
 DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
@@ -80,14 +68,17 @@ if 'train_test_df_features.csv' in os.listdir():
     features_regex_1, features_regex_2 = r'(' + '|'.join(comparison_features) + ')_1',\
                                          r'(' + '|'.join(comparison_features) + ')_2'
 
+
     features_1 = train_test_df_features.columns[train_test_df_features.columns.str.match(features_regex_1)]
     features_2 = train_test_df_features.columns[train_test_df_features.columns.str.match(features_regex_2)]
 
     feature_dtypes = train_test_df_features.dtypes.astype('str')[train_test_df_features.columns.str.match(features_regex_1)]
 
     distance_vector_features = pd.DataFrame()
+
     for feature_dtype, comparison_feature, feature_1, feature_2 in zip(feature_dtypes, comparison_features, features_1, features_2):
         print(feature_dtype, comparison_feature, feature_1, feature_2)
+
         if comparison_feature in large_text_features and comparison_feature not in distance_vector_features.columns:
             # comparison_feature, feature_1, feature_2 = 'name', 'name_1', 'name_2'
             # comparison_feature, feature_1, feature_2 = 'description', 'description_1', 'description_2'

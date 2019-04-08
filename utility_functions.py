@@ -1,3 +1,5 @@
+
+import os
 from urllib.parse import urlparse
 import numpy as np
 import pandas as pd
@@ -73,6 +75,7 @@ def reduce_mem_usage(df, n_unique_object_threshold=0.30):
     print("------------------------------------")
     return df
 
+# functions for reading the test and train offer pairs
 
 def read_train_test_files(file_dir, sep='#####', col_names=['offer_id_1', 'offer_id_2', 'label']):
     """
@@ -118,6 +121,7 @@ def rbind_train_test_offers(train_df, test_df):
 
     return train_test_offer_ids
 
+# functions for parsing the massive json file
 
 def get_cluster_ids(json_file='D:/Documents/Large-Scale Product Matching/clusters_english.json'):
     """
@@ -244,12 +248,39 @@ def coalesce_parent_child_columns(df):
     return df
 
 
-def calculate_percent_nulls(df):
+def create_file_categories(df):
+    """
+    Creates a df column for the test and train category
+
+    :param df: the df containing a column called filename
+    :return: the df with a column called file_category
+    """
+    if 'filename' in df.columns:
+
+        file_categories = ['computers', 'cameras', 'watches', 'shoes']
+
+        for file_category in file_categories:
+            df.loc[df['filename'].str.contains(file_category), 'file_category'] = file_category
+
+        return df
+    else:
+        print('The df does not have a column called filename')
+
+
+# diagnostic functions
+
+def calculate_percent_nulls(df, print_series=True, return_series=False):
     """
 
     :param df:
     :return:
     """
     percentages = df.isnull().sum() / len(df) * 100
+    percentages_sorted = percentages.sort_values(ascending=False)
+    
+    if print_series:
+        print(percentages_sorted)
 
-    print(percentages.sort_values(ascending=False))
+    if return_series:
+        return(percentages_sorted)
+
