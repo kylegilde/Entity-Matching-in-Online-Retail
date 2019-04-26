@@ -11,7 +11,7 @@ import pandas as pd
 from pandas.io.json import json_normalize
 
 import matplotlib.pyplot as plt
-from utility_functions import *
+from json_parsing_functions import *
 
 # Initialize some constants
 TRAIN_TEST_CATEGORIES = ['Computers_and_Accessories', 'Camera_and_Photo', 'Shoes', 'Jewelry']
@@ -45,8 +45,6 @@ train_test_df.to_csv('train_test_df.csv')
 train_test_offer_ids = rbind_train_test_offers(train_df, test_df)
 print(train_test_offer_ids.info())
 
-
-
 unique_train_test_offer_ids = pd.DataFrame({'offer_id' : train_test_offer_ids.index.unique()}).set_index('offer_id')
 print(len(unique_train_test_offer_ids))
 
@@ -56,10 +54,10 @@ print(len(unique_train_test_offer_ids))
 ####################################################################
 
 # if file exists read it, otherwise create it
-if 'train_test_offers_df.csv' in os.listdir():
-    train_test_offers_df = reduce_mem_usage(pd.read_csv('train_test_offers_df.csv',
+if 'train_test_offer_features.csv' in os.listdir():
+    train_test_offer_features = reduce_mem_usage(pd.read_csv('train_test_offer_features.csv',
                                                       index_col='offer_id'))
-    print(train_test_offers_df.info(memory_usage='deep'))
+    print(train_test_offer_features.info(memory_usage='deep'))
 else:
     start = datetime.now()
     # Read or Create the Cluster ID-Category Mappings
@@ -139,15 +137,15 @@ else:
 
     # Combine all the offers & save the output
     print('Saving as CSV...')
-    train_test_offers_df = reduce_mem_usage(pd.concat(offers_df_list, axis=0)\
+    train_test_offer_features = reduce_mem_usage(pd.concat(offers_df_list, axis=0)\
                                           .drop(more_cols_to_drop, axis=1)\
                                           .dropna(axis=1, how='all'))
 
-    train_test_offers_df.to_csv('train_test_offers_df.csv', index_label='offer_id')
+    train_test_offer_features.to_csv('train_test_offer_features.csv', index_label='offer_id')
 
-    print(train_test_offers_df.describe(include='all'))
-    print(train_test_offers_df.info(memory_usage='deep'))
-    calculate_percent_nulls(train_test_offers_df)
+    print(train_test_offer_features.describe(include='all'))
+    print(train_test_offer_features.info(memory_usage='deep'))
+    calculate_percent_nulls(train_test_offer_features)
 
     ################################
     # Add the Category Attribute
@@ -167,94 +165,51 @@ else:
 
         english_cluster_list.append(another_chunk)
 
-    train_test_offers_df = train_test_offers_df\
+    train_test_offer_features = train_test_offer_features\
         .reset_index()\
         .set_index('cluster_id', drop=False)\
         .join(pd.concat(english_cluster_list, axis=0))\
         .set_index('offer_id')
 
     #
-    train_test_offers_df = create_file_categories[train_test_offers_df]
+    train_test_offer_features = create_file_categories[train_test_offer_features]
 
     # Save df
     print('Saving as CSV...')
-    train_test_offers_df.to_csv('train_test_offers_df.csv', index_label='offer_id')
+    train_test_offer_features.to_csv('train_test_offer_features.csv', index_label='offer_id')
     # missingness plot
-    # sns.heatmap(train_test_offers_df[['brand', 'manufacturer']].isnull(), cbar=False)
+    # sns.heatmap(train_test_offer_features[['brand', 'manufacturer']].isnull(), cbar=False)
 
-    calculate_percent_nulls(train_test_offers_df)
-    train_test_offers_df.domain.value_counts()
-    train_test_offers_df.brand.value_counts()
-
-####################################################################
-####################### create the specs df ########################
-####################################################################
-
-if 'specs_df.csv' in os.listdir():
-    train_test_offer_specs = reduce_mem_usage(pd.read_csv('specs_df.csv'))
-    calculate_percent_nulls(train_test_offer_specs)
-
-else:
-    offer_specs_reader = pd.read_json('specTablesConsistent', lines=True, orient='records',
-                                      chunksize=1e6)
-
-    temp_df = unique_train_test_offer_ids\
-        .reset_index()
-
-    unique_train_test_offer_urls = temp_df.offer_id.str.split(' ', 1, expand=True)\
-        .rename(columns={1:'url'})\
-        .drop(0, axis=1)\
-        .set_index('url')
-
-    unique_train_test_offer_urls['offer_id'] = temp_df.offer_id.values
-
-    new_df_list = []
-    for i, chunk in enumerate(offer_specs_reader):
-        print(i)
-        # chunk = next(offer_specs_reader)
-
-        new_chunk = chunk.set_index('url')[['keyValuePairs']]\
-            .loc[chunk.keyValuePairs.str.len().values > 0, :]\
-            .join(unique_train_test_offer_urls, how='inner')
-
-        if len(new_chunk):
-            new_df = pd.concat([json_normalize(line) for line in new_chunk.keyValuePairs], sort=True)
-            new_df.index = new_chunk.index
-            new_df_list.append(new_df)
+    calculate_percent_nulls(train_test_offer_features)
+    train_test_offer_features.domain.value_counts()
+    train_test_offer_features.brand.value_counts()
 
 
-    specs_df = reduce_mem_usage(pd.concat(new_df_list, sort=True))
-    #specs_df.columns = pd.Series(specs_df.columns).apply(clean_text) #.str.replace('[^\x00-\x7F]','')
-
-    specs_df.info(memory_usage='deep')
-    # Save df
-    print('Saving as CSV...')
-    specs_df.to_csv('specs_df.csv', index_label='offer_id')
 
 ###################################################################
 #### Create the df for only the offers in train/test set ##########
 ###################################################################
 
 # if file exists read it, otherwise create it
-if 'train_test_df_features.csv' in os.listdir():
-    train_test_df_features = reduce_mem_usage(pd.read_csv('train_test_df_features.csv'))
+if 'train_test_feature_pairs.csv' in os.listdir():
+    train_test_feature_pairs = reduce_mem_usage(pd.read_csv('train_test_feature_pairs.csv'))
 
 else:
     # join the offer details to the pair of offer ids
     # and add suffixes to them
     # move label column to 1st position
     # drop completely null columns
-    train_test_df_features = train_test_df.set_index('offer_id_1', drop=False)\
-        .join(train_test_offers_df.add_suffix('_1'), how='left')\
+    train_test_feature_pairs = train_test_df.set_index('offer_id_1', drop=False)\
+        .join(train_test_offer_features.add_suffix('_1'), how='left')\
         .set_index('offer_id_2', drop=False)\
-        .join(train_test_offers_df.add_suffix('_2'), how='left')\
+        .join(train_test_offer_features.add_suffix('_2'), how='left')\
         .sort_index(axis=1)\
         .set_index('label')\
         .reset_index()
 
-    train_test_df_features.to_csv('train_test_df_features.csv', index=False)
+    train_test_feature_pairs.to_csv('train_test_feature_pairs.csv', index=False)
 
-    calculate_percent_nulls(train_test_df_features)
+    calculate_percent_nulls(train_test_feature_pairs)
 
 
 

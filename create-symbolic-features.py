@@ -16,7 +16,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from utility_functions import *
+from json_parsing_functions import *
 
 from sklearn.decomposition import PCA, TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
@@ -26,30 +26,15 @@ DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
 os.chdir(DATA_DIRECTORY)
 MAX_SVD_COMPONENTS = 3000
 N_ROWS_PER_ITERATION = 2000
-comparison_features = ['brand', 'category', 'description', 'gtin', 'identifier', 'manufacturer',
+FEATURES_TO_COMPARE = ['brand', 'category', 'description', 'gtin', 'identifier', 'manufacturer',
                        'mpn', 'name', 'price', 'productID', 'sku']
-large_text_features = ['name', 'description']
 
+large_text_features = ['name', 'description']
 
 # set display options
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 500)
-
-# user-defined functions
-def pairwise_cosine_dist_between_matrices(a, b):
-    """
-
-    :param a:
-    :param b:
-    :return:
-    """
-    cosine_matrix = np.dot(a, b.T) / \
-                    np.dot(np.sqrt(np.dot(a, a.T).diagonal()),
-                           np.sqrt(np.dot(b, b.T).diagonal()).T)
-    # the truncated SVD creates some slightly negative values in the calculation
-    # change these to zero
-    return pd.Series(np.maximum(cosine_matrix.diagonal(), 0))
 
 # load
 if 'train_test_df_features.csv' in os.listdir():
@@ -65,8 +50,8 @@ if 'train_test_df_features.csv' in os.listdir():
     train_labels, test_labels = all_labels[train_indices], all_labels[test_indices]
 
     # create feature variables
-    features_regex_1, features_regex_2 = r'(' + '|'.join(comparison_features) + ')_1',\
-                                         r'(' + '|'.join(comparison_features) + ')_2'
+    features_regex_1, features_regex_2 = r'(' + '|'.join(FEATURES_TO_COMPARE) + ')_1',\
+                                         r'(' + '|'.join(FEATURES_TO_COMPARE) + ')_2'
 
 
     features_1 = train_test_df_features.columns[train_test_df_features.columns.str.match(features_regex_1)]
@@ -76,7 +61,8 @@ if 'train_test_df_features.csv' in os.listdir():
 
     distance_vector_features = pd.DataFrame()
 
-    for feature_dtype, comparison_feature, feature_1, feature_2 in zip(feature_dtypes, comparison_features, features_1, features_2):
+
+    for feature_dtype, comparison_feature, feature_1, feature_2 in zip(feature_dtypes, FEATURES_TO_COMPARE, features_1, features_2):
         print(feature_dtype, comparison_feature, feature_1, feature_2)
 
         if comparison_feature in large_text_features and comparison_feature not in distance_vector_features.columns:
