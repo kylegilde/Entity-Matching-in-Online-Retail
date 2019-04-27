@@ -4,9 +4,7 @@
     <list default="true" id="f7d760b9-f4cb-4f2d-831d-97e304e88e4c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create-symbolic-features.py" beforeDir="false" afterPath="$PROJECT_DIR$/create-symbolic-features.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parse-json-to-dfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/parse-json-to-dfs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create-symbolic-similarity-features.py" beforeDir="false" afterPath="$PROJECT_DIR$/create-symbolic-similarity-features.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,8 +17,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/create-symbolic-features.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="302">
-              <caret line="109" column="36" selection-start-line="109" selection-start-column="36" selection-end-line="109" selection-end-column="36" />
+            <state relative-caret-position="1617">
+              <caret line="77" selection-start-line="77" selection-end-line="81" />
               <folding>
                 <element signature="e#78#87#0" expanded="true" />
               </folding>
@@ -31,8 +29,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/create-symbolic-similarity-features.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="168">
-              <caret line="80" column="12" selection-start-line="80" selection-start-column="12" selection-end-line="80" selection-end-column="12" />
+            <state relative-caret-position="-1176">
+              <caret line="20" lean-forward="true" selection-start-line="20" selection-end-line="20" />
+              <folding>
+                <element signature="e#1220#1422#0" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -40,8 +41,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
-              <caret line="22" selection-start-line="22" selection-end-line="23" selection-end-column="49" />
+            <state relative-caret-position="165">
+              <caret line="23" column="49" lean-forward="true" selection-start-line="23" selection-start-column="49" selection-end-line="23" selection-end-column="49" />
               <folding>
                 <element signature="e#1#28#0" expanded="true" />
               </folding>
@@ -50,9 +51,18 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_6.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="407">
+              <caret line="39" column="50" selection-start-line="39" selection-start-column="47" selection-end-line="39" selection-end-column="50" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/parse-json-to-dfs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1317">
+            <state relative-caret-position="1415">
               <caret line="128" column="63" selection-start-line="128" selection-start-column="57" selection-end-line="128" selection-end-column="63" />
             </state>
           </provider>
@@ -69,7 +79,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>domain</find>
       <find>offer_id</find>
       <find>distance_vectors_df</find>
       <find>is_numeric_dtype</find>
@@ -99,6 +108,7 @@
       <find>train_test_df</find>
       <find>comparison_feature</find>
       <find>concat</find>
+      <find>string</find>
     </findStrings>
     <replaceStrings>
       <replace>df</replace>
@@ -130,6 +140,7 @@
         <option value="$PROJECT_DIR$/create-symbolic-features.py" />
         <option value="$PROJECT_DIR$/parse-json-to-dfs.py" />
         <option value="$PROJECT_DIR$/models.py" />
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_6.py" />
         <option value="$PROJECT_DIR$/create-symbolic-similarity-features.py" />
       </list>
     </option>
@@ -196,7 +207,7 @@
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.024642289" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.025101215" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -206,7 +217,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32857144" />
-      <window_info active="true" anchor="bottom" x="-1812" y="30" width="1416" height="793" id="Python Console" order="8" type="WINDOWED" visible="true" weight="0.3285968" />
+      <window_info active="true" anchor="bottom" x="-1613" y="30" width="1217" height="793" id="Python Console" order="8" type="WINDOWED" visible="true" weight="0.3285968" />
       <window_info anchor="bottom" id="Educational.CheckDetails" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -291,10 +302,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_6.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="407">
+          <caret line="39" column="50" selection-start-line="39" selection-start-column="47" selection-end-line="39" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/create-symbolic-features.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
-          <caret line="109" column="36" selection-start-line="109" selection-start-column="36" selection-end-line="109" selection-end-column="36" />
+        <state relative-caret-position="1617">
+          <caret line="77" selection-start-line="77" selection-end-line="81" />
           <folding>
             <element signature="e#78#87#0" expanded="true" />
           </folding>
@@ -303,8 +321,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="22" selection-start-line="22" selection-end-line="23" selection-end-column="49" />
+        <state relative-caret-position="165">
+          <caret line="23" column="49" lean-forward="true" selection-start-line="23" selection-start-column="49" selection-end-line="23" selection-end-column="49" />
           <folding>
             <element signature="e#1#28#0" expanded="true" />
           </folding>
@@ -313,15 +331,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/parse-json-to-dfs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1317">
+        <state relative-caret-position="1415">
           <caret line="128" column="63" selection-start-line="128" selection-start-column="57" selection-end-line="128" selection-end-column="63" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/create-symbolic-similarity-features.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="80" column="12" selection-start-line="80" selection-start-column="12" selection-end-line="80" selection-end-column="12" />
+        <state relative-caret-position="-1176">
+          <caret line="20" lean-forward="true" selection-start-line="20" selection-end-line="20" />
+          <folding>
+            <element signature="e#1220#1422#0" />
+          </folding>
         </state>
       </provider>
     </entry>

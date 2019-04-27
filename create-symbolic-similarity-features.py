@@ -10,7 +10,7 @@ from datetime import datetime
 
 from urllib.parse import urlparse
 import re
-import string
+import nltk
 
 import numpy as np
 import pandas as pd
@@ -19,8 +19,23 @@ import seaborn as sns
 
 from json_parsing_functions import *
 
-from sklearn.decomposition import PCA, TruncatedSVD
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+from sklearn.decomposition import TruncatedSVD
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+def levenshtein_similarity(df_row):
+    """
+    https://stackoverflow.com/questions/13331698/how-to-apply-a-function-to-two-columns-of-pandas-dataframe/13337376
+    :param s1:
+    :param s2:
+    :return:
+    """
+
+    str1, str2 = df_row[0], df_row[1]
+
+    if pd.isnull(str1) or pd.isnull(str2):
+        return 0
+    else:
+        return 1 - nltk.edit_distance(str1, str2) / max(len(str1), len(str2))
 
 # initialize constants
 DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
@@ -35,30 +50,16 @@ LONG_TEXT_FEATURES = ['description']
 STRONGLY_TYPED_FEATURES = ['category']
 NUMERIC_FEATURE = ['price']
 
-def levenshtein_similarity(str1, str2):
-    """
-
-    :param s1:
-    :param s2:
-    :return:
-    """
-    if pd.isnull(str1) or pd.isnull(str2):
-        return 0
-    else:
-        return nltk.edit_distance(str1, str2) / np.max(len(str1), len(str2))
-
-
+ALL_FEATURES = ALL_SHORT_TEXT_FEATURES + LONG_TEXT_FEATURES + STRONGLY_TYPED_FEATURES + NUMERIC_FEATURE
 
 
 # load files
 if 'train_test_stemmed_features.csv' in os.listdir() \
-        and 'train_test_feature_pairs.csv' in os.listdir()\
         and 'train_test_df.csv' in os.listdir():
 
     train_test_stemmed_features = reduce_mem_usage(pd.read_csv('train_test_stemmed_features.csv'))\
         .set_index('offer_id')
 
-    train_test_feature_pairs = reduce_mem_usage(pd.read_csv('train_test_feature_pairs.csv'))
     train_test_df = reduce_mem_usage(pd.read_csv('train_test_df.csv'))
 
     left_side_offer_ids, right_side_offer_ids = train_test_df[['offer_id_1']].set_index('offer_id_1'),\
@@ -67,34 +68,35 @@ if 'train_test_stemmed_features.csv' in os.listdir() \
     left_side_features, right_side_features = train_test_stemmed_features.join(left_side_offer_ids, how='inner').reset_index(drop=True),\
                                               train_test_stemmed_features.join(right_side_offer_ids, how='inner').reset_index(drop=True)
 
-    print(train_test_stemmed_features.info(memory_usage='deep'))
+    symbolic_similarity_features = pd.DataFrame(columns=left_side_features.columns)
 
-    symbolic_similarity_features = pd.DataFrame()
+    for column in ALL_FEATURES:
 
-    for column in left_side_offer_ids.columns:
+        both_features = left_side_features[[column]].join(right_side_features[[column]],
+                                                  lsuffix="_1",
+                                                  rsuffix="_2")
+
         if column in ALL_SHORT_TEXT_FEATURES:
-            # column = 'brand
-            both_features = pd.concat([left_side_features[[column]], right_side_features[[column]]],\
-                                      axis=1)
+            # column = 'brand'
 
-            both_features = pd.join([left_side_features[column], right_side_features[column])
-            
-            both_features.info()
-            symbolic_similarity_features[column] = both_features\
-                .apply(lambda df: levenshtein_similarity(df.iloc[:, 0], df.iloc[:, 1]))
 
-        both_features.iloc[:, 1]
+
+            symbolic_similarity_features[column] = both_features.apply(levenshtein_similarity, axis=1)
+
+
         elif column in LONG_TEXT_FEATURES:
-            # column, feature_1, feature_2 = 'name', 'name_1', 'name_2'
-            # column, feature_1, feature_2 = 'description', 'description_1', 'description_2'
+
+            column = 'description'
             vectorizer = TfidfVectorizer(ngram_range=(1, 3))
 
             n_rows = len(train_test_feature_pairs)
-            text_data = pd.concat([train_test_feature_pairs[feature_1], train_test_feature_pairs[feature_2]]).fillna('')
-            dtm = vectorizer.fit_transform(text_data)
 
-            print(dtm.shape)
-            n_retained_components = min(dtm.shape[1] - 1, MAX_SVD_COMPONENTS)
+            all_docs = np.stack(both_features)
+
+            dtm = vectorizer.fit_transform(train_test_stemmed_features[column].fillna(''))
+
+            # print(dtm.shape)
+            # n_retained_components = min(dtm.shape[1] - 1, MAX_SVD_COMPONENTS)
             # SVD model
             svd_model = TruncatedSVD(n_components=n_retained_components).fit(dtm)
             print(svd_model.explained_variance_ratio_.sum(), 'variance explained')
@@ -120,14 +122,27 @@ if 'train_test_stemmed_features.csv' in os.listdir() \
                 distances_list.append(i_cosines)
 
             symbolic_similarity_features[column] = pd.concat(distances_list, ignore_index=True)
-        elif column not in symbolic_similarity_features.columns:
-            symbolic_similarity_features[column] = pd.Series(train_test_feature_pairs[feature_1].astype('object')\
-                                                                     == train_test_feature_pairs[feature_2].astype('object')).astype('int8')
+
+        elif column in STRONGLY_TYPED_FEATURES:
+
+            symbolic_similarity_features[column] = pd.Series(both_features.iloc[:, 0] == both_features.iloc[:, 0]).astype('int8')
+
+        elif column in NUMERIC_FEATURE:
+
+            symbolic_similarity_features[column] = \
+                np.nan_to_num(np.absolute(both_features.iloc[:, 0] - both_features.iloc[:, 1]) / \
+                              np.maximum(both_features.iloc[:, 0], both_features.iloc[:, 1]))
+
+
+
+
 
     symbolic_similarity_features.info(memory_usage='deep')
 
 
 
+else:
+    print("some input files not found")
 
 
     # create feature variables
@@ -141,3 +156,7 @@ if 'train_test_stemmed_features.csv' in os.listdir() \
     # feature_dtypes = train_test_feature_pairs.dtypes.astype('str')[train_test_feature_pairs.columns.str.match(features_regex_1)]
     # for feature_dtype, column, feature_1, feature_2 in zip(feature_dtypes, COLUMNS_TO_NORMALIZE, features_1, features_2):
     #     print(feature_dtype, column, feature_1, feature_2)
+
+
+# and 'train_test_feature_pairs.csv' in os.listdir()\
+# train_test_feature_pairs = reduce_mem_usage(pd.read_csv('train_test_feature_pairs.csv'))
