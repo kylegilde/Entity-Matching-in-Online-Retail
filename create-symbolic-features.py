@@ -1,26 +1,25 @@
 # !/usr/bin/env/python365
 """
-Created on Feb 23, 2019
+Created on Apr 23, 2019
 @author: Kyle Gilde
+
+This script ingests the train_test_feature_pairs.csv created by parse-json-to-dfs.py
+and does the following:
+    - Removes non-alphanumeric/space characters from all text columns
+        and creates the train_test_normalized_features.csv to be used to
+        create the semantic features
+    - Stems the name and description fields and creates the train_test_stemmed_features.csv
+
 """
 import os
-import sys
-from datetime import datetime
-
-from urllib.parse import urlparse
-import re
-import string
 
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 from json_parsing_functions import *
 
 import nltk
 from nltk.corpus import stopwords
-sb_stemmer = nltk.stem.SnowballStemmer('english')
 
 
 def clean_text(series):
@@ -74,11 +73,13 @@ NUMERIC_FEATURE = ['price']
 
 ALL_FEATURES = ALL_TEXT_FEATURES + STRONGLY_TYPED_FEATURES + NUMERIC_FEATURE
 
+sb_stemmer = nltk.stem.SnowballStemmer('english')
+
 # set display options
-pd.set_option('display.max_rows', 500)
-pd.set_option('display.max_columns', 500)
-pd.set_option('display.width', 500)
-pd.set_option('display.max_colwidth', 0)
+# pd.set_option('display.max_rows', 500)
+# pd.set_option('display.max_columns', 500)
+# pd.set_option('display.width', 500)
+# pd.set_option('display.max_colwidth', 0)
 
 # load parsed features
 if 'train_test_feature_pairs.csv' in os.listdir():
