@@ -179,7 +179,7 @@ else:
 #             for i in range(1, n_loops + 1):
 #                 # i = 1
 #                 print(i)
-#                 mn, mx = (i - 1) * N_ROWS_PER_ITERATION, i * N_ROWS_PER_ITERATION
+[ycharm]
 #                 i_cosines = pairwise_cosine_dist_between_matrices(svd_dtm_1[mn:mx, ], svd_dtm_2[mn:mx, ])
 #                 distances_list.append(i_cosines)
 #

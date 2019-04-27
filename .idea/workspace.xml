@@ -2,27 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f7d760b9-f4cb-4f2d-831d-97e304e88e4c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Entity Matching for Online Marketplaces.Rmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Entity_Matching_for_Online_Marketplaces.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Entity_Matching_for_Online_Marketplaces.tex" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bibliography.bib" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/create-symbolic-features.py" beforeDir="false" afterPath="$PROJECT_DIR$/create-symbolic-features.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/create-symbolic-similarity-features.py" beforeDir="false" afterPath="$PROJECT_DIR$/create-symbolic-similarity-features.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/old-code.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/domains.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/feature_sparsity.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/name_description_tokens.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/table_1_matched_offer_pairs.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/test_characteristics.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/test_train_characteristics.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r-references.bib" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/reduce_mem_usage.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/some_file.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/table_1_matched_offer_pairs.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_rmd.tex" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -32,11 +13,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/create-symbolic-features.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
-              <caret line="81" column="42" lean-forward="true" selection-start-line="81" selection-start-column="42" selection-end-line="81" selection-end-column="42" />
+            <state relative-caret-position="-84">
+              <caret line="56" column="19" selection-start-line="56" selection-start-column="19" selection-end-line="56" selection-end-column="19" />
               <folding>
                 <element signature="e#78#87#0" expanded="true" />
               </folding>
@@ -44,14 +25,23 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/create-symbolic-similarity-features.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="277">
-              <caret line="152" lean-forward="true" selection-start-line="152" selection-end-line="152" />
+            <state relative-caret-position="193">
+              <caret line="181" column="7" selection-start-line="181" selection-start-column="7" selection-end-line="181" selection-end-column="7" />
               <folding>
                 <element signature="e#79#88#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../Anaconda3/envs/py36/Lib/site-packages/pandas/core/generic.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret line="2607" lean-forward="true" selection-start-line="2607" selection-end-line="2607" />
             </state>
           </provider>
         </entry>
@@ -80,8 +70,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/parse-json-to-dfs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="33" column="39" selection-start-line="33" selection-start-column="20" selection-end-line="33" selection-end-column="39" />
+            <state relative-caret-position="204">
+              <caret line="44" column="24" lean-forward="true" selection-start-line="44" selection-start-column="24" selection-end-line="44" selection-end-column="24" />
               <folding>
                 <element signature="e#78#87#0" expanded="true" />
               </folding>
@@ -161,15 +151,16 @@
         <option value="$PROJECT_DIR$/parse-json-to-dfs.py" />
         <option value="$PROJECT_DIR$/models.py" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_6.py" />
-        <option value="$PROJECT_DIR$/create-symbolic-similarity-features.py" />
         <option value="$PROJECT_DIR$/create-symbolic-features.py" />
+        <option value="$PROJECT_DIR$/create-symbolic-similarity-features.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="13" />
+    <option name="x" value="-3" />
+    <option name="y" value="75" />
     <option name="width" value="1914" />
-    <option name="height" value="981" />
+    <option name="height" value="926" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -224,10 +215,10 @@
     <configuration />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
+    <frame x="-2" y="50" width="1276" height="617" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.024642289" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.025020178" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -237,7 +228,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32857144" />
-      <window_info active="true" anchor="bottom" x="-1693" y="30" width="1301" height="793" id="Python Console" order="8" type="WINDOWED" visible="true" weight="0.3285968" />
+      <window_info active="true" anchor="bottom" x="-1769" y="249" width="1301" height="385" id="Python Console" order="8" type="WINDOWED" visible="true" weight="0.3285968" />
       <window_info anchor="bottom" id="Educational.CheckDetails" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -246,7 +237,7 @@
       <window_info anchor="right" x="0" y="0" width="547" height="495" id="Documentation" order="3" weight="0.024671054" />
     </layout>
     <layout-to-restore>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.02549342" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.025020178" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -256,13 +247,13 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32857144" />
-      <window_info active="true" anchor="bottom" x="-1583" y="30" width="1208" height="793" id="Python Console" order="8" type="WINDOWED" visible="true" weight="0.3285968" />
+      <window_info active="true" anchor="bottom" x="-1919" y="25" width="1301" height="385" id="Python Console" order="8" type="WINDOWED" visible="true" weight="0.3285968" />
       <window_info anchor="bottom" id="Educational.CheckDetails" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" x="0" y="0" width="547" height="495" id="Documentation" order="3" visible="true" weight="0.024671054" />
+      <window_info anchor="right" x="0" y="0" width="547" height="495" id="Documentation" order="3" weight="0.024671054" />
     </layout-to-restore>
   </component>
   <component name="editorHistoryManager">
@@ -334,6 +325,33 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/create-symbolic-features.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-84">
+          <caret line="56" column="19" selection-start-line="56" selection-start-column="19" selection-end-line="56" selection-end-column="19" />
+          <folding>
+            <element signature="e#78#87#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/parse-json-to-dfs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="44" column="24" lean-forward="true" selection-start-line="44" selection-start-column="24" selection-end-line="44" selection-end-column="24" />
+          <folding>
+            <element signature="e#78#87#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Anaconda3/envs/py36/Lib/site-packages/pandas/core/generic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="2607" lean-forward="true" selection-start-line="2607" selection-end-line="2607" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_6.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
@@ -341,32 +359,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/parse-json-to-dfs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="33" column="39" selection-start-line="33" selection-start-column="20" selection-end-line="33" selection-end-column="39" />
-          <folding>
-            <element signature="e#78#87#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/create-symbolic-similarity-features.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="277">
-          <caret line="152" lean-forward="true" selection-start-line="152" selection-end-line="152" />
+        <state relative-caret-position="193">
+          <caret line="181" column="7" selection-start-line="181" selection-start-column="7" selection-end-line="181" selection-end-column="7" />
           <folding>
             <element signature="e#79#88#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/create-symbolic-features.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="81" column="42" lean-forward="true" selection-start-line="81" selection-start-column="42" selection-end-line="81" selection-end-column="42" />
-          <folding>
-            <element signature="e#78#87#0" expanded="true" />
           </folding>
         </state>
       </provider>
