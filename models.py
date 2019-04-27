@@ -11,6 +11,19 @@ from sklearn.model_selection import cross_val_score
 from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
 from sklearn.metrics import make_scorer, accuracy_score, precision_score, recall_score, f1_score
 
+
+# get the train & test indices
+train_indices, test_indices = train_test_feature_pairs.dataset.astype('object').apply(lambda x: x == 'train'),\
+    train_test_feature_pairs.dataset.astype('object').apply(lambda x: x == 'test')
+
+# get the labels
+all_labels = train_test_feature_pairs.label
+train_labels, test_labels = all_labels[train_indices], all_labels[test_indices]
+
+train_features, test_features = distance_vector_features.loc[train_indices, ],\
+    distance_vector_features.loc[test_indices, :]
+
+
 scoring = {'accuracy' : make_scorer(accuracy_score),
            'precision' : make_scorer(precision_score),
            'recall' : make_scorer(recall_score),

@@ -40,7 +40,7 @@ train_df.filename.value_counts().plot.bar()
 train_test_df = pd.concat([train_df, test_df], axis=0)
 print(train_test_df.info())
 train_test_df = create_file_categories(train_test_df)
-train_test_df.to_csv('train_test_df.csv')
+train_test_df.to_csv('train_test_df.csv', index=False)
 
 train_test_offer_ids = rbind_train_test_offers(train_df, test_df)
 print(train_test_offer_ids.info())
