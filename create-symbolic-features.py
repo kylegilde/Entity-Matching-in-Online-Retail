@@ -76,10 +76,10 @@ ALL_FEATURES = ALL_TEXT_FEATURES + STRONGLY_TYPED_FEATURES + NUMERIC_FEATURE
 sb_stemmer = nltk.stem.SnowballStemmer('english')
 
 # set display options
-# pd.set_option('display.max_rows', 500)
-# pd.set_option('display.max_columns', 500)
-# pd.set_option('display.width', 500)
-# pd.set_option('display.max_colwidth', 0)
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 500)
+pd.set_option('display.max_colwidth', 0)
 
 # load parsed features
 if 'train_test_feature_pairs.csv' in os.listdir():

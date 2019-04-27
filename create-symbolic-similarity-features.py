@@ -21,9 +21,10 @@ import pandas as pd
 
 from json_parsing_functions import *
 
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import TruncatedSVD
-from sklearn.metrics.pairwise import cosine_similarity
+from scipy.spatial.distance import cosine
 
 
 def levenshtein_similarity(df_row):
@@ -42,7 +43,30 @@ def levenshtein_similarity(df_row):
     else:
         return 1 - nltk.edit_distance(str1, str2) / max(len(str1), len(str2))
 
+
+def elementwise_cosine_similarity(df_row, n_features):
+    """
+    Calculates the elementwise cosine similarity with the apply method
+
+    :param df_row: a DF row where the first n_features are the left side features
+        and the last n_features are the right side features
+    :param n_features: this is the number of features each side of the DTM has
+    :return: float between 0 and 1
+    """
+    s1, s2 = df_row[:n_features], df_row[n_features:]
+
+    if np.sum(s1) == 0 or np.sum(s2) == 0:
+        return 0
+    else:
+        return cosine(s1, s2)
+
 start = datetime.now()
+
+# set display options
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 500)
+pd.set_option('display.max_colwidth', 0)
 
 # initialize constants
 DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
@@ -62,7 +86,6 @@ STRONGLY_TYPED_FEATURES = ['category']
 NUMERIC_FEATURE = ['price']
 
 ALL_FEATURES = ALL_SHORT_TEXT_FEATURES + STRONGLY_TYPED_FEATURES + NUMERIC_FEATURE + LONG_TEXT_FEATURES
-
 
 # load files
 if 'train_test_stemmed_features.csv' in os.listdir() \
@@ -109,15 +132,15 @@ if 'train_test_stemmed_features.csv' in os.listdir() \
                               np.maximum(both_features.iloc[:, 0], both_features.iloc[:, 1]))
 
         elif column in LONG_TEXT_FEATURES:
+            # column = 'description'
 
-            column = 'description'
             vectorizer = TfidfVectorizer(ngram_range=(1, 3))
 
             # create a document-term matrix
             dtm = vectorizer.fit_transform(train_test_stemmed_features[column].fillna(''))
             print('dtm dimensions:', dtm.shape)
 
-            # use Truncated SVD to select a smaller number of important features
+            print('Use Truncated SVD to select a smaller number of important features')
             svd_model = TruncatedSVD(n_components=MAX_SVD_COMPONENTS).fit(dtm)
             print(svd_model.explained_variance_ratio_.sum(), 'variance explained')
 
@@ -128,72 +151,34 @@ if 'train_test_stemmed_features.csv' in os.listdir() \
             dtm_svd = pd.DataFrame(svd_model.transform(dtm)[:, :n_features],
                                    index=train_test_stemmed_features.index)
 
+            print('post-SVD DTM dimensions:', dtm_svd.shape)
+            print(dtm_svd.info(memory_usage='deep'))
+
             del dtm, both_features, svd_model, left_side_features, right_side_features
             gc.collect()
 
-            print('post-SVD dtm dimensions:', dtm_svd.shape)
-            print(dtm_svd.info(memory_usage='deep'))
-
-            # create the left & right side DTMs
-            left_side_dtm_svd, right_side_dtm_svd = left_side_offer_ids.join(dtm_svd, how='inner').values,\
-                                                    right_side_offer_ids.join(dtm_svd, how='inner').values
+            # concatenate the left and right side DTMs
+            both_sides_dtm_svd = pd.concat([left_side_offer_ids.join(dtm_svd, how='inner').reset_index(drop=True),
+                                           right_side_offer_ids.join(dtm_svd, how='inner').reset_index(drop=True)],
+                                           axis=1)
 
             del dtm_svd, left_side_offer_ids, right_side_offer_ids
             gc.collect()
 
             # calculate the cosine similarites for each pair of docs
-            symbolic_similarity_features[column] = np.maximum(cosine_similarity(left_side_dtm_svd, right_side_dtm_svd), 0)
+            symbolic_similarity_features[column] = both_sides_dtm_svd.apply(elementwise_cosine_similarity,
+                                                                            n_features=n_features,
+                                                                            axis=1)
+
+            symbolic_similarity_features.summary()
 
     print("symbolic_similarity_features saved")
     symbolic_similarity_features.to_csv('symbolic_similarity_features.csv', index=False)
 
     print(datetime.now() - start)
 
+    symbolic_similarity_features.describe()
+
 else:
 
     print("input files not found")
-
-
-
-
-    # create feature variables
-    # features_regex_1, features_regex_2 = r'(' + '|'.join(COLUMNS_TO_NORMALIZE) + ')_1',\
-    #                                      r'(' + '|'.join(COLUMNS_TO_NORMALIZE) + ')_2'
-    #
-    #
-    # features_1 = train_test_feature_pairs.columns[train_test_feature_pairs.columns.str.match(features_regex_1)]
-    # features_2 = train_test_feature_pairs.columns[train_test_feature_pairs.columns.str.match(features_regex_2)]
-    #
-    # feature_dtypes = train_test_feature_pairs.dtypes.astype('str')[train_test_feature_pairs.columns.str.match(features_regex_1)]
-    # for feature_dtype, column, feature_1, feature_2 in zip(feature_dtypes, COLUMNS_TO_NORMALIZE, features_1, features_2):
-    #     print(feature_dtype, column, feature_1, feature_2)
-
-
-# and 'train_test_feature_pairs.csv' in os.listdir()\
-# train_test_feature_pairs = reduce_mem_usage(pd.read_csv('train_test_feature_pairs.csv'))
-#             svd_dtm_1, svd_dtm_2 = features_svd[: n_rows], features_svd[n_rows: ]
-#
-#             n_loops = n_rows // N_ROWS_PER_ITERATION + 1
-#
-#             distances_list = []
-#             for i in range(1, n_loops + 1):
-#                 # i = 1
-#                 print(i)
-[ycharm]
-#                 i_cosines = pairwise_cosine_dist_between_matrices(svd_dtm_1[mn:mx, ], svd_dtm_2[mn:mx, ])
-#                 distances_list.append(i_cosines)
-#
-#             symbolic_similarity_features[column] = pd.concat(distances_list, ignore_index=True)
-#
-#             train_test_stemmed_features.join(left_side_offer_ids, how='inner').reset_index(drop=True)
-#             n_loops = n_rows // N_ROWS_PER_ITERATION + 1
-#
-#             distances_list = []
-#             for i in range(1, n_loops + 1):
-#                 # i = 1
-#                 print(i)
-#                 mn, mx = (i - 1) * N_ROWS_PER_ITERATION, i * N_ROWS_PER_ITERATION
-#                 i_cosines = pairwise_cosine_dist_between_matrices(svd_dtm_1[mn:mx, ], svd_dtm_2[mn:mx, ])
-#                 distances_list.append(i_cosines)
-#
-#             symbolic_similarity_features[column] = pd.concat(distances_list, ignore_index=True)
