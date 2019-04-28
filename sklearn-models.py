@@ -78,6 +78,8 @@ if 'symbolic_similarity_features.csv' in os.listdir():
     grid_search.fit(train_features, train_labels)
     grid_search.best_params_
 
+    test_pred = grid_search.predict(test_features)
+    len(test_pred)
     rf_grid_params = {'bootstrap': True,
                       'class_weight': 'balanced',
                       'criterion': 'gini',
