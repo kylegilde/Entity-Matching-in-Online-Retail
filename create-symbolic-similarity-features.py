@@ -7,7 +7,7 @@ This script takes the outputs of create-symbolic-features.py
 and parse-json-to-dfs.py.
 
 It outputs a df that contains the similarity vectors of the offer pairs
-in the test and training sets.
+in the test and training sets. The df is saved as symbolic_similarity_features.csv
 
 """
 
@@ -19,7 +19,7 @@ import nltk
 import numpy as np
 import pandas as pd
 
-from json_parsing_functions import *
+from json_parsing_functions import reduce_mem_usage
 
 
 from sklearn.feature_extraction.text import TfidfVectorizer
