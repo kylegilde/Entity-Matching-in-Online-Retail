@@ -76,58 +76,31 @@ if 'symbolic_similarity_features.csv' in os.listdir():
     # dev_train_features, dev_test_features, dev_train_labels, dev_test_labels = \
     #     train_test_split(train_features, train_labels, test_size=0.2, stratify=train_labels)
 
-    # MODELS = [GaussianNB(),
-    #           SVC(random_state=RANDOM_STATE, class_weight='balanced'),
-    #           RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced'),
-    #           GradientBoostingClassifier(random_state=RANDOM_STATE)]
 
-    MODELS = [GradientBoostingClassifier(),
-              GaussianNB(),
-              SVC(),
-              RandomForestClassifier()]
+    MODELS = [GaussianNB(),
+              SVC(random_state=RANDOM_STATE, class_weight='balanced', probability=True, verbose=2),
+              RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
+              GradientBoostingClassifier(random_state=RANDOM_STATE, verbose=2)]
+
+
+    # nb_params = {'priors': [None], 'var_smoothing': [1e-09]}
 
     svc_grid_params = {'C': [0.001, 0.01, 0.1, 1, 10],
                        'gamma': [0.001, 0.01, 0.1, 1]}
 
-    nb_params = {'priors': None, 'var_smoothing': 1e-09}
-
-    svc_grid_params = {'C': [0.001, 0.01, 0.1, 1, 10],
-                       'cache_size': 200,
-                       'class_weight': 'balanced',
-                       'coef0': 0.0,
-                       'decision_function_shape': 'ovr',
-                       'degree': 3,
-                       'gamma': [0.001, 0.01, 0.1, 1],
-                       'kernel': 'rbf',
-                       'max_iter': -1,
-                       'probability': False,
-                       'random_state': RANDOM_STATE,
-                       'shrinking': True,
-                       'tol': 0.001,
-                       'verbose': 2}
-
-    rf_grid_params = {'bootstrap': True,
-                      'class_weight': 'balanced',
-                      'criterion': 'gini',
-                      'max_depth': None,
+    rf_grid_params = {'max_depth': [None, 5, 10, 20],
                       'max_features': ['auto', None],
-                      'max_leaf_nodes': None,
-                      'min_impurity_decrease': 0.0,
-                      'min_impurity_split': None,
+                      'max_leaf_nodes': [None],
+                      'min_impurity_decrease': [0.0],
+                      'min_impurity_split': [None],
                       'min_samples_leaf': [1, 2, 4],
                       'min_samples_split': [2, 5, 10],
-                      'min_weight_fraction_leaf': 0.0,
-                      'n_estimators': [100, 500, 1000, 2000],
-                      'n_jobs': -1,
-                      'oob_score': False,
-                      'random_state': RANDOM_STATE,
-                      'verbose': 2,
-                      'warm_start': False}
+                      'min_weight_fraction_leaf': [0.0],
+                      'n_estimators': [100, 500, 1000, 2000]}
 
-    gbm_grid_params = {'bootstrap': True,
-                       'class_weight': 'balanced',
-                       'criterion': 'gini',
-                       'learning_rate': [.01, .025, .05, .1, .25],
+
+
+    gbm_grid_params = {'learning_rate': [.01, .025, .05, .1, .25],
                        'max_depth': [None, 5, 10, 20],
                        'max_features': ['auto'],
                        'max_leaf_nodes': [None],
@@ -137,34 +110,29 @@ if 'symbolic_similarity_features.csv' in os.listdir():
                        'min_samples_split': [2],
                        'min_weight_fraction_leaf': [0.0],
                        'n_estimators': [50, 100, 200],
-                       'n_jobs': [-1],
-                       'oob_score': [False],
-                       'random_state': [RANDOM_STATE],
-                       'subsample': [.1, .25, .5, .75],
-                       'verbose': [2],
-                       'warm_start': [False]}
+                       'subsample': [.1, .25, .5, .75]}
 
-    # grid_param_list = [nb_params, svc_grid_params, rf_grid_params, gbm_grid_params]
-    grid_param_list = [gbm_grid_params, nb_params, svc_grid_params, rf_grid_params]
+    grid_param_list = [None, svc_grid_params, rf_grid_params, gbm_grid_params]
 
-    # grid_search.fit(train_features, train_labels)
-    # grid_search.best_params_
+    # for i in range(len(MODELS)):
+    #     GridSearchCV(MODELS[i], grid_param_list[i], cv=skf, n_jobs=-1, verbose=2)
 
     METRIC_NAMES = ['precision', 'recall', 'f1']
     skf = StratifiedKFold(n_splits=FOLDS, random_state=RANDOM_STATE)
 
-
+    # output DF
     model_names = []
-    test_predictions = []
-    class_probabilities_list = []
+    test_metrics = []
     model_durations = []
-    best_parameters = []
-    fit_models = []
+    best_params_list = []
 
     # save diagnostics
+    test_predictions = []
+    class_probabilities_list = []
+    fit_models = []
     classification_reports = []
     confusion_matrices = []
-    test_metrics = []
+
 
     for i, model in enumerate(MODELS):
 
@@ -174,10 +142,19 @@ if 'symbolic_similarity_features.csv' in os.listdir():
         model_names.append(model_name)
         print(model_name)
 
-        cv_model = GridSearchCV(model, grid_param_list[i], cv=skf, n_jobs=-1, verbose=2)
+        if model_name == 'GaussianNB':
+            cv_model = model
+            cv_model.fit(train_features, train_labels)
 
-        cv_model.fit(train_features, train_labels)
-        fit_models.append(cv_model)
+            fit_models.append(cv_model)
+            best_params_list.append(None)
+        else:
+            cv_model = GridSearchCV(model, grid_param_list[i], cv=skf, n_jobs=-1, verbose=2)
+            cv_model.fit(train_features, train_labels)
+
+            # get the best CV parameters
+            best_params = cv_model.best_params_
+            best_params_list.append(best_params)
 
         # make predictions
         test_pred, test_class_probabilities = cv_model.predict(test_features), \
@@ -186,10 +163,6 @@ if 'symbolic_similarity_features.csv' in os.listdir():
         test_predictions.append(test_pred)
         class_probabilities_list.append(test_class_probabilities)
         # test_class_probabilities = model.predict_proba(test_features)
-
-        # get the best CV parameters
-        best_params = cv_model.best_params_
-        best_parameters.append(best_params)
 
         # get the classification report
         class_report = classification_report(test_labels, test_pred)
@@ -216,10 +189,16 @@ if 'symbolic_similarity_features.csv' in os.listdir():
         hours = get_duration_hours(start_time)
         model_durations.append(hours)
 
+    sklearn_models_df = pd.DataFrame(test_metrics, columns=METRIC_NAMES, index=model_names)
+    sklearn_models_df['training_time'], sklearn_models_df['best_params'] = model_durations, best_params_list
 
+    import pickle
 
-    no1 = pd.DataFrame(test_metrics, columns=METRIC_NAMES, index=[n.__class__.__name__ for n in MODELS])
-    pre_weighting = no1.copy()
+    with open('sklearn_models.pkl') as f:
+        pickle.dump(fit_models, f)
+
+    sklearn_models_df.to_csv('sklearn_models_df.csv', index=False)
+
 
     def perform_cross_val(models, X_train, y_train, scoring, cv=FOLDS):
         """
