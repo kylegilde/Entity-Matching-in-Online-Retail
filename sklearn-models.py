@@ -13,12 +13,12 @@ in the test and training sets.
 
 import os
 import gc
-from datetime import datetime
 
 import numpy as np
 import pandas as pd
 
 from json_parsing_functions import *
+from utility_functions import *
 
 import scipy.stats as stats
 
@@ -30,20 +30,6 @@ from sklearn.naive_bayes import GaussianNB #alpha smoothing?
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression  #LogisticRegression(random_state=0)
-
-
-def get_duration_hours(start_time):
-    """
-    Prints and returns the time difference in hours
-
-    :param start_time: datetime object
-    :return: time difference in hours
-    """
-    time_diff = datetime.now() - start_time
-    time_diff_hours = time_diff.seconds / 3600
-    print('hours:', round(time_diff_hours, 2))
-    return time_diff_hours
-
 
 DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
 DATA_DIRECTORY = '//files/share/goods/OI Team'
@@ -81,6 +67,11 @@ if 'symbolic_similarity_features.csv' in os.listdir():
               SVC(random_state=RANDOM_STATE, class_weight='balanced', probability=True, verbose=2),
               RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
               GradientBoostingClassifier(random_state=RANDOM_STATE, verbose=2)]
+
+
+
+
+
 
 
     # nb_params = {'priors': [None], 'var_smoothing': [1e-09]}
@@ -122,16 +113,37 @@ if 'symbolic_similarity_features.csv' in os.listdir():
 
     # output DF
     model_names = []
-    test_metrics = []
+    test_metrics1 = []
     model_durations = []
     best_params_list = []
 
     # save diagnostics
-    test_predictions = []
+    test_predictions1 = []
     class_probabilities_list = []
     fit_models = []
     classification_reports = []
     confusion_matrices = []
+
+
+
+    for i, model in enumerate(MODELS):
+        model_name = model.__class__.__name__
+        model_names.append(model_name)
+        print(model_name)
+
+        model.fit(train_features, train_labels)
+        test_pred = model.predict(test_features)
+        # test_predictions1.append(test_pred)
+        # get scores
+        model_metrics = [precision_score(test_labels, test_pred),
+                         recall_score(test_labels, test_pred),
+                         f1_score(test_labels, test_pred)]
+
+        print(METRIC_NAMES)
+        print(model_metrics)
+        test_metrics1.append(model_metrics)
+
+
 
 
     for i, model in enumerate(MODELS):
@@ -171,8 +183,8 @@ if 'symbolic_similarity_features.csv' in os.listdir():
 
         # get confusion matrix
         confusion_df = pd.DataFrame(confusion_matrix(test_labels, test_pred),
-                                    columns = ["Predicted Class " + str(class_name) for class_name in [0, 1]],
-                                    index = ["Class " + str(class_name) for class_name in [0, 1]])
+                                    columns = ["Predicted Class " + str(class_name) for class_name in class_labels],
+                                    index = ["Class " + str(class_name) for class_name in class_labels])
         confusion_matrices.append(confusion_df)
         print(confusion_df)
 
@@ -191,7 +203,8 @@ if 'symbolic_similarity_features.csv' in os.listdir():
 
     sklearn_models_df = pd.DataFrame(test_metrics, columns=METRIC_NAMES, index=model_names)
     sklearn_models_df['training_time'], sklearn_models_df['best_params'] = model_durations, best_params_list
-
+    pprint(classification_reports[0])
+    confusion_matrices[3]
     import pickle
 
     with open('sklearn_models.pkl') as f:

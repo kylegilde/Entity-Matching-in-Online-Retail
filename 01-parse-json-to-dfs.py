@@ -17,11 +17,15 @@ from json_parsing_functions import *
 TRAIN_TEST_CATEGORIES = ['Computers_and_Accessories', 'Camera_and_Photo', 'Shoes', 'Jewelry']
 PRICE_COLUMN_NAMES = ['price','parent_price']
 DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
+DATA_DIRECTORY = '//files/share/goods/OI Team'
 os.chdir(DATA_DIRECTORY)
 
+# set display options
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 500)
+pd.set_option('display.max_colwidth', 0)
+
 
 ####################################################################
 ################### Load Train and Test Data #######################
@@ -37,9 +41,21 @@ print(test_df.info(memory_usage='deep'))
 plt.gcf().clear()
 train_df.filename.value_counts().plot.bar()
 
-train_test_df = pd.concat([train_df, test_df], axis=0)
+train_test_df = pd.concat([train_df, test_df], axis=0).reset_index()
 print(train_test_df.info())
 train_test_df = create_file_categories(train_test_df)
+
+# remove some duplicates
+train_test_df = train_test_df[~train_test_df.duplicated(subset=['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label'])]
+
+# remove a bad index
+bad_index = train_test_df.index[(train_test_df.offer_id_1 == '_:nodede8ccd8d6cc033e333fc23a88f31fad http://www.prodirectselect.com/products/asics-womens-gelnoosa-tri-11-white-noise-womens-shoes-white-white-black-120149.aspx') &\
+              (train_test_df.offer_id_2 == '_:nodefa2169b488f32926e188bbf2f8567bf https://footstop.com/producto/asics-gel-noosa-tri-11-t676q-0101/') &
+              (train_test_df.label == 0)]
+train_test_df.drop(bad_index, inplace=True)
+
+print(train_test_df.info())
+
 train_test_df.to_csv('train_test_df.csv', index=False)
 
 train_test_offer_ids = rbind_train_test_offers(train_df, test_df)
