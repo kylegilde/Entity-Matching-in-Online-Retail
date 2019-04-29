@@ -54,18 +54,15 @@ def elementwise_cosine_similarity(df_row, n_features):
     :return: float between 0 and 1
     """
 
-    if len(df_row) == 2 * n_features:
+    assert len(df_row) == 2 * n_features, "Something is wrong. Your df row length is not 2 x n_features"
 
-        s1, s2 = df_row[:n_features], df_row[n_features:]
+    s1, s2 = df_row[:n_features], df_row[n_features:]
 
-        if np.sum(s1) == 0 or np.sum(s2) == 0:
-            return 0
-        else:
-            return cosine(s1, s2)
-
+    if np.sum(s1) == 0 or np.sum(s2) == 0:
+        return 0
     else:
+        return cosine(s1, s2)
 
-        print("Something is wrong. Your input rows are not 2 x n_features")
 
 
 start_time = datetime.now()
@@ -97,6 +94,8 @@ NUMERIC_FEATURE = ['price']
 # the description column must be last in the list
 ALL_FEATURES = ALL_SHORT_TEXT_FEATURES + STRONGLY_TYPED_FEATURES + NUMERIC_FEATURE + LONG_TEXT_FEATURES
 
+OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset']
+
 # set display options
 pd.set_option('display.max_rows', 3000)
 pd.set_option('display.max_columns', 500)
@@ -109,10 +108,148 @@ if 'train_test_stemmed_features.csv' in os.listdir() and 'train_test_df.csv' in 
     train_test_stemmed_features = reduce_mem_usage(pd.read_csv('train_test_stemmed_features.csv'))\
         .set_index('offer_id')
 
-    train_test_df = pd.read_csv('train_test_df.csv')
+    train_test_df = reduce_mem_usage(pd.read_csv('train_test_df.csv'))
     # train_test_df.info()
-    OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset']
-    # dupe_rows = train_test_df.duplicated(subset=OFFER_PAIR_COLUMNS, keep=False)
+
+    file_categories = train_test_df.file_category.unique()
+    category_df_list = []
+    start_time = datetime.now()
+
+    for the_category in file_categories:
+
+        print('the_category:', the_category)
+        # the_category = 'shoes'
+
+        symbolic_similarity_features = train_test_df[train_test_df.file_category == the_category].copy()
+        unique_offer_ids = pd.concat([symbolic_similarity_features.offer_id_1.astype('object'),
+                                      symbolic_similarity_features.offer_id_2.astype('object')])\
+            .unique()
+
+        symbolic_similarity_features.set_index(OFFER_PAIR_COLUMNS, inplace=True)
+
+        for column in ALL_FEATURES:
+            print('column:', column)
+            get_duration_hours(start_time)
+
+            # put the left and right side feature into a df
+            both_features = reduce_mem_usage( \
+                symbolic_similarity_features.reset_index()[OFFER_PAIR_COLUMNS]\
+                .set_index(OFFER_PAIR_COLUMNS[0], drop=False)\
+                .join(train_test_stemmed_features[[column]].add_suffix('_1'), how='inner')\
+                .set_index(OFFER_PAIR_COLUMNS[1], drop=False)\
+                .join(train_test_stemmed_features[[column]].add_suffix('_2'), how='inner')\
+                .set_index(OFFER_PAIR_COLUMNS))
+
+            if column in ALL_SHORT_TEXT_FEATURES:
+
+                symbolic_similarity_features[column] = both_features.apply(levenshtein_similarity, axis=1)
+                symbolic_similarity_features = reduce_mem_usage(symbolic_similarity_features)
+
+            elif column in STRONGLY_TYPED_FEATURES:
+
+                symbolic_similarity_features[column] = pd.Series(both_features.iloc[:, 0]\
+                                                                 == both_features.iloc[:, 1]).astype('int8')
+                symbolic_similarity_features = reduce_mem_usage(symbolic_similarity_features)
+
+            elif column in NUMERIC_FEATURE:
+
+                symbolic_similarity_features[column] = \
+                    np.nan_to_num(np.absolute(both_features.iloc[:, 0] - both_features.iloc[:, 1]) / \
+                                  np.maximum(both_features.iloc[:, 0], both_features.iloc[:, 1]))
+                symbolic_similarity_features = reduce_mem_usage(symbolic_similarity_features)
+
+            elif column in LONG_TEXT_FEATURES:
+                # column = 'description'
+
+                # del train_test_df
+                # gc.collect()
+
+                vectorizer = TfidfVectorizer(ngram_range=(1, 3))
+
+                # create a document-term matrix from the unique column values
+                unique_column_values = train_test_stemmed_features.loc[unique_offer_ids][[column]].fillna('')
+
+                dtm = vectorizer.fit_transform(unique_column_values[column])
+                print('dtm dimensions:', dtm.shape)
+
+                get_duration_hours(start_time)
+                print('Use Truncated SVD to select a smaller number of important features')
+                svd_model = TruncatedSVD(n_components=MAX_SVD_COMPONENTS).fit(dtm)
+                print('n_components:', len(svd_model.explained_variance_ratio_))
+                print(svd_model.explained_variance_ratio_.sum(), 'variance explained')
+
+                n_features = sum(svd_model.explained_variance_ratio_.cumsum() <= VARIANCE_EXPLAINED)
+                print(n_features, "features explain this much of the variance:", VARIANCE_EXPLAINED)
+
+                print('fit the svd model and convert to df')
+                dtm_svd = reduce_mem_usage(pd.DataFrame(svd_model.transform(dtm)[:, :n_features],
+                                                        index=unique_column_values.index))
+
+                print('post-SVD DTM dimensions:', dtm_svd.shape)
+                print(dtm_svd.info(memory_usage='deep'))
+
+                del dtm, svd_model, unique_column_values
+                gc.collect()
+
+                get_duration_hours(start_time)
+                print("Let's create a df to hold both sides of the DTM")
+
+                both_sides_dtm_svd =\
+                        both_features\
+                            .reset_index() \
+                            .drop(['description_1', 'description_2'], axis=1)\
+                            .set_index('offer_id_1', drop=False)\
+                            .join(dtm_svd.add_suffix('_1'), how='inner')\
+                            .set_index('offer_id_2', drop=False)\
+                            .join(dtm_svd.add_suffix('_2'), how='inner')\
+                            .reset_index()\
+                            .set_index(OFFER_PAIR_COLUMNS)
+
+                both_sides_dtm_svd.columns
+                # )
+                # reduce_mem_usage( \
+                    print(both_sides_dtm_svd.info())
+
+                del both_features
+                gc.collect()
+
+                get_duration_hours(start_time)
+                print("Let's calculate the cosine similarity.")
+                symbolic_similarity_features[column] = both_sides_dtm_svd.apply(elementwise_cosine_similarity,
+                                                                                n_features=n_features,
+                                                                                axis=1)
+                del both_sides_dtm_svd
+                gc.collect()
+
+                # append category DF
+                category_df_list.append(symbolic_similarity_features)
+
+
+
+        print("symbolic_similarity_features saved")
+        final_symbolic_similarity_features = pd.concat(category_df_list, axis=0)
+        final_symbolic_similarity_features.reset_index().to_csv('symbolic_similarity_features.csv', index=False)
+
+        get_duration_hours(start_time)
+
+        symbolic_similarity_features.describe()
+
+else:
+
+    print("input files not found")
+
+# both_sides_dtm_svd.columns.astype('str')
+# concatenate the left and right side DTMs
+# both_sides_dtm_svd = pd.concat([both_features.join(dtm_svd, how='inner').reset_index(drop=True),
+#                                right_side_offer_ids.join(dtm_svd, how='inner').reset_index(drop=True)],
+#                                axis=1)
+
+# del dtm_svd, left_side_offer_ids, right_side_offer_ids
+# gc.collect()
+
+# calculate the cosine similarites for each pair of docs
+
+  # dupe_rows = train_test_df.duplicated(subset=OFFER_PAIR_COLUMNS, keep=False)
     # sum(dupe_rows)
     # train_test_df[dupe_rows]
     # sum(train_test_df.duplicated(subset=OFFER_PAIR_COLUMNS, keep=False))
@@ -138,116 +275,6 @@ if 'train_test_stemmed_features.csv' in os.listdir() and 'train_test_df.csv' in 
     # .reset_index(drop=True)
     # sum(left_side_features.index == left_side_offer_ids.index)
 
-
-    symbolic_similarity_features = train_test_df.copy()
-    symbolic_similarity_features.set_index(OFFER_PAIR_COLUMNS, inplace=True)
     # symbolic_similarity_features.info()
     # sum(symbolic_similarity_features.duplicated(keep=False))
     # symbolic_similarity_features.unique()
-
-    # column = 'brand'
-    start_time = datetime.now()
-
-    for column in ALL_FEATURES:
-        print('column:', column)
-        get_duration_hours(start_time)
-
-        # put the left and right side feature into a df
-        both_features = train_test_df[OFFER_PAIR_COLUMNS] \
-            .set_index(OFFER_PAIR_COLUMNS[0], drop=False) \
-            .join(train_test_stemmed_features[[column]].add_suffix('_1'), how='inner') \
-            .set_index(OFFER_PAIR_COLUMNS[1], drop=False) \
-            .join(train_test_stemmed_features[[column]].add_suffix('_2'), how='inner') \
-            .set_index(OFFER_PAIR_COLUMNS)
-
-        if column in ALL_SHORT_TEXT_FEATURES:
-
-            symbolic_similarity_features[column] = both_features.apply(levenshtein_similarity, axis=1)
-
-        elif column in STRONGLY_TYPED_FEATURES:
-
-            symbolic_similarity_features[column] = pd.Series(both_features.iloc[:, 0]\
-                                                             == both_features.iloc[:, 1]).astype('int8')
-
-        elif column in NUMERIC_FEATURE:
-
-            symbolic_similarity_features[column] = \
-                np.nan_to_num(np.absolute(both_features.iloc[:, 0] - both_features.iloc[:, 1]) / \
-                              np.maximum(both_features.iloc[:, 0], both_features.iloc[:, 1]))
-
-        elif column in LONG_TEXT_FEATURES:
-            # column = 'description'
-
-            del train_test_stemmed_features, train_test_df
-            gc.collect()
-
-            vectorizer = TfidfVectorizer(ngram_range=(1, 3))
-
-            # create a document-term matrix
-            dtm = vectorizer.fit_transform(train_test_stemmed_features[column].fillna(''))
-            print('dtm dimensions:', dtm.shape)
-
-            get_duration_hours(start_time)
-            print('Use Truncated SVD to select a smaller number of important features')
-            svd_model = TruncatedSVD(n_components=MAX_SVD_COMPONENTS).fit(dtm)
-            print(svd_model.explained_variance_ratio_.sum(), 'variance explained')
-
-            n_features = sum(svd_model.explained_variance_ratio_.cumsum() <= VARIANCE_EXPLAINED)
-            print(n_features, "features explain this much of the variance:", VARIANCE_EXPLAINED)
-
-            # fit the svd model and convert to df
-            dtm_svd = pd.DataFrame(svd_model.transform(dtm)[:, :n_features],
-                                   index=train_test_stemmed_features.index)
-
-            print('post-SVD DTM dimensions:', dtm_svd.shape)
-            print(dtm_svd.info(memory_usage='deep'))
-
-            del dtm, svd_model
-            gc.collect()
-
-            get_duration_hours(start_time)
-            print("Let's create a df to hold both sides of the DTM")
-            small = both_features.iloc[:1000]
-            both_sides_dtm_svd =\
-                both_features\
-                    .reset_index() \
-                    .drop(['description_1', 'description_2'], axis=1)\
-                    .set_index('offer_id_1', drop=False)\
-                    .join(dtm_svd.add_suffix('_1'), how='inner') \
-                    .set_index('offer_id_2', drop=False)\
-                    .join(dtm_svd.add_suffix('_2'), how='inner') \
-                    .reset_index()\
-                    .set_index(OFFER_PAIR_COLUMNS)
-
-            print(both_sides_dtm_svd.info())
-
-            get_duration_hours(start_time)
-            print("Let's calculate the cosine similarity.")
-            symbolic_similarity_features[column] = both_sides_dtm_svd.apply(elementwise_cosine_similarity,
-                                                                            n_features=n_features,
-                                                                            axis=1)
-            del both_sides_dtm_svd
-            gc.collect()
-            symbolic_similarity_features.summary()
-
-    print("symbolic_similarity_features saved")
-    symbolic_similarity_features.reset_index().to_csv('symbolic_similarity_features.csv', index=False)
-
-    get_duration_hours(start_time)
-
-    symbolic_similarity_features.describe()
-
-else:
-
-    print("input files not found")
-
-# both_sides_dtm_svd.columns.astype('str')
-# concatenate the left and right side DTMs
-# both_sides_dtm_svd = pd.concat([both_features.join(dtm_svd, how='inner').reset_index(drop=True),
-#                                right_side_offer_ids.join(dtm_svd, how='inner').reset_index(drop=True)],
-#                                axis=1)
-
-# del dtm_svd, left_side_offer_ids, right_side_offer_ids
-# gc.collect()
-
-# calculate the cosine similarites for each pair of docs
