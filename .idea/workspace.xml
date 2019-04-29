@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f7d760b9-f4cb-4f2d-831d-97e304e88e4c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create-symbolic-features.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/create-symbolic-similarity-features.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/parse-json-to-dfs.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02-normalize-features.py" beforeDir="false" afterPath="$PROJECT_DIR$/02-normalize-features.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sklearn-models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sklearn-models.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -19,8 +16,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sklearn-models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1197">
-              <caret line="86" lean-forward="true" selection-start-line="86" selection-end-line="86" />
+            <state relative-caret-position="-647">
+              <caret line="195" selection-start-line="195" selection-end-line="195" />
               <folding>
                 <element signature="e#272#281#0" expanded="true" />
                 <element signature="e#3537#4004#0" />
@@ -205,7 +202,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="0" width="1153" height="683" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.02775291" />
       <window_info id="Structure" order="1" weight="0.25" />
@@ -330,8 +326,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/sklearn-models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1197">
-          <caret line="86" lean-forward="true" selection-start-line="86" selection-end-line="86" />
+        <state relative-caret-position="-647">
+          <caret line="195" selection-start-line="195" selection-end-line="195" />
           <folding>
             <element signature="e#272#281#0" expanded="true" />
             <element signature="e#3537#4004#0" />

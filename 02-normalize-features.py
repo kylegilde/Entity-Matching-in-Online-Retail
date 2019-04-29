@@ -109,6 +109,3 @@ for column in train_test_stemmed_features.columns:
 
 # save to file
 train_test_stemmed_features.reset_index().to_csv('train_test_stemmed_features.csv', index=False)
-
-train_test_normalized_features.description[:10].reset_index(drop=True)
-train_test_stemmed_features.description[:10].reset_index(drop=True)
