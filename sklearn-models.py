@@ -16,15 +16,12 @@ import gc
 
 import numpy as np
 import pandas as pd
-
+import pickle
 from json_parsing_functions import *
 from utility_functions import *
 
-import scipy.stats as stats
-
 from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold, RandomizedSearchCV, cross_val_score
-from sklearn.metrics import classification_report, confusion_matrix, precision_score, recall_score, f1_score, \
-    make_scorer, accuracy_score
+from sklearn.metrics import classification_report, confusion_matrix, precision_score, recall_score, f1_score, make_scorer
 
 from sklearn.naive_bayes import GaussianNB #alpha smoothing?
 from sklearn.svm import SVC
@@ -43,172 +40,157 @@ SCORERS = {'precision': make_scorer(precision_score),
            'recall': make_scorer(recall_score),
            'f1_score': make_scorer(f1_score)}
 
-if 'symbolic_similarity_features.csv' in os.listdir():
-    symbolic_similarity_features = reduce_mem_usage(pd.read_csv('symbolic_similarity_features.csv'))
+assert 'symbolic_similarity_features.csv' in os.listdir(), 'An input file is missing'
 
-    # get the train & test indices
-    train_indices, test_indices = symbolic_similarity_features.dataset.astype('object').apply(lambda x: x == 'train'),\
-                                  symbolic_similarity_features.dataset.astype('object').apply(lambda x: x == 'test')
+symbolic_similarity_features = reduce_mem_usage(pd.read_csv('symbolic_similarity_features.csv'))
 
-    # get the labels
-    all_labels = symbolic_similarity_features.label
-    train_labels, test_labels = all_labels[train_indices], all_labels[test_indices]
-    class_labels = np.sort(all_labels.unique())
+# get the train & test indices
+train_indices, test_indices = symbolic_similarity_features.dataset.astype('object').apply(lambda x: x == 'train'),\
+                              symbolic_similarity_features.dataset.astype('object').apply(lambda x: x == 'test')
 
-    # train and test features
-    train_features, test_features = symbolic_similarity_features.loc[train_indices, ALL_FEATURES],\
-                                    symbolic_similarity_features.loc[test_indices, ALL_FEATURES]
+# get the labels
+all_labels = symbolic_similarity_features.label
+train_labels, test_labels = all_labels[train_indices], all_labels[test_indices]
+class_labels = np.sort(all_labels.unique())
 
-    # dev_train_features, dev_test_features, dev_train_labels, dev_test_labels = \
-    #     train_test_split(train_features, train_labels, test_size=0.2, stratify=train_labels)
+# train and test features
+train_features, test_features = symbolic_similarity_features.loc[train_indices, ALL_FEATURES],\
+                                symbolic_similarity_features.loc[test_indices, ALL_FEATURES]
 
-
-    MODELS = [GaussianNB(),
-              SVC(random_state=RANDOM_STATE, class_weight='balanced', probability=True, verbose=2),
-              RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
-              GradientBoostingClassifier(random_state=RANDOM_STATE, verbose=2)]
+# dev_train_features, dev_test_features, dev_train_labels, dev_test_labels = \
+#     train_test_split(train_features, train_labels, test_size=0.2, stratify=train_labels)
 
 
+MODELS = [GaussianNB(),
+          SVC(random_state=RANDOM_STATE, class_weight='balanced', probability=True, cache_size=1000, verbose=2),
+          RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
+          GradientBoostingClassifier(random_state=RANDOM_STATE, verbose=2)]
+
+svc_grid_params = {'C': [0.001, 0.01, 0.1, 1, 10],
+                   'gamma': [0.001, 0.01, 0.1, 1]}
+
+rf_grid_params = {'max_depth': [None, 5, 10, 20],
+                  'max_features': ['auto', None],
+                  'max_leaf_nodes': [None],
+                  'min_impurity_decrease': [0.0],
+                  'min_impurity_split': [None],
+                  'min_samples_leaf': [1, 2, 4],
+                  'min_samples_split': [2, 5, 10],
+                  'min_weight_fraction_leaf': [0.0],
+                  'n_estimators': [100, 500, 1000, 2000]}
+
+gbm_grid_params = {'learning_rate': [.01, .025, .05, .1, .25],
+                   'max_depth': [None, 5, 10, 20],
+                   'max_features': ['auto'],
+                   'max_leaf_nodes': [None],
+                   'min_impurity_decrease': [0.0],
+                   'min_impurity_split': [None],
+                   'min_samples_leaf': [1],
+                   'min_samples_split': [2],
+                   'min_weight_fraction_leaf': [0.0],
+                   'n_estimators': [50, 100, 200],
+                   'subsample': [.1, .25, .5, .75]}
+
+grid_param_list = [None, svc_grid_params, rf_grid_params, gbm_grid_params]
+
+# for i in range(len(MODELS)):
+#     GridSearchCV(MODELS[i], grid_param_list[i], cv=skf, n_jobs=-1, verbose=2)
+
+METRIC_NAMES = ['precision', 'recall', 'f1']
+skf = StratifiedKFold(n_splits=FOLDS, random_state=RANDOM_STATE)
+
+# output DF
+model_names = []
+test_metrics = []
+model_durations = []
+best_params_list = []
+
+# save diagnostics
+test_predictions = []
+class_probabilities_list = []
+fit_models = []
+classification_reports = []
+confusion_matrices = []
+
+# non-CV version
+# for i, model in enumerate(MODELS):
+#     model_name = model.__class__.__name__
+#     model_names.append(model_name)
+#     print(model_name)
+#
+#     model.fit(train_features, train_labels)
+#     test_pred = model.predict(test_features)
+#     # test_predictions1.append(test_pred)
+#     # get scores
+#     model_metrics = [precision_score(test_labels, test_pred),
+#                      recall_score(test_labels, test_pred),
+#                      f1_score(test_labels, test_pred)]
+#
+#     print(METRIC_NAMES)
+#     print(model_metrics)
+#     test_metrics.append(model_metrics)
+
+for i, model in enumerate(MODELS):
+
+    start_time = datetime.now()
+
+    model_name = model.__class__.__name__
+    model_names.append(model_name)
+    print(model_name)
+
+    if model_name == 'GaussianNB':
+        cv_model = model
+        cv_model.fit(train_features, train_labels)
+
+        fit_models.append(cv_model)
+        best_params_list.append(None)
+    else:
+        cv_model = GridSearchCV(model, grid_param_list[i], cv=skf, n_jobs=-1, verbose=2)
+        cv_model.fit(train_features, train_labels)
+
+        # get the best CV parameters
+        best_params = cv_model.best_params_
+        best_params_list.append(best_params)
+
+    # make predictions
+    test_pred, test_class_probabilities = cv_model.predict(test_features), \
+                                          cv_model.predict_proba(test_features)
+
+    test_predictions.append(test_pred)
+    class_probabilities_list.append(test_class_probabilities)
+    # test_class_probabilities = model.predict_proba(test_features)
+
+    # get the classification report
+    class_report = classification_report(test_labels, test_pred)
+    classification_reports.append(class_report)
+    print(class_report)
+
+    # get confusion matrix
+    confusion_df = pd.DataFrame(confusion_matrix(test_labels, test_pred),
+                                columns = ["Predicted Class " + str(class_name) for class_name in class_labels],
+                                index = ["Class " + str(class_name) for class_name in class_labels])
+    confusion_matrices.append(confusion_df)
+    print(confusion_df)
+
+    # get scores
+    model_metrics = [precision_score(test_labels, test_pred),
+                     recall_score(test_labels, test_pred),
+                     f1_score(test_labels, test_pred)]
+
+    print(METRIC_NAMES)
+    print(model_metrics)
+    test_metrics.append(model_metrics)
+
+    # get training duration
+    hours = get_duration_hours(start_time)
+    model_durations.append(hours)
+
+sklearn_models_df = pd.DataFrame(test_metrics, columns=METRIC_NAMES, index=model_names)
+sklearn_models_df['training_time'], sklearn_models_df['best_params'] = model_durations, best_params_list
 
 
-
-
-
-    # nb_params = {'priors': [None], 'var_smoothing': [1e-09]}
-
-    svc_grid_params = {'C': [0.001, 0.01, 0.1, 1, 10],
-                       'gamma': [0.001, 0.01, 0.1, 1]}
-
-    rf_grid_params = {'max_depth': [None, 5, 10, 20],
-                      'max_features': ['auto', None],
-                      'max_leaf_nodes': [None],
-                      'min_impurity_decrease': [0.0],
-                      'min_impurity_split': [None],
-                      'min_samples_leaf': [1, 2, 4],
-                      'min_samples_split': [2, 5, 10],
-                      'min_weight_fraction_leaf': [0.0],
-                      'n_estimators': [100, 500, 1000, 2000]}
-
-
-
-    gbm_grid_params = {'learning_rate': [.01, .025, .05, .1, .25],
-                       'max_depth': [None, 5, 10, 20],
-                       'max_features': ['auto'],
-                       'max_leaf_nodes': [None],
-                       'min_impurity_decrease': [0.0],
-                       'min_impurity_split': [None],
-                       'min_samples_leaf': [1],
-                       'min_samples_split': [2],
-                       'min_weight_fraction_leaf': [0.0],
-                       'n_estimators': [50, 100, 200],
-                       'subsample': [.1, .25, .5, .75]}
-
-    grid_param_list = [None, svc_grid_params, rf_grid_params, gbm_grid_params]
-
-    # for i in range(len(MODELS)):
-    #     GridSearchCV(MODELS[i], grid_param_list[i], cv=skf, n_jobs=-1, verbose=2)
-
-    METRIC_NAMES = ['precision', 'recall', 'f1']
-    skf = StratifiedKFold(n_splits=FOLDS, random_state=RANDOM_STATE)
-
-    # output DF
-    model_names = []
-    test_metrics1 = []
-    model_durations = []
-    best_params_list = []
-
-    # save diagnostics
-    test_predictions1 = []
-    class_probabilities_list = []
-    fit_models = []
-    classification_reports = []
-    confusion_matrices = []
-
-
-
-    for i, model in enumerate(MODELS):
-        model_name = model.__class__.__name__
-        model_names.append(model_name)
-        print(model_name)
-
-        model.fit(train_features, train_labels)
-        test_pred = model.predict(test_features)
-        # test_predictions1.append(test_pred)
-        # get scores
-        model_metrics = [precision_score(test_labels, test_pred),
-                         recall_score(test_labels, test_pred),
-                         f1_score(test_labels, test_pred)]
-
-        print(METRIC_NAMES)
-        print(model_metrics)
-        test_metrics1.append(model_metrics)
-
-
-
-
-    for i, model in enumerate(MODELS):
-
-        start_time = datetime.now()
-
-        model_name = model.__class__.__name__
-        model_names.append(model_name)
-        print(model_name)
-
-        if model_name == 'GaussianNB':
-            cv_model = model
-            cv_model.fit(train_features, train_labels)
-
-            fit_models.append(cv_model)
-            best_params_list.append(None)
-        else:
-            cv_model = GridSearchCV(model, grid_param_list[i], cv=skf, n_jobs=-1, verbose=2)
-            cv_model.fit(train_features, train_labels)
-
-            # get the best CV parameters
-            best_params = cv_model.best_params_
-            best_params_list.append(best_params)
-
-        # make predictions
-        test_pred, test_class_probabilities = cv_model.predict(test_features), \
-                                              cv_model.predict_proba(test_features)
-
-        test_predictions.append(test_pred)
-        class_probabilities_list.append(test_class_probabilities)
-        # test_class_probabilities = model.predict_proba(test_features)
-
-        # get the classification report
-        class_report = classification_report(test_labels, test_pred)
-        classification_reports.append(class_report)
-        print(class_report)
-
-        # get confusion matrix
-        confusion_df = pd.DataFrame(confusion_matrix(test_labels, test_pred),
-                                    columns = ["Predicted Class " + str(class_name) for class_name in class_labels],
-                                    index = ["Class " + str(class_name) for class_name in class_labels])
-        confusion_matrices.append(confusion_df)
-        print(confusion_df)
-
-        # get scores
-        model_metrics = [precision_score(test_labels, test_pred),
-                         recall_score(test_labels, test_pred),
-                         f1_score(test_labels, test_pred)]
-
-        print(METRIC_NAMES)
-        print(model_metrics)
-        test_metrics.append(model_metrics)
-
-        # get training duration
-        hours = get_duration_hours(start_time)
-        model_durations.append(hours)
-
-    sklearn_models_df = pd.DataFrame(test_metrics, columns=METRIC_NAMES, index=model_names)
-    sklearn_models_df['training_time'], sklearn_models_df['best_params'] = model_durations, best_params_list
-    pprint(classification_reports[0])
-    confusion_matrices[3]
-    import pickle
-
-    with open('sklearn_models.pkl') as f:
-        pickle.dump(fit_models, f)
+with open('sklearn_models.pkl') as f:
+    pickle.dump(fit_models, f)
 
     sklearn_models_df.to_csv('sklearn_models_df.csv', index=False)
 
