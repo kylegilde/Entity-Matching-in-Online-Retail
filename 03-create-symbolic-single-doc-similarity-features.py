@@ -136,9 +136,8 @@ print("Let's create a df to hold both sides of the DTM")
 
 both_sides_dtm_svd =\
     reduce_mem_usage(
-        both_features
+        cat_symbolic_similarity_features\
             .reset_index()
-            .drop(['description_1', 'description_2'], axis=1)
             .set_index('offer_id_1', drop=False)
             .join(dtm_svd.add_suffix('_1'), how='inner')
             .set_index('offer_id_2', drop=False)
