@@ -188,9 +188,10 @@ with open('sklearn_class_probabilities.pkl', 'wb') as f:
 with open('sklearn_confusion_matrices.pkl', 'wb') as f:
     pickle.dump(confusion_matrices, f)
 
+# save the model metrics
 sklearn_models_df.reset_index().to_csv('sklearn_models_df.csv', index=False)
-MODELS[1]
-fit_models[1]
+
+
 
 
 # non-CV version

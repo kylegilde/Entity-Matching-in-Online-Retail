@@ -101,3 +101,15 @@ def get_duration_hours(start_time):
     time_diff_hours = time_diff.seconds / 3600
     print('hours:', round(time_diff_hours, 2))
     return time_diff_hours
+
+
+def count_words(s):
+    """
+
+    :param s:
+    :return:
+    """
+    return s \
+        .str.split(expand=True) \
+        .apply(lambda x: np.sum(pd.notnull(x)), 1) \
+        .sort_values(ascending=False)

@@ -2,14 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f7d760b9-f4cb-4f2d-831d-97e304e88e4c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Entity-Matching-in-Online-Retail.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Entity-Matching-in-Online-Retail.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/01-parse-json-to-dfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/01-parse-json-to-dfs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02-normalize-features.py" beforeDir="false" afterPath="$PROJECT_DIR$/02-normalize-features.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/03-create-symbolic-similarity-features.py" beforeDir="false" afterPath="$PROJECT_DIR$/03-create-symbolic-similarity-features.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Exploratory Data Analysis.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Exploratory Data Analysis.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/json_parsing_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/json_parsing_functions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Exploratory Data Analysis-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exploratory Data Analysis.ipynb" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/sklearn-models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sklearn-models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utility_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/utility_functions.py" afterDir="false" />
     </list>
@@ -25,7 +19,7 @@
         <entry file="file://$PROJECT_DIR$/01-parse-json-to-dfs.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="294">
-              <caret line="14" column="31" lean-forward="true" selection-start-line="14" selection-start-column="31" selection-end-line="14" selection-end-column="31" />
+              <caret line="14" column="31" selection-start-line="14" selection-start-column="31" selection-end-line="14" selection-end-column="31" />
               <folding>
                 <element signature="e#78#87#0" expanded="true" />
               </folding>
@@ -36,8 +30,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/02-normalize-features.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1293">
-              <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+            <state relative-caret-position="-1041">
+              <caret line="8" selection-start-line="8" selection-end-line="8" />
               <folding>
                 <element signature="e#461#470#0" expanded="true" />
               </folding>
@@ -45,11 +39,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/03-create-symbolic-similarity-features.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="231">
-              <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+            <state relative-caret-position="204">
+              <caret line="55" column="77" selection-start-line="55" selection-start-column="77" selection-end-line="55" selection-end-column="77" />
               <folding>
                 <element signature="e#328#337#0" expanded="true" />
                 <element signature="e#707#1068#0" />
@@ -59,11 +53,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sklearn-models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="358">
-              <caret line="192" column="13" lean-forward="true" selection-start-line="192" selection-start-column="13" selection-end-line="192" selection-end-column="13" />
+            <state relative-caret-position="-3170">
+              <caret line="39" column="47" selection-start-line="39" selection-start-column="47" selection-end-line="39" selection-end-column="47" />
               <folding>
                 <element signature="e#272#281#0" expanded="true" />
               </folding>
@@ -74,8 +68,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/utility_functions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1911">
-              <caret line="91" selection-start-line="91" selection-end-line="91" />
+            <state relative-caret-position="304">
+              <caret line="109" column="12" lean-forward="true" selection-start-line="109" selection-start-column="12" selection-end-line="109" selection-end-column="12" />
               <folding>
                 <element signature="e#0#29#0" expanded="true" />
               </folding>
@@ -106,7 +100,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>gtin</find>
       <find>comparison_feature</find>
       <find>concat</find>
       <find>del</find>
@@ -135,6 +128,7 @@
       <find>cat_symbolic_similarity_features</find>
       <find>parsed_df</find>
       <find>final_symbolic_similarity_features</find>
+      <find>calculate_percent_nulls</find>
       <find>train_test_stemmed_features</find>
     </findStrings>
     <replaceStrings>
@@ -175,12 +169,12 @@
         <option value="$PROJECT_DIR$/models.py" />
         <option value="$PROJECT_DIR$/create-symbolic-similarity-features.py" />
         <option value="$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py" />
-        <option value="$PROJECT_DIR$/utility_functions.py" />
         <option value="$PROJECT_DIR$/01-parse-json-to-dfs.py" />
         <option value="$PROJECT_DIR$/02-normalize-features.py" />
         <option value="$PROJECT_DIR$/03-create-symbolic-similarity-features.py" />
         <option value="$PROJECT_DIR$/json_parsing_functions.py" />
         <option value="$PROJECT_DIR$/sklearn-models.py" />
+        <option value="$PROJECT_DIR$/utility_functions.py" />
       </list>
     </option>
   </component>
@@ -188,7 +182,7 @@
     <option name="x" value="371" />
     <option name="y" value="10" />
     <option name="width" value="1510" />
-    <option name="height" value="913" />
+    <option name="height" value="939" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
@@ -268,7 +262,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="297" y="8" width="1208" height="730" extended-state="0" />
+    <frame x="297" y="8" width="1208" height="751" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.026541095" />
@@ -364,34 +358,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/01-parse-json-to-dfs.py">
+    <entry file="file://$PROJECT_DIR$/utility_functions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="14" column="31" lean-forward="true" selection-start-line="14" selection-start-column="31" selection-end-line="14" selection-end-column="31" />
+        <state relative-caret-position="304">
+          <caret line="109" column="12" lean-forward="true" selection-start-line="109" selection-start-column="12" selection-end-line="109" selection-end-column="12" />
           <folding>
-            <element signature="e#78#87#0" expanded="true" />
+            <element signature="e#0#29#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/03-create-symbolic-similarity-features.py">
+    <entry file="file://$PROJECT_DIR$/sklearn-models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+        <state relative-caret-position="-3170">
+          <caret line="39" column="47" selection-start-line="39" selection-start-column="47" selection-end-line="39" selection-end-column="47" />
           <folding>
-            <element signature="e#328#337#0" expanded="true" />
-            <element signature="e#707#1068#0" />
-            <element signature="e#1130#1625#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/02-normalize-features.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1293">
-          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
-          <folding>
-            <element signature="e#461#470#0" expanded="true" />
+            <element signature="e#272#281#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -406,22 +388,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utility_functions.py">
+    <entry file="file://$PROJECT_DIR$/02-normalize-features.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1911">
-          <caret line="91" selection-start-line="91" selection-end-line="91" />
+        <state relative-caret-position="-1041">
+          <caret line="8" selection-start-line="8" selection-end-line="8" />
           <folding>
-            <element signature="e#0#29#0" expanded="true" />
+            <element signature="e#461#470#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sklearn-models.py">
+    <entry file="file://$PROJECT_DIR$/01-parse-json-to-dfs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="358">
-          <caret line="192" column="13" lean-forward="true" selection-start-line="192" selection-start-column="13" selection-end-line="192" selection-end-column="13" />
+        <state relative-caret-position="294">
+          <caret line="14" column="31" selection-start-line="14" selection-start-column="31" selection-end-line="14" selection-end-column="31" />
           <folding>
-            <element signature="e#272#281#0" expanded="true" />
+            <element signature="e#78#87#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/03-create-symbolic-similarity-features.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="55" column="77" selection-start-line="55" selection-start-column="77" selection-end-line="55" selection-end-column="77" />
+          <folding>
+            <element signature="e#328#337#0" expanded="true" />
+            <element signature="e#707#1068#0" />
+            <element signature="e#1130#1625#0" />
           </folding>
         </state>
       </provider>
