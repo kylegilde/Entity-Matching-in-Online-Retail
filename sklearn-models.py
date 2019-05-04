@@ -17,7 +17,7 @@ import gc
 import numpy as np
 import pandas as pd
 import pickle
-from json_parsing_functions import *
+# from json_parsing_functions import *
 from utility_functions import *
 
 from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold, RandomizedSearchCV, cross_val_score
@@ -79,7 +79,7 @@ rf_grid_params = {'max_depth': [None, 5, 10, 20],
                   'min_weight_fraction_leaf': [0.0],
                   'n_estimators': [100, 500, 1000, 2000]}
 
-gbm_grid_params = {'learning_rate': [.01, .025, .05, .1, .25],
+gbm_grid_params = {'learning_rate': [.025, .05, .075, .1],
                    'max_depth': [None, 5, 10, 20],
                    'max_features': ['auto'],
                    'max_leaf_nodes': [None],
@@ -88,7 +88,7 @@ gbm_grid_params = {'learning_rate': [.01, .025, .05, .1, .25],
                    'min_samples_leaf': [1],
                    'min_samples_split': [2],
                    'min_weight_fraction_leaf': [0.0],
-                   'n_estimators': [50, 100, 200],
+                   'n_estimators': [200, 300, 400],
                    'subsample': [.1, .25, .5, .75]}
 
 grid_param_list = [None, svc_grid_params, rf_grid_params, gbm_grid_params]
@@ -112,26 +112,8 @@ fit_models = []
 classification_reports = []
 confusion_matrices = []
 
-# non-CV version
-# for i, model in enumerate(MODELS):
-#     model_name = model.__class__.__name__
-#     model_names.append(model_name)
-#     print(model_name)
-#
-#     model.fit(train_features, train_labels)
-#     test_pred = model.predict(test_features)
-#     # test_predictions1.append(test_pred)
-#     # get scores
-#     model_metrics = [precision_score(test_labels, test_pred),
-#                      recall_score(test_labels, test_pred),
-#                      f1_score(test_labels, test_pred)]
-#
-#     print(METRIC_NAMES)
-#     print(model_metrics)
-#     test_metrics.append(model_metrics)
-
 for i, model in enumerate(MODELS):
-
+    model = MODELS[3]
     start_time = datetime.now()
 
     model_name = model.__class__.__name__
@@ -139,6 +121,8 @@ for i, model in enumerate(MODELS):
     print(model_name)
 
     if model_name == 'GaussianNB':
+
+        # no CV grid search for NB
         cv_model = model
         cv_model.fit(train_features, train_labels)
 
@@ -147,6 +131,8 @@ for i, model in enumerate(MODELS):
     else:
         cv_model = GridSearchCV(model, grid_param_list[i], cv=skf, n_jobs=-1, verbose=2)
         cv_model.fit(train_features, train_labels)
+
+        fit_models.append(cv_model)
 
         # get the best CV parameters
         best_params = cv_model.best_params_
@@ -188,78 +174,39 @@ for i, model in enumerate(MODELS):
 sklearn_models_df = pd.DataFrame(test_metrics, columns=METRIC_NAMES, index=model_names)
 sklearn_models_df['training_time'], sklearn_models_df['best_params'] = model_durations, best_params_list
 
+print('Save the results')
 
-with open('sklearn_models.pkl') as f:
+with open('sklearn_models.pkl', 'wb') as f:
     pickle.dump(fit_models, f)
 
-    sklearn_models_df.to_csv('sklearn_models_df.csv', index=False)
+with open('sklearn_test_predictions.pkl', 'wb') as f:
+        pickle.dump(test_predictions, f)
+
+with open('sklearn_class_probabilities.pkl', 'wb') as f:
+    pickle.dump(class_probabilities_list, f)
+
+with open('sklearn_confusion_matrices.pkl', 'wb') as f:
+    pickle.dump(confusion_matrices, f)
+
+sklearn_models_df.reset_index().to_csv('sklearn_models_df.csv', index=False)
+MODELS[1]
+fit_models[1]
 
 
-    # def perform_cross_val(models, X_train, y_train, scoring, cv=FOLDS):
-    #     """
-    #     perform cross-validation model fitting
-    #     and returns the results
-    #
-    #     :param models: list of sci-kit learn model classes
-    #     :param X_train: training data set
-    #     :param y_train: response labels
-    #     :param cv: # of folds
-    #     :return: a df with the accuracies for each model and fold
-    #     """
-    #     entries = []
-    #     for model in models:
-    #       model_name = model.__class__.__name__
-    #       accuracies = cross_val_score(model, X_train, y_train, scoring=SCORERS, cv=cv)
-    #       for fold_idx, accuracy in enumerate(accuracies):
-    #         entries.append((model_name, fold_idx, accuracy))
-    #
-    #     return pd.DataFrame(entries, columns=['model_name', 'fold_idx', 'accuracy'])
-
-
-
+# non-CV version
+# for i, model in enumerate(MODELS):
+#     model_name = model.__class__.__name__
+#     model_names.append(model_name)
+#     print(model_name)
 #
-#     def plot_cv_results(cv_df):
-#         """
-#         Plots the distributions of the accuracy SCORERS
-#         for each fold in each of our models.
+#     model.fit(train_features, train_labels)
+#     test_pred = model.predict(test_features)
+#     # test_predictions1.append(test_pred)
+#     # get scores
+#     model_metrics = [precision_score(test_labels, test_pred),
+#                      recall_score(test_labels, test_pred),
+#                      f1_score(test_labels, test_pred)]
 #
-#         :param cv_df: the output df from perform_cross_val
-#         :return: None
-#         """
-#         plt.figure(figsize=[10, 10])
-#         sns.boxplot(x='model_name', y='accuracy', data=cv_df)
-#         f = sns.stripplot(x='model_name', y='accuracy', data=cv_df,
-#                       size=8, jitter=True, edgecolor="gray", linewidth=2)
-#         f.xaxis.tick_top() # x labels on top
-#         plt.setp(f.get_xticklabels(), rotation=30, fontsize=20) # rotate and increase x labels
-#         plt.show()
-#         # calculate accuracy mean & std
-#         display(cv_df.groupby('model_name')\
-#                      .agg({"accuracy": [np.mean, stats.sem]})\
-#                      .sort_values(by=('accuracy', 'mean'), ascending=False)\
-#                      .round(4))
-#
-#
-#
-#
-#     X_train, X_dev_test, y_train, y_dev_test = train_test_split(train_features,
-#                                                                 train_labels,\
-#                                                                 test_size=.2,\
-#                                                                 random_state = 0)
-#
-#     lb = preprocessing.LabelBinarizer()
-#     lb.fit(y_train)
-#
-#     cv_scores = cross_val_score(models[0], X_train, y_train, SCORERS, cv=5)
-#
-#
-#
-#     # run cv function
-#     results = perform_cross_val(models, X_train, y_train)
-#
-#     plot_cv_results(results)
-#
-# else:
-#
-#     print("input files not found")
-
+#     print(METRIC_NAMES)
+#     print(model_metrics)
+#     test_metrics.append(model_metrics)

@@ -12,6 +12,7 @@ from pandas.io.json import json_normalize
 
 import matplotlib.pyplot as plt
 from json_parsing_functions import *
+from utility_functions import *
 
 # Initialize some constants
 TRAIN_TEST_CATEGORIES = ['Computers_and_Accessories', 'Camera_and_Photo', 'Shoes', 'Jewelry']

@@ -1,14 +1,18 @@
 # !/usr/bin/env/python365
 """
+
 Created on Apr 23, 2019
 @author: Kyle Gilde
 
-This script ingests the train_test_feature_pairs.csv created by parse-json-to-dfs.py
+This script ingests the train_test_offer_features.csv created by 01-parse-json-to-dfs.py
 and does the following:
+
     - Removes non-alphanumeric/space characters from all text columns
         and creates the train_test_normalized_features.csv to be used to
         create the semantic features
-    - Stems the name and description fields and creates the train_test_stemmed_features.csv
+    - Stems the name description and other text features
+
+Creates output file called train_test_stemmed_features.csv
 
 """
 import os
@@ -16,7 +20,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from json_parsing_functions import *
+from utility_functions import *
 
 import nltk
 from nltk.corpus import stopwords

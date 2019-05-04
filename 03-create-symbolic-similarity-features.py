@@ -3,11 +3,23 @@
 Created on Apr 27, 2019
 @author: Kyle Gilde
 
-This script takes the outputs of create-symbolic-features.py
-and parse-json-to-dfs.py.
+This script takes 2 input files:
 
-It outputs a df that contains the similarity vectors of the offer pairs
-in the test and training sets. The df is saved as cat_symbolic_similarity_features.csv
+    1. 'train_test_stemmed_features.csv' created from 02-normalized-features.py
+    2. 'train_test_df.csv' created from 01-parse-json-to-dfs.py
+
+For each of the 4 dataset categories, this script compares each of the corresponding attribute values for each pair of offers.
+
+    1. For the 7 short-to-medium length text features, it calculates the scaled Levenshtein similarity score.
+    2. For the long description feature, it encodes the text as bag-of-words TF-IDF approach for unigrams, bigrams & trigrams.
+        Truncated SVD is used to select only the components that explain 99.9% of the variances, and then the cosine similarity
+        is calculated for the 2 vectors.
+    3. For the price, the absolute percent diffence is calculated
+    4. For the strongly-typed offer category, a 0 or 1 indicates whether they are an exact match.
+
+It outputs symbolic_similarity_features.csv,
+ which is a dataframe that contains the similarity vectors of the offer pairs
+  for both the test and training sets.
 
 """
 
@@ -140,17 +152,20 @@ for the_category in file_categories:
 
         if column in ALL_SHORT_TEXT_FEATURES:
 
+            # scaled Levenshtein similarity score
             cat_symbolic_similarity_features[column] = both_features.apply(levenshtein_similarity, axis=1)
             cat_symbolic_similarity_features = reduce_mem_usage(cat_symbolic_similarity_features)
 
         elif column in STRONGLY_TYPED_FEATURES:
 
+            # exact match
             cat_symbolic_similarity_features[column] = pd.Series(both_features.iloc[:, 0]\
                                                              == both_features.iloc[:, 1]).astype('int8')
             cat_symbolic_similarity_features = reduce_mem_usage(cat_symbolic_similarity_features)
 
         elif column in NUMERIC_FEATURE:
 
+            # absolute percent difference
             cat_symbolic_similarity_features[column] = \
                 np.nan_to_num(np.absolute(both_features.iloc[:, 0] - both_features.iloc[:, 1]) / \
                               np.maximum(both_features.iloc[:, 0], both_features.iloc[:, 1]))
@@ -159,9 +174,7 @@ for the_category in file_categories:
         elif column in LONG_TEXT_FEATURES:
             # column = 'description'
 
-            # del train_test_df
-            # gc.collect()
-
+            # bag-of-words TF-IDF with Truncated SVD and cosine similarity
             vectorizer = TfidfVectorizer(ngram_range=(1, 3))
 
             # create a document-term matrix from the unique column values
