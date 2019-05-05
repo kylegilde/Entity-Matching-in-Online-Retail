@@ -57,7 +57,7 @@ assert 'train_test_stemmed_features.csv' in os.listdir() and 'train_test_df.csv'
 train_test_stemmed_features = pd.read_csv('train_test_stemmed_features.csv')\
     .set_index('offer_id')
 
-print(train_test_stemmed_features.reset_index().head(100))
+print(train_test_stemmed_features.reset_index().head(20))
 
 train_test_df = reduce_mem_usage(pd.read_csv('train_test_df.csv'))
 
