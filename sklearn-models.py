@@ -30,11 +30,12 @@ from sklearn.linear_model import LogisticRegression  #LogisticRegression(random_
 
 DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
 DATA_DIRECTORY = '//files/share/goods/OI Team'
+RESULTS_DIRECTORY = '/results-09-features/'
 os.chdir(DATA_DIRECTORY)
 
 RANDOM_STATE = 5
 FOLDS = 5
-ALL_FEATURES = ['brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'name', 'category', 'price', 'description']
+ALL_FEATURES = ['brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'name', 'price', 'description'] # 'category'
 
 SCORERS = {'precision': make_scorer(precision_score),
            'recall': make_scorer(recall_score),
@@ -113,7 +114,7 @@ classification_reports = []
 confusion_matrices = []
 
 for i, model in enumerate(MODELS):
-    model = MODELS[3]
+
     start_time = datetime.now()
 
     model_name = model.__class__.__name__
@@ -129,6 +130,7 @@ for i, model in enumerate(MODELS):
         fit_models.append(cv_model)
         best_params_list.append(None)
     else:
+
         cv_model = GridSearchCV(model, grid_param_list[i], cv=skf, n_jobs=-1, verbose=2)
         cv_model.fit(train_features, train_labels)
 
@@ -173,9 +175,11 @@ for i, model in enumerate(MODELS):
 
 sklearn_models_df = pd.DataFrame(test_metrics, columns=METRIC_NAMES, index=model_names)
 sklearn_models_df['training_time'], sklearn_models_df['best_params'] = model_durations, best_params_list
-
+print(sklearn_models_df.iloc[:, :3])
 print('Save the results')
 
+os.chdir(DATA_DIRECTORY + RESULTS_DIRECTORY)
+# os.getcwd()
 with open('sklearn_models.pkl', 'wb') as f:
     pickle.dump(fit_models, f)
 

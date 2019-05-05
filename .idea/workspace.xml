@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f7d760b9-f4cb-4f2d-831d-97e304e88e4c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Presentation-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Presentation-checkpoint.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sklearn-models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sklearn-models.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -36,11 +38,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/03-create-symbolic-similarity-features.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="55" column="77" selection-start-line="55" selection-start-column="77" selection-end-line="55" selection-end-column="77" />
+            <state relative-caret-position="246">
+              <caret line="57" lean-forward="true" selection-start-line="57" selection-end-line="57" />
               <folding>
                 <element signature="e#328#337#0" expanded="true" />
                 <element signature="e#707#1068#0" />
@@ -50,11 +52,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sklearn-models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3170">
-              <caret line="39" column="47" selection-start-line="39" selection-start-column="47" selection-end-line="39" selection-end-column="47" />
+            <state relative-caret-position="412">
+              <caret line="188" column="50" selection-start-line="188" selection-start-column="50" selection-end-line="188" selection-end-column="50" />
               <folding>
                 <element signature="e#272#281#0" expanded="true" />
               </folding>
@@ -125,8 +127,8 @@
       <find>cat_symbolic_similarity_features</find>
       <find>parsed_df</find>
       <find>final_symbolic_similarity_features</find>
-      <find>calculate_percent_nulls</find>
       <find>train_test_stemmed_features</find>
+      <find>calculate_percent_nulls</find>
     </findStrings>
     <replaceStrings>
       <replace>df</replace>
@@ -170,16 +172,15 @@
         <option value="$PROJECT_DIR$/02-normalize-features.py" />
         <option value="$PROJECT_DIR$/03-create-symbolic-similarity-features.py" />
         <option value="$PROJECT_DIR$/json_parsing_functions.py" />
-        <option value="$PROJECT_DIR$/sklearn-models.py" />
         <option value="$PROJECT_DIR$/utility_functions.py" />
+        <option value="$PROJECT_DIR$/sklearn-models.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="371" />
-    <option name="y" value="10" />
-    <option name="width" value="1510" />
-    <option name="height" value="939" />
+    <option name="width" value="1552" />
+    <option name="height" value="1024" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
@@ -259,9 +260,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="297" y="8" width="1208" height="751" extended-state="0" />
+    <frame x="297" y="0" width="1241" height="819" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.026541095" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.025811823" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -272,7 +274,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.4987552" weight="0.32911393" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32857144" />
-      <window_info active="true" anchor="bottom" x="7" y="36" width="1024" height="774" id="Python Console" order="8" type="WINDOWED" visible="true" weight="0.3285968" />
+      <window_info active="true" anchor="bottom" x="7" y="36" width="1211" height="774" id="Python Console" order="8" type="WINDOWED" visible="true" weight="0.3285968" />
       <window_info anchor="bottom" id="Educational.CheckDetails" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50124484" side_tool="true" weight="0.32911393" />
@@ -364,16 +366,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sklearn-models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3170">
-          <caret line="39" column="47" selection-start-line="39" selection-start-column="47" selection-end-line="39" selection-end-column="47" />
-          <folding>
-            <element signature="e#272#281#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/json_parsing_functions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4284">
@@ -406,12 +398,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/03-create-symbolic-similarity-features.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="55" column="77" selection-start-line="55" selection-start-column="77" selection-end-line="55" selection-end-column="77" />
+        <state relative-caret-position="246">
+          <caret line="57" lean-forward="true" selection-start-line="57" selection-end-line="57" />
           <folding>
             <element signature="e#328#337#0" expanded="true" />
             <element signature="e#707#1068#0" />
             <element signature="e#1130#1625#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sklearn-models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="412">
+          <caret line="188" column="50" selection-start-line="188" selection-start-column="50" selection-end-line="188" selection-end-column="50" />
+          <folding>
+            <element signature="e#272#281#0" expanded="true" />
           </folding>
         </state>
       </provider>
