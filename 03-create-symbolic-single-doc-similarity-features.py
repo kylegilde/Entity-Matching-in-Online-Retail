@@ -19,32 +19,10 @@ import nltk
 import numpy as np
 import pandas as pd
 
-from json_parsing_functions import reduce_mem_usage
 from utility_functions import *
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import TruncatedSVD
-from scipy.spatial.distance import cosine
-
-
-def elementwise_cosine_similarity(df_row, n_features):
-    """
-    Calculates the elementwise cosine similarity with the apply method
-
-    :param df_row: a DF row where the first n_features are the left side features
-        and the last n_features are the right side features
-    :param n_features: this is the number of features each side of the DTM has
-    :return: float between 0 and 1
-    """
-
-    s1, s2 = df_row[:n_features], df_row[n_features:]
-
-    if np.sum(s1) == 0 or np.sum(s2) == 0:
-        return 0
-    else:
-        return cosine(s1, s2)
-
-
 
 start_time = datetime.now()
 
@@ -63,7 +41,7 @@ VARIANCE_EXPLAINED = 0.999
 N_ROWS_PER_ITERATION = 2000
 
 # the description column must be last in the list
-ALL_FEATURES = ['name', 'description', 'brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'category', 'price']
+ALL_FEATURES = ['name', 'description', 'brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'price'] #'category'
 
 OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset']
 
@@ -78,6 +56,8 @@ assert 'train_test_stemmed_features.csv' in os.listdir() and 'train_test_df.csv'
 
 train_test_stemmed_features = pd.read_csv('train_test_stemmed_features.csv')\
     .set_index('offer_id')
+
+print(train_test_stemmed_features.reset_index().head(100))
 
 train_test_df = reduce_mem_usage(pd.read_csv('train_test_df.csv'))
 
@@ -106,6 +86,8 @@ cat_symbolic_similarity_features.set_index(OFFER_PAIR_COLUMNS, inplace=True)
 
 train_test_stemmed_features['price'] = train_test_stemmed_features.price.astype('str')
 unique_column_values = train_test_stemmed_features.apply(lambda x: ' '.join(x.dropna()), axis=1)
+
+print(unique_column_values.reset_index().head(100))
 
 vectorizer = TfidfVectorizer(ngram_range=(1, 3))
 
@@ -147,7 +129,7 @@ both_sides_dtm_svd =\
 
 print(both_sides_dtm_svd.info())
 
-del both_features
+# del both_features
 gc.collect()
 
 get_duration_hours(start_time)

@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f7d760b9-f4cb-4f2d-831d-97e304e88e4c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Presentation-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Presentation-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Presentation.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sklearn-models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sklearn-models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py" beforeDir="false" afterPath="$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -52,13 +50,25 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sklearn-models.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="412">
               <caret line="188" column="50" selection-start-line="188" selection-start-column="50" selection-end-line="188" selection-end-column="50" />
               <folding>
                 <element signature="e#272#281#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="462">
+              <caret line="85" lean-forward="true" selection-start-line="85" selection-end-line="85" />
+              <folding>
+                <element signature="e#328#337#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -167,18 +177,18 @@
         <option value="$PROJECT_DIR$/create-symbolic-features.py" />
         <option value="$PROJECT_DIR$/models.py" />
         <option value="$PROJECT_DIR$/create-symbolic-similarity-features.py" />
-        <option value="$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py" />
         <option value="$PROJECT_DIR$/01-parse-json-to-dfs.py" />
         <option value="$PROJECT_DIR$/02-normalize-features.py" />
         <option value="$PROJECT_DIR$/03-create-symbolic-similarity-features.py" />
         <option value="$PROJECT_DIR$/json_parsing_functions.py" />
         <option value="$PROJECT_DIR$/utility_functions.py" />
         <option value="$PROJECT_DIR$/sklearn-models.py" />
+        <option value="$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="371" />
+    <option name="x" value="372" />
     <option name="width" value="1552" />
     <option name="height" value="1024" />
   </component>
@@ -208,7 +218,7 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/03-create-symbolic-similarity-features.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="PyConsoleOptionsProvider">
@@ -260,8 +270,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="297" y="0" width="1241" height="819" extended-state="0" />
-    <editor active="true" />
+    <frame x="298" y="0" width="1241" height="819" extended-state="0" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.025811823" />
       <window_info id="Structure" order="1" weight="0.25" />
@@ -346,16 +355,6 @@
       </provider>
     </entry>
     <entry file="file://$APPLICATION_CONFIG_DIR$/pycharm64.exe.vmoptions" />
-    <entry file="file://$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="312">
-          <caret line="179" lean-forward="true" selection-start-line="179" selection-end-line="179" />
-          <folding>
-            <element signature="e#328#337#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/utility_functions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="304">
@@ -414,6 +413,16 @@
           <caret line="188" column="50" selection-start-line="188" selection-start-column="50" selection-end-line="188" selection-end-column="50" />
           <folding>
             <element signature="e#272#281#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="462">
+          <caret line="85" lean-forward="true" selection-start-line="85" selection-end-line="85" />
+          <folding>
+            <element signature="e#328#337#0" expanded="true" />
           </folding>
         </state>
       </provider>
