@@ -30,7 +30,7 @@ from sklearn.linear_model import LogisticRegression  #LogisticRegression(random_
 
 DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
 DATA_DIRECTORY = '//files/share/goods/OI Team'
-RESULTS_DIRECTORY = '/results-09-features/'
+RESULTS_DIRECTORY = '/features-02-sk-results/'
 os.chdir(DATA_DIRECTORY)
 
 RANDOM_STATE = 5
@@ -41,9 +41,11 @@ SCORERS = {'precision': make_scorer(precision_score),
            'recall': make_scorer(recall_score),
            'f1_score': make_scorer(f1_score)}
 
-assert 'symbolic_similarity_features.csv' in os.listdir(), 'An input file is missing'
+input_file_name = input('Input the features file')
 
-symbolic_similarity_features = reduce_mem_usage(pd.read_csv('symbolic_similarity_features.csv'))
+assert input_file_name in os.listdir(), 'An input file is missing'
+
+symbolic_similarity_features = reduce_mem_usage(pd.read_csv(input_file_name))
 
 # get the train & test indices
 train_indices, test_indices = symbolic_similarity_features.dataset.astype('object').apply(lambda x: x == 'train'),\
