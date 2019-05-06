@@ -36,7 +36,7 @@ pd.set_option('display.max_colwidth', 250)
 DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
 DATA_DIRECTORY = '//files/share/goods/OI Team'
 os.chdir(DATA_DIRECTORY)
-MAX_SVD_COMPONENTS = 4000
+MAX_SVD_COMPONENTS = 2000
 VARIANCE_EXPLAINED_MAX = 0.999
 N_ROWS_PER_ITERATION = 2000
 
@@ -44,12 +44,6 @@ N_ROWS_PER_ITERATION = 2000
 ALL_FEATURES = ['name', 'description', 'brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'price'] #'category'
 
 OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label', 'file_category']
-
-# set display options
-pd.set_option('display.max_rows', 3000)
-pd.set_option('display.max_columns', 500)
-pd.set_option('display.width', 500)
-pd.set_option('display.max_colwidth', 0)
 
 # load files
 assert 'train_test_stemmed_features.csv' in os.listdir() and 'train_test_df.csv' in os.listdir(), 'An input file is missing'
@@ -135,9 +129,12 @@ assert symbolic_single_doc_similarity_features.shape[1] == 2 * n_features, "Some
 
 print('Calculate the absolute difference between each offer pair')
 symbolic_single_doc_similarity_features_df =\
-    (symbolic_single_doc_similarity_features.iloc[:, :n_features] -\
-    symbolic_single_doc_similarity_features.iloc[:, n_features:].values)\
+    (symbolic_single_doc_similarity_features.iloc[:, :n_features]\
+    .sub(symbolic_single_doc_similarity_features.iloc[:, n_features:].values))\
     .abs()
+
+del symbolic_single_doc_similarity_features
+gc.collect()
 
 print('Summary stats')
 print(symbolic_single_doc_similarity_features_df.shape)

@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f7d760b9-f4cb-4f2d-831d-97e304e88e4c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py" beforeDir="false" afterPath="$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sklearn-models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sklearn-models.py" afterDir="false" />
     </list>
@@ -41,8 +40,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/03-create-symbolic-similarity-features.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-608">
-              <caret line="86" column="14" selection-start-line="86" selection-end-line="86" selection-end-column="14" />
+            <state relative-caret-position="316">
+              <caret line="118" column="26" lean-forward="true" selection-start-line="118" selection-start-column="26" selection-end-line="118" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -50,11 +49,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sklearn-models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="273">
-              <caret line="61" selection-start-line="61" selection-end-line="64" />
-              <folding>
-                <element signature="e#272#281#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="-1661">
+              <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
             </state>
           </provider>
         </entry>
@@ -62,8 +58,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="337">
-              <caret line="145" selection-start-line="145" selection-end-line="145" />
+            <state relative-caret-position="231">
+              <caret line="38" column="22" selection-end-line="175" selection-end-column="73" />
               <folding>
                 <element signature="e#335#344#0" expanded="true" />
               </folding>
@@ -106,7 +102,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>os.</find>
       <find>sys</find>
       <find>datetime</find>
       <find>mem</find>
@@ -136,6 +131,7 @@
       <find>symbolic_single_doc_similarity_features</find>
       <find>train_test_df</find>
       <find>symbolic_similarity_features</find>
+      <find>ALL_FEATURES</find>
     </findStrings>
     <replaceStrings>
       <replace>df</replace>
@@ -180,15 +176,15 @@
         <option value="$PROJECT_DIR$/03-create-symbolic-similarity-features.py" />
         <option value="$PROJECT_DIR$/json_parsing_functions.py" />
         <option value="$PROJECT_DIR$/utility_functions.py" />
-        <option value="$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py" />
         <option value="$PROJECT_DIR$/sklearn-models.py" />
+        <option value="$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="360" />
+    <option name="x" value="356" />
     <option name="width" value="1564" />
-    <option name="height" value="1025" />
+    <option name="height" value="1024" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
@@ -268,12 +264,12 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="288" y="0" width="1251" height="820" extended-state="0" />
+    <frame x="285" y="0" width="1251" height="819" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4992658" visible="true" weight="0.025598679" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4985294" visible="true" weight="0.025598679" />
       <window_info id="Structure" order="1" weight="0.25" />
-      <window_info id="Favorites" order="2" sideWeight="0.5007342" side_tool="true" visible="true" weight="0.025598679" />
+      <window_info id="Favorites" order="2" sideWeight="0.50147057" side_tool="true" visible="true" weight="0.025598679" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" />
@@ -282,7 +278,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.4987552" weight="0.32911393" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32857144" />
-      <window_info active="true" anchor="bottom" x="7" y="36" width="1211" height="774" id="Python Console" order="8" type="WINDOWED" visible="true" weight="0.3285968" />
+      <window_info active="true" anchor="bottom" x="9" y="36" width="1211" height="774" id="Python Console" order="8" type="WINDOWED" visible="true" weight="0.3285968" />
       <window_info anchor="bottom" id="Educational.CheckDetails" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50124484" side_tool="true" weight="0.32911393" />
@@ -374,13 +370,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/02-normalize-features.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/01-parse-json-to-dfs.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="432">
@@ -391,27 +380,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/02-normalize-features.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="8" selection-start-line="8" selection-end-line="8" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/03-create-symbolic-similarity-features.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-608">
-          <caret line="86" column="14" selection-start-line="86" selection-end-line="86" selection-end-column="14" />
+        <state relative-caret-position="316">
+          <caret line="118" column="26" lean-forward="true" selection-start-line="118" selection-start-column="26" selection-end-line="118" selection-end-column="26" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sklearn-models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="61" selection-start-line="61" selection-end-line="64" />
-          <folding>
-            <element signature="e#272#281#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="-1661">
+          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="337">
-          <caret line="145" selection-start-line="145" selection-end-line="145" />
+        <state relative-caret-position="231">
+          <caret line="38" column="22" selection-end-line="175" selection-end-column="73" />
           <folding>
             <element signature="e#335#344#0" expanded="true" />
           </folding>

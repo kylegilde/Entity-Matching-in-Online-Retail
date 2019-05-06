@@ -35,7 +35,8 @@ os.chdir(DATA_DIRECTORY)
 
 RANDOM_STATE = 5
 FOLDS = 5
-ALL_FEATURES = ['brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'name', 'price', 'description'] # 'category'
+# ALL_FEATURES = ['brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'name', 'price', 'description'] # 'category'
+OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label', 'file_category']
 
 SCORERS = {'precision': make_scorer(precision_score),
            'recall': make_scorer(recall_score),
@@ -45,7 +46,7 @@ input_file_name = input('Input the features file')
 
 assert input_file_name in os.listdir(), 'An input file is missing'
 
-symbolic_similarity_features = reduce_mem_usage(pd.read_csv(input_file_name))
+symbolic_similarity_features = reduce_mem_usage(pd.read_csv(input_file_name).set_index(OFFER_PAIR_COLUMNS))
 
 # get the train & test indices
 train_indices, test_indices = symbolic_similarity_features.dataset.astype('object').apply(lambda x: x == 'train'),\
@@ -57,8 +58,8 @@ train_labels, test_labels = all_labels[train_indices], all_labels[test_indices]
 class_labels = np.sort(all_labels.unique())
 
 # train and test features
-train_features, test_features = symbolic_similarity_features.loc[train_indices, ALL_FEATURES],\
-                                symbolic_similarity_features.loc[test_indices, ALL_FEATURES]
+train_features, test_features = symbolic_similarity_features.loc[train_indices, :],\
+                                symbolic_similarity_features.loc[test_indices, :]
 
 # dev_train_features, dev_test_features, dev_train_labels, dev_test_labels = \
 #     train_test_split(train_features, train_labels, test_size=0.2, stratify=train_labels)
