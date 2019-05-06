@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f7d760b9-f4cb-4f2d-831d-97e304e88e4c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py" beforeDir="false" afterPath="$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sklearn-models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sklearn-models.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -40,26 +39,29 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/03-create-symbolic-similarity-features.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="316">
-              <caret line="118" column="26" lean-forward="true" selection-start-line="118" selection-start-column="26" selection-end-line="118" selection-end-column="26" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sklearn-models.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1661">
-              <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
+            <state relative-caret-position="841">
+              <caret line="119" lean-forward="true" selection-start-line="119" selection-end-line="119" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/sklearn-models.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="539">
+              <caret line="72" column="46" lean-forward="true" selection-start-line="72" selection-start-column="46" selection-end-line="72" selection-end-column="46" />
+              <folding>
+                <element signature="e#272#281#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="231">
-              <caret line="38" column="22" selection-end-line="175" selection-end-column="73" />
+            <state relative-caret-position="189">
+              <caret line="9" column="53" selection-start-line="9" selection-start-column="50" selection-end-line="9" selection-end-column="93" />
               <folding>
                 <element signature="e#335#344#0" expanded="true" />
               </folding>
@@ -129,9 +131,9 @@
       <find>explained_variance_ratio_</find>
       <find>VARIANCE_EXPLAINED</find>
       <find>symbolic_single_doc_similarity_features</find>
-      <find>train_test_df</find>
       <find>symbolic_similarity_features</find>
       <find>ALL_FEATURES</find>
+      <find>train_test_df</find>
     </findStrings>
     <replaceStrings>
       <replace>df</replace>
@@ -176,8 +178,8 @@
         <option value="$PROJECT_DIR$/03-create-symbolic-similarity-features.py" />
         <option value="$PROJECT_DIR$/json_parsing_functions.py" />
         <option value="$PROJECT_DIR$/utility_functions.py" />
-        <option value="$PROJECT_DIR$/sklearn-models.py" />
         <option value="$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py" />
+        <option value="$PROJECT_DIR$/sklearn-models.py" />
       </list>
     </option>
   </component>
@@ -265,7 +267,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="285" y="0" width="1251" height="819" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4985294" visible="true" weight="0.025598679" />
       <window_info id="Structure" order="1" weight="0.25" />
@@ -387,26 +388,29 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="9" column="53" selection-start-line="9" selection-start-column="50" selection-end-line="9" selection-end-column="93" />
+          <folding>
+            <element signature="e#335#344#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/03-create-symbolic-similarity-features.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="316">
-          <caret line="118" column="26" lean-forward="true" selection-start-line="118" selection-start-column="26" selection-end-line="118" selection-end-column="26" />
+        <state relative-caret-position="841">
+          <caret line="119" lean-forward="true" selection-start-line="119" selection-end-line="119" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sklearn-models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1661">
-          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="38" column="22" selection-end-line="175" selection-end-column="73" />
+        <state relative-caret-position="539">
+          <caret line="72" column="46" lean-forward="true" selection-start-line="72" selection-start-column="46" selection-end-line="72" selection-end-column="46" />
           <folding>
-            <element signature="e#335#344#0" expanded="true" />
+            <element signature="e#272#281#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -46,7 +46,7 @@ input_file_name = input('Input the features file')
 
 assert input_file_name in os.listdir(), 'An input file is missing'
 
-symbolic_similarity_features = reduce_mem_usage(pd.read_csv(input_file_name).set_index(OFFER_PAIR_COLUMNS))
+symbolic_similarity_features = reduce_mem_usage(pd.read_csv(input_file_name))
 
 # get the train & test indices
 train_indices, test_indices = symbolic_similarity_features.dataset.astype('object').apply(lambda x: x == 'train'),\
@@ -57,6 +57,9 @@ all_labels = symbolic_similarity_features.label
 train_labels, test_labels = all_labels[train_indices], all_labels[test_indices]
 class_labels = np.sort(all_labels.unique())
 
+# set indices
+symbolic_similarity_features.set_index(OFFER_PAIR_COLUMNS, inplace=True)
+
 # train and test features
 train_features, test_features = symbolic_similarity_features.loc[train_indices, :],\
                                 symbolic_similarity_features.loc[test_indices, :]
@@ -64,6 +67,10 @@ train_features, test_features = symbolic_similarity_features.loc[train_indices, 
 # dev_train_features, dev_test_features, dev_train_labels, dev_test_labels = \
 #     train_test_split(train_features, train_labels, test_size=0.2, stratify=train_labels)
 
+print(symbolic_similarity_features.columns.tolist())
+print(symbolic_similarity_features.info())
+print(symbolic_similarity_features.shape)
+print(symbolic_similarity_features.describe())
 
 MODELS = [GaussianNB(),
           SVC(random_state=RANDOM_STATE, class_weight='balanced', probability=True, cache_size=1000, verbose=2),
@@ -179,8 +186,8 @@ for i, model in enumerate(MODELS):
 sklearn_models_df = pd.DataFrame(test_metrics, columns=METRIC_NAMES, index=model_names)
 sklearn_models_df['training_time'], sklearn_models_df['best_params'] = model_durations, best_params_list
 print(sklearn_models_df.iloc[:, :3])
-print('Save the results')
 
+print('Save the results')
 os.chdir(DATA_DIRECTORY + RESULTS_DIRECTORY)
 # os.getcwd()
 with open('sklearn_models.pkl', 'wb') as f:
