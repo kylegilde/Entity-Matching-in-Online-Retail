@@ -17,7 +17,6 @@ import gc
 import numpy as np
 import pandas as pd
 import pickle
-# from json_parsing_functions import *
 from utility_functions import *
 
 from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold, RandomizedSearchCV, cross_val_score
@@ -42,23 +41,30 @@ SCORERS = {'precision': make_scorer(precision_score),
            'recall': make_scorer(recall_score),
            'f1_score': make_scorer(f1_score)}
 
-input_file_name = input('Input the features file')
+input_file_name = 'symbolic_single_doc_similarity_features.csv' # input('Input the features file')
 
 assert input_file_name in os.listdir(), 'An input file is missing'
 
 symbolic_similarity_features = reduce_mem_usage(pd.read_csv(input_file_name))
+print(symbolic_similarity_features.columns.tolist())
 
 # get the train & test indices
-train_indices, test_indices = symbolic_similarity_features.dataset.astype('object').apply(lambda x: x == 'train'),\
-                              symbolic_similarity_features.dataset.astype('object').apply(lambda x: x == 'test')
+train_indices, test_indices = symbolic_similarity_features.dataset.astype('object').apply(lambda x: x == 'train').values,\
+                              symbolic_similarity_features.dataset.astype('object').apply(lambda x: x == 'test').values
 
 # get the labels
 all_labels = symbolic_similarity_features.label
 train_labels, test_labels = all_labels[train_indices], all_labels[test_indices]
 class_labels = np.sort(all_labels.unique())
 
-# set indices
+
+# create features df
 symbolic_similarity_features.set_index(OFFER_PAIR_COLUMNS, inplace=True)
+
+print(symbolic_similarity_features.columns.tolist())
+print(symbolic_similarity_features.info())
+print(symbolic_similarity_features.shape)
+print(symbolic_similarity_features.describe())
 
 # train and test features
 train_features, test_features = symbolic_similarity_features.loc[train_indices, :],\
@@ -67,10 +73,6 @@ train_features, test_features = symbolic_similarity_features.loc[train_indices, 
 # dev_train_features, dev_test_features, dev_train_labels, dev_test_labels = \
 #     train_test_split(train_features, train_labels, test_size=0.2, stratify=train_labels)
 
-print(symbolic_similarity_features.columns.tolist())
-print(symbolic_similarity_features.info())
-print(symbolic_similarity_features.shape)
-print(symbolic_similarity_features.describe())
 
 MODELS = [GaussianNB(),
           SVC(random_state=RANDOM_STATE, class_weight='balanced', probability=True, cache_size=1000, verbose=2),
