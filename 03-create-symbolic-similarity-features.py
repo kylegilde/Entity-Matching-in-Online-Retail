@@ -95,9 +95,7 @@ N_ROWS_PER_ITERATION = 2000
 SHORT_TEXT_FEATURES = ['brand', 'manufacturer']
 IDENTIFIER_FEATURES = ['gtin', 'mpn', 'sku', 'identifier']
 ALL_SHORT_TEXT_FEATURES = SHORT_TEXT_FEATURES + IDENTIFIER_FEATURES + ['name']
-
 LONG_TEXT_FEATURES = ['description']
-
 STRONGLY_TYPED_FEATURES = ['category']
 NUMERIC_FEATURE = ['price']
 

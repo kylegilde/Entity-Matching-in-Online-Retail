@@ -15,7 +15,7 @@ import os
 import gc
 
 from datetime import datetime
-import nltk
+# import nltk
 import numpy as np
 import pandas as pd
 
@@ -36,14 +36,17 @@ pd.set_option('display.max_colwidth', 250)
 DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
 DATA_DIRECTORY = '//files/share/goods/OI Team'
 os.chdir(DATA_DIRECTORY)
-MAX_SVD_COMPONENTS = 2000
+
+# constants
 VARIANCE_EXPLAINED_MAX = 0.999
-N_ROWS_PER_ITERATION = 2000
-
-# the description column must be last in the list
+# feature list
 ALL_FEATURES = ['name', 'description', 'brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'price'] #'category'
-
+# offer pair index columns
 OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label', 'file_category']
+
+# user inputs
+svd_components_to_retain = int(input('Enter the number of SVD components to retains'))
+output_file_name = 'symbolic_single_doc_similarity_features-' + str(svd_components_to_retain) + '.csv'
 
 # load files
 assert 'train_test_stemmed_features.csv' in os.listdir() and 'train_test_df.csv' in os.listdir(), 'An input file is missing'
@@ -90,7 +93,7 @@ gc.collect()
 
 get_duration_hours(start_time)
 print('Use Truncated SVD to select a smaller number of important features')
-svd_model = TruncatedSVD(n_components=MAX_SVD_COMPONENTS).fit(dtm)
+svd_model = TruncatedSVD(n_components=svd_components_to_retain).fit(dtm)
 
 print('n_components:', len(svd_model.explained_variance_ratio_))
 variance_explained = svd_model.explained_variance_ratio_.sum()
@@ -144,33 +147,7 @@ print(symbolic_single_doc_similarity_features_df.describe())
 
 get_duration_hours(start_time)
 print("symbolic_similarity_features saved")
-symbolic_single_doc_similarity_features_df.to_csv('symbolic_single_doc_similarity_features.csv')
+symbolic_single_doc_similarity_features_df.to_csv(output_file_name)
 
 get_duration_hours(start_time)
 
-
-# file_categories = train_test_df.file_category.unique()
-# category_df_list = []
-
-# for the_category in file_categories:
-#
-#     print('the_category:', the_category)
-#     # the_category = 'shoes'
-#
-#     symbolic_single_doc_similarity_features = train_test_df[train_test_df.file_category == the_category].copy()
-#     unique_offer_ids = pd.concat([symbolic_single_doc_similarity_features.offer_id_1.astype('object'),
-#                                   symbolic_single_doc_similarity_features.offer_id_2.astype('object')])\
-#         .unique()
-
-# append category DF
-# category_df_list.append(symbolic_single_doc_similarity_features)
-#
-# print('Combine all the categories')
-# symbolic_similarity_features =\
-#     reduce_mem_usage(pd.concat(category_df_list, axis=0))\
-#     .reset_index()
-# print("Let's calculate the cosine similarity.")
-# assert both_sides_dtm_svd.shape[1] == 2 * n_features, "Something is wrong. Your df row length is not 2 x n_features"
-# symbolic_single_doc_similarity_features[column] = both_sides_dtm_svd.apply(elementwise_cosine_similarity,
-#                                                                 n_features=n_features,
-#                                                                 axis=1)
