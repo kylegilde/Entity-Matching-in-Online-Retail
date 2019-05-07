@@ -146,8 +146,9 @@ print(symbolic_single_doc_similarity_features_df.columns)
 print(symbolic_single_doc_similarity_features_df.describe())
 
 get_duration_hours(start_time)
-print("symbolic_similarity_features saved")
+print("symbolic_similarity_features saved:", output_file_name)
 symbolic_single_doc_similarity_features_df.to_csv(output_file_name)
 
+print(variance_explained, 'variance explained')
 get_duration_hours(start_time)
 

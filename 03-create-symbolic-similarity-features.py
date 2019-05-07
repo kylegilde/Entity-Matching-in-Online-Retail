@@ -31,7 +31,6 @@ import nltk
 import numpy as np
 import pandas as pd
 
-from json_parsing_functions import reduce_mem_usage
 from utility_functions import *
 
 from sklearn.feature_extraction.text import TfidfVectorizer

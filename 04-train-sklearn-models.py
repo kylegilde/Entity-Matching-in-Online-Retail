@@ -40,7 +40,7 @@ OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label'
 MODELS = [GaussianNB(),
           SVC(random_state=RANDOM_STATE, class_weight='balanced', probability=True, cache_size=1000, verbose=2),
           RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
-          GradientBoostingClassifier(random_state=RANDOM_STATE, verbose=2)]
+          GradientBoostingClassifier(random_state=RANDOM_STATE, verbose=2, n_iter_no_change=30)]
 
 MODEL_NAMES =['Naive Bayes', 'SVM', 'Random Forest', 'Gradient Boosting']
 
@@ -88,9 +88,6 @@ print(symbolic_similarity_features.describe())
 train_features, test_features = symbolic_similarity_features.loc[train_indices, :],\
                                 symbolic_similarity_features.loc[test_indices, :]
 
-# dev_train_features, dev_test_features, dev_train_labels, dev_test_labels = \
-#     train_test_split(train_features, train_labels, test_size=0.2, stratify=train_labels)
-
 svc_grid_params = {'C': np.logspace(-1, 2, 4),
                    'gamma': np.logspace(-1, 2, 4)}
 
@@ -100,7 +97,7 @@ rf_grid_params = {'max_depth': [None, 5, 10],
                   'min_impurity_decrease': [0.0],
                   'min_impurity_split': [None],
                   'min_samples_leaf': [1, 2, 4],
-                  'min_samples_split': [2, 5, 10],
+                  'min_samples_split': [2, 4],
                   'min_weight_fraction_leaf': [0.0],
                   'n_estimators': [500, 1000]}
 
@@ -117,9 +114,6 @@ gbm_grid_params = {'learning_rate': [.025, .05, .1],
                    'subsample': [.25, .5, .75]}
 
 grid_param_list = [None, svc_grid_params, rf_grid_params, gbm_grid_params]
-
-# for i in range(len(MODELS)):
-#     GridSearchCV(MODELS[i], grid_param_list[i], cv=skf, n_jobs=-1, verbose=2)
 
 skf = StratifiedKFold(n_splits=FOLDS, random_state=RANDOM_STATE)
 
@@ -190,13 +184,16 @@ for i, model in enumerate(MODELS):
     print(model_metrics)
     test_metrics.append(model_metrics)
 
+    print('feature importance')
+    print(cv_model.best_estimator_.feature_importances_)
+
     # get training duration
     hours = get_duration_hours(start_time)
     model_durations.append(hours)
 
 sklearn_models_df = pd.DataFrame(test_metrics, columns=METRIC_NAMES, index=MODEL_NAMES)
 sklearn_models_df['training_time'], sklearn_models_df['best_params'] = model_durations, best_params_list
-print(sklearn_models_df.iloc[:, :3])
+print(sklearn_models_df.iloc[:, :4])
 
 print('Save the results')
 
@@ -214,13 +211,15 @@ with open('sklearn_confusion_matrices.pkl', 'wb') as f:
     pickle.dump(confusion_matrices, f)
 
 # save the model metrics
-sklearn_models_df.reset_index().to_csv(input_file_name, index=False)
+sklearn_models_df.reset_index().to_csv(output_file_name, index=False)
 
 
 
 
 # non-CV version
 start_time = datetime.now()
+# for i in range(len(MODELS)):
+#     GridSearchCV(MODELS[i], grid_param_list[i], cv=skf, n_jobs=-1, verbose=2)
 
 for i, model in enumerate(MODELS):
     model_name = model.__class__.__name__
