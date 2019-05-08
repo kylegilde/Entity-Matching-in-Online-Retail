@@ -24,11 +24,20 @@ from sklearn.metrics import classification_report, confusion_matrix, precision_s
 from sklearn.naive_bayes import GaussianNB #alpha smoothing?
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.linear_model import LogisticRegression  #LogisticRegression(random_state=0)
+
+# set display options
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 500)
+pd.set_option('display.max_colwidth', 250)
 
 DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
 DATA_DIRECTORY = '//files/share/goods/OI Team'
 os.chdir(DATA_DIRECTORY)
+
+# provide input file
+input_file_name = 'symbolic_single_doc_similarity_features-100.csv' #input('Input the features file')
+assert input_file_name in os.listdir(), 'An input file is missing'
 
 RANDOM_STATE = 5
 FOLDS = 2
@@ -38,9 +47,12 @@ OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label'
 
 # list of models to fit
 MODELS = [GaussianNB(),
-          SVC(random_state=RANDOM_STATE, class_weight='balanced', probability=True, cache_size=1000, verbose=2),
+          SVC(kernel='linear', random_state=RANDOM_STATE, class_weight='balanced', probability=True, cache_size=1000, verbose=2),
           RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
           GradientBoostingClassifier(random_state=RANDOM_STATE, n_iter_no_change=30, verbose=2)]
+
+model_names = [model.__class__.__name__ for model in MODELS]
+model_dict = dict(zip(model_names, MODELS))
 
 # SVC notes: https://scikit-learn.org/stable/modules/svm.html#complexity
 
@@ -53,21 +65,11 @@ SCORERS = {'Precision': make_scorer(precision_score),
 
 METRIC_NAMES = SCORERS.keys()
 
-# provide input file
-input_file_name = input('Input the features file')
-assert input_file_name in os.listdir(), 'An input file is missing'
+
 
 # read input file
 symbolic_similarity_features = reduce_mem_usage(pd.read_csv(input_file_name))
 print(symbolic_similarity_features.columns.tolist())
-
-# create output directory if it doesn't exist
-# output_directory = input_file_name[: input_file_name.find('.csv')]
-# if not os.path.exists(output_directory):
-#     os.makedirs(output_directory)
-#
-# # create output filename
-# output_file_name = output_directory + '-results.csv'
 
 # get the train & test indices
 train_indices, test_indices = symbolic_similarity_features.dataset.astype('object').apply(lambda x: x == 'train').values,\
@@ -109,9 +111,11 @@ fit_models = []
 classification_reports = []
 confusion_matrices = []
 
-for i, model in enumerate(MODELS):
-    model_name = model.__class__.__name__
-    print(model_name)
+for model_name, model in model_dict.items():
+
+    print(model_name, model)
+
+    start_time = datetime.now()
 
     model.fit(train_features, train_labels)
     test_pred = model.predict(test_features)
@@ -126,8 +130,14 @@ for i, model in enumerate(MODELS):
     print(model_metrics)
     test_metrics.append(model_metrics)
 
-    fit_models.append(cv_model)
+    fit_models.append(model)
 
     # get training duration
     hours = get_duration_hours(start_time)
     model_durations.append(hours)
+
+print(model_durations)
+
+sklearn_models_df = pd.DataFrame(test_metrics, columns=METRIC_NAMES, index=model_names)
+sklearn_models_df['training_time'] = model_durations
+print(sklearn_models_df.iloc[:, :4])
