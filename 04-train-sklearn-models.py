@@ -33,6 +33,7 @@ os.chdir(DATA_DIRECTORY)
 
 RANDOM_STATE = 5
 FOLDS = 2
+DEV_TEST_SIZE = .95
 # ALL_FEATURES = ['brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'name', 'price', 'description'] # 'category'
 OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label', 'file_category']
 
@@ -40,7 +41,9 @@ OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label'
 MODELS = [GaussianNB(),
           SVC(random_state=RANDOM_STATE, class_weight='balanced', probability=True, cache_size=1000, verbose=2),
           RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
-          GradientBoostingClassifier(random_state=RANDOM_STATE, verbose=2, n_iter_no_change=30)]
+          GradientBoostingClassifier(random_state=RANDOM_STATE, n_iter_no_change=30, verbose=2)]
+
+# SVC notes: https://scikit-learn.org/stable/modules/svm.html#complexity
 
 MODEL_NAMES =['Naive Bayes', 'SVM', 'Random Forest', 'Gradient Boosting']
 
@@ -88,6 +91,13 @@ print(symbolic_similarity_features.describe())
 train_features, test_features = symbolic_similarity_features.loc[train_indices, :],\
                                 symbolic_similarity_features.loc[test_indices, :]
 
+
+dev_train_features, dev_test_features, dev_train_labels, dev_test_labels =\
+    train_test_split(train_features, train_labels, test_size=DEV_TEST_SIZE, random_state=RANDOM_STATE)
+
+print('Dev Train Feature Shape')
+print(dev_train_features.shape)
+
 svc_grid_params = {'C': np.logspace(-1, 2, 4),
                    'gamma': np.logspace(-1, 2, 4)}
 
@@ -130,34 +140,47 @@ classification_reports = []
 confusion_matrices = []
 
 for i, model in enumerate(MODELS):
+    # i = 1
+    # model = MODELS[1]
 
     start_time = datetime.now()
-
+    model_params = grid_param_list[i]
     model_name = model.__class__.__name__
+    full_fit_model = model
+
     print(model_name)
 
-    if model_name == 'GaussianNB':
+    if model_params is None:
 
         # no CV grid search for NB
-        cv_model = model
-        cv_model.fit(train_features, train_labels)
+        full_fit_model.fit(train_features, train_labels)
 
-        fit_models.append(cv_model)
+        fit_models.append(full_fit_model)
         best_params_list.append(None)
+
     else:
 
         cv_model = GridSearchCV(model, grid_param_list[i], cv=skf, n_jobs=-1, verbose=2)
-        cv_model.fit(train_features, train_labels)
-
-        fit_models.append(cv_model)
+        cv_model.fit(dev_train_features, dev_train_labels)
 
         # get the best CV parameters
         best_params = cv_model.best_params_
         best_params_list.append(best_params)
 
-    # make predictions
-    test_pred, test_class_probabilities = cv_model.predict(test_features), \
-                                          cv_model.predict_proba(test_features)
+        # make dev test predictions & report
+        dev_test_pred = cv_model.predict(dev_test_features)
+        dev_test_class_report = classification_report(dev_test_labels, dev_test_pred)
+        print(dev_test_class_report)
+
+        # fit model to full training set
+        full_fit_model.set_params(**best_params)
+        full_fit_model.fit(train_features, train_labels)
+
+    fit_models.append(full_fit_model)
+
+    # make test predictions
+    test_pred, test_class_probabilities = full_fit_model.predict(test_features), \
+                                          full_fit_model.predict_proba(test_features)
 
     test_predictions.append(test_pred)
     class_probabilities_list.append(test_class_probabilities)
@@ -183,9 +206,6 @@ for i, model in enumerate(MODELS):
     print(METRIC_NAMES)
     print(model_metrics)
     test_metrics.append(model_metrics)
-
-    print('feature importance')
-    print(cv_model.best_estimator_.feature_importances_)
 
     # get training duration
     hours = get_duration_hours(start_time)
@@ -213,28 +233,10 @@ with open('sklearn_confusion_matrices.pkl', 'wb') as f:
 # save the model metrics
 sklearn_models_df.reset_index().to_csv(output_file_name, index=False)
 
+# print('feature importance')
+# print(cv_model.best_estimator_.feature_importances_)
 
 
 
-# non-CV version
-start_time = datetime.now()
-# for i in range(len(MODELS)):
-#     GridSearchCV(MODELS[i], grid_param_list[i], cv=skf, n_jobs=-1, verbose=2)
-
-for i, model in enumerate(MODELS):
-    model_name = model.__class__.__name__
-    print(model_name)
-
-    model.fit(train_features, train_labels)
-    test_pred = model.predict(test_features)
-    # test_predictions1.append(test_pred)
-    # get scores
-    model_metrics = [precision_score(test_labels, test_pred),
-                     recall_score(test_labels, test_pred),
-                     f1_score(test_labels, test_pred)]
-
-    print(METRIC_NAMES)
-    print(model_metrics)
-    test_metrics.append(model_metrics)
 
 get_duration_hours(start_time)
