@@ -18,7 +18,9 @@ import pandas as pd
 import pickle
 from utility_functions import *
 
-from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold, RandomizedSearchCV, cross_val_score
+from sklearn.preprocessing import StandardScaler
+
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, precision_score, recall_score, f1_score, make_scorer
 
 from sklearn.naive_bayes import GaussianNB #alpha smoothing?
@@ -35,19 +37,15 @@ DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
 DATA_DIRECTORY = '//files/share/goods/OI Team'
 os.chdir(DATA_DIRECTORY)
 
-# provide input file
-input_file_name = 'symbolic_single_doc_similarity_features-100.csv' #input('Input the features file')
-assert input_file_name in os.listdir(), 'An input file is missing'
-
 RANDOM_STATE = 5
 FOLDS = 2
-DEV_TEST_SIZE = .95
+DEV_TEST_SIZE = .5
 # ALL_FEATURES = ['brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'name', 'price', 'description'] # 'category'
 OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label', 'file_category']
 
 # list of models to fit
 MODELS = [GaussianNB(),
-          SVC(kernel='linear', random_state=RANDOM_STATE, class_weight='balanced', probability=True, cache_size=1000, verbose=2),
+          SVC(random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # , probability=True kernel='linear',
           RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
           GradientBoostingClassifier(random_state=RANDOM_STATE, n_iter_no_change=30, verbose=2)]
 
@@ -65,7 +63,9 @@ SCORERS = {'Precision': make_scorer(precision_score),
 
 METRIC_NAMES = SCORERS.keys()
 
-
+# provide input file
+input_file_name = 'symbolic_single_doc_similarity_features-100.csv' #input('Input the features file')
+assert input_file_name in os.listdir(), 'An input file is missing'
 
 # read input file
 symbolic_similarity_features = reduce_mem_usage(pd.read_csv(input_file_name))
@@ -88,11 +88,15 @@ print(symbolic_similarity_features.info())
 print(symbolic_similarity_features.shape)
 print(symbolic_similarity_features.describe())
 
+# center and scale for SVM
+scaler = StandardScaler()
+symbolic_similarity_features = scaler.fit_transform(symbolic_similarity_features)
+
 # train and test features
-train_features, test_features = symbolic_similarity_features.loc[train_indices, :],\
-                                symbolic_similarity_features.loc[test_indices, :]
+train_features, test_features = symbolic_similarity_features[train_indices, :],\
+                                symbolic_similarity_features[test_indices, :]
 
-
+# create dev test and train sets
 dev_train_features, dev_test_features, dev_train_labels, dev_test_labels =\
     train_test_split(train_features, train_labels, test_size=DEV_TEST_SIZE, random_state=RANDOM_STATE)
 

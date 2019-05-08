@@ -19,46 +19,17 @@ import pandas as pd
 import pickle
 from utility_functions import *
 
+from sklearn.preprocessing import StandardScaler
+
 from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold, RandomizedSearchCV, cross_val_score
 from sklearn.metrics import classification_report, confusion_matrix, precision_score, recall_score, f1_score, make_scorer
 
 from sklearn.naive_bayes import GaussianNB #alpha smoothing?
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+
 from sklearn.linear_model import LogisticRegression  #LogisticRegression(random_state=0)
 
-DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
-DATA_DIRECTORY = '//files/share/goods/OI Team'
-os.chdir(DATA_DIRECTORY)
-
-RANDOM_STATE = 5
-FOLDS = 2
-DEV_TEST_SIZE = .95
-
-# ALL_FEATURES = ['brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'name', 'price', 'description'] # 'category'
-OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label', 'file_category']
-
-# list of models to fit
-# MODEL_NAMES = ['Naive Bayes', 'SVM', 'Random Forest', 'Gradient Boosting']
-MODELS = [GaussianNB(),
-          SVC(random_state=RANDOM_STATE, class_weight='balanced', probability=True, cache_size=1000, verbose=2),
-          RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
-          GradientBoostingClassifier(random_state=RANDOM_STATE, n_iter_no_change=30, verbose=2)]
-
-model_names = [model.__class__.__name__ for model in MODELS]
-
-model_dict = dict(zip(model_names, MODELS))
-
-# SVC notes: https://scikit-learn.org/stable/modules/svm.html#complexity
-
-
-
-# list of scoring metrics
-SCORERS = {'Precision': make_scorer(precision_score),
-           'Recall': make_scorer(recall_score),
-           'F1_score': make_scorer(f1_score)}
-
-METRIC_NAMES = SCORERS.keys()
 
 def calculate_scores(test_labels, test_pred):
     """
@@ -71,8 +42,39 @@ def calculate_scores(test_labels, test_pred):
             recall_score(test_labels, test_pred),
             f1_score(test_labels, test_pred)]
 
+
+DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
+DATA_DIRECTORY = '//files/share/goods/OI Team'
+os.chdir(DATA_DIRECTORY)
+
+RANDOM_STATE = 5
+FOLDS = 2
+DEV_TEST_SIZE = .5
+
+# ALL_FEATURES = ['brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'name', 'price', 'description'] # 'category'
+OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label', 'file_category']
+
+# list of models to fit
+# MODEL_NAMES = ['Naive Bayes', 'SVM', 'Random Forest', 'Gradient Boosting']
+MODELS = [GaussianNB(),
+          SVC(random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # probability=True,
+          RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
+          GradientBoostingClassifier(random_state=RANDOM_STATE, n_iter_no_change=30, verbose=2)]
+
+model_names = [model.__class__.__name__ for model in MODELS]
+model_dict = dict(zip(model_names, MODELS))
+
+# SVC notes: https://scikit-learn.org/stable/modules/svm.html#complexity
+
+# list of scoring metrics
+SCORERS = {'Precision': make_scorer(precision_score),
+           'Recall': make_scorer(recall_score),
+           'F1_score': make_scorer(f1_score)}
+
+METRIC_NAMES = SCORERS.keys()
+
 # provide input file
-input_file_name = input('Input the features file')
+input_file_name = 'symbolic_single_doc_similarity_features-100.csv' # input('Input the features file')
 assert input_file_name in os.listdir(), 'An input file is missing'
 
 # read input file
@@ -104,9 +106,13 @@ print(symbolic_similarity_features.info())
 print(symbolic_similarity_features.shape)
 print(symbolic_similarity_features.describe())
 
+# center and scale for SVM
+scaler = StandardScaler()
+symbolic_similarity_features = scaler.fit_transform(symbolic_similarity_features)
+
 # train and test features
-train_features, test_features = symbolic_similarity_features.loc[train_indices, :],\
-                                symbolic_similarity_features.loc[test_indices, :]
+train_features, test_features = symbolic_similarity_features[train_indices, :],\
+                                symbolic_similarity_features[test_indices, :]
 
 dev_train_features, dev_test_features, dev_train_labels, dev_test_labels =\
     train_test_split(train_features, train_labels, test_size=DEV_TEST_SIZE, random_state=RANDOM_STATE)
