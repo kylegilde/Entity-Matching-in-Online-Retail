@@ -56,11 +56,14 @@ OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label'
 
 # list of models to fit
 # MODEL_NAMES = ['Naive Bayes', 'SVM', 'Random Forest', 'Gradient Boosting']
+# MODELS = [GaussianNB(),
+#           SVC(random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # probability=True,
+#           RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
+#           GradientBoostingClassifier(random_state=RANDOM_STATE, n_iter_no_change=30, verbose=2)]
+
 MODELS = [GaussianNB(),
-          SVC(random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # probability=True,
           RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
           GradientBoostingClassifier(random_state=RANDOM_STATE, n_iter_no_change=30, verbose=2)]
-
 model_names = [model.__class__.__name__ for model in MODELS]
 model_dict = dict(zip(model_names, MODELS))
 
@@ -74,20 +77,12 @@ SCORERS = {'Precision': make_scorer(precision_score),
 METRIC_NAMES = SCORERS.keys()
 
 # provide input file
-input_file_name = 'symbolic_single_doc_similarity_features-100.csv' # input('Input the features file')
+input_file_name = 'symbolic_single_doc_similarity_features-9.csv' # input('Input the features file')
 assert input_file_name in os.listdir(), 'An input file is missing'
 
 # read input file
 symbolic_similarity_features = reduce_mem_usage(pd.read_csv(input_file_name))
 print(symbolic_similarity_features.columns.tolist())
-
-# create output directory if it doesn't exist
-output_directory = input_file_name[: input_file_name.find('.csv')]
-if not os.path.exists(output_directory):
-    os.makedirs(output_directory)
-
-# create output filename
-output_file_name = output_directory + '-results.csv'
 
 # get the train & test indices
 train_indices, test_indices = symbolic_similarity_features.dataset.astype('object').apply(lambda x: x == 'train').values,\
@@ -122,8 +117,10 @@ print(dev_train_features.shape)
 
 nb_grid_params = None
 
-svc_grid_params = {'C': np.logspace(-1, 2, 4),
-                   'gamma': np.logspace(0, 1, 2)}
+svc_grid_params = {'kernel': ['linear', 'poly', 'rbf']}
+
+# svc_grid_params = {'C': np.logspace(-1, 2, 4),
+#                    'gamma': np.logspace(0, 1, 2)}
 
 rf_grid_params = {'max_depth': [None, 5, 10],
                   'max_features': ['auto', None],
@@ -137,7 +134,7 @@ rf_grid_params = {'max_depth': [None, 5, 10],
 
 gbm_grid_params = {'learning_rate': [.025, .05, .1],
                    'max_depth': [None, 5, 10],
-                   'max_features': ['auto'],
+                   'max_features': ['auto', None],
                    'max_leaf_nodes': [None],
                    'min_impurity_decrease': [0.0],
                    'min_impurity_split': [None],
@@ -147,7 +144,9 @@ gbm_grid_params = {'learning_rate': [.025, .05, .1],
                    'n_estimators': [150, 300],
                    'subsample': [.25, .5, .75]}
 
-grid_param_list = [nb_grid_params, svc_grid_params, rf_grid_params, gbm_grid_params]
+
+# grid_param_list = [nb_grid_params, svc_grid_params, rf_grid_params, gbm_grid_params]
+grid_param_list = [nb_grid_params, rf_grid_params, gbm_grid_params]
 grid_param_dict = dict(zip(model_names, grid_param_list))
 
 # create stratified folds
@@ -236,11 +235,21 @@ for model_name, model in model_dict.items():
     hours = get_duration_hours(start_time)
     model_durations.append(hours)
 
+print('Create Metrics DF')
+
 sklearn_models_df = pd.DataFrame(test_metrics, columns=METRIC_NAMES, index=model_names)
 sklearn_models_df['training_time'], sklearn_models_df['best_params'] = model_durations, best_params_list
 print(sklearn_models_df.iloc[:, :4])
 
 print('Save the results')
+
+# create output directory if it doesn't exist
+output_directory = input_file_name[: input_file_name.find('.csv')]
+if not os.path.exists(output_directory):
+    os.makedirs(output_directory)
+
+# create output filename
+output_file_name = output_directory + '-results.csv'
 
 os.chdir(output_directory)
 with open('sklearn_models.pkl', 'wb') as f:

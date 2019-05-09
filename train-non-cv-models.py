@@ -39,22 +39,27 @@ os.chdir(DATA_DIRECTORY)
 
 RANDOM_STATE = 5
 FOLDS = 2
-DEV_TEST_SIZE = .5
+DEV_TEST_SIZE = .75
 # ALL_FEATURES = ['brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'name', 'price', 'description'] # 'category'
 OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label', 'file_category']
 
 # list of models to fit
-MODELS = [GaussianNB(),
-          SVC(random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # , probability=True kernel='linear',
-          RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
-          GradientBoostingClassifier(random_state=RANDOM_STATE, n_iter_no_change=30, verbose=2)]
+# MODELS = [GaussianNB(),
+#           SVC(random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # , probability=True kernel='linear',
+#           RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
+#           GradientBoostingClassifier(random_state=RANDOM_STATE, n_iter_no_change=30, verbose=2)]
 
-model_names = [model.__class__.__name__ for model in MODELS]
+MODELS = [SVC(kernel='linear', random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # , probability=True kernel='linear',
+          SVC(kernel='poly', random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
+          SVC(kernel='rbf', random_state=RANDOM_STATE, class_weight='balanced', verbose=2)]
+
+# model_names = [model.__class__.__name__ for model in MODELS]
+model_names = ['linear', 'poly', 'rbf']#['Naive Bayes', 'SVM', 'Random Forest', 'Gradient Boosting']
 model_dict = dict(zip(model_names, MODELS))
 
 # SVC notes: https://scikit-learn.org/stable/modules/svm.html#complexity
 
-MODEL_NAMES =['Naive Bayes', 'SVM', 'Random Forest', 'Gradient Boosting']
+
 
 # list of scoring metrics
 SCORERS = {'Precision': make_scorer(precision_score),
@@ -64,7 +69,7 @@ SCORERS = {'Precision': make_scorer(precision_score),
 METRIC_NAMES = SCORERS.keys()
 
 # provide input file
-input_file_name = 'symbolic_single_doc_similarity_features-100.csv' #input('Input the features file')
+input_file_name = 'symbolic_single_doc_similarity_features-100.csv' #'attribute_comparison_features-9.csv' # 'symbolic_single_doc_similarity_features-9.csv' #input('Input the features file')
 assert input_file_name in os.listdir(), 'An input file is missing'
 
 # read input file
