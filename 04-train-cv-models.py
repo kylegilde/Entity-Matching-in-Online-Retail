@@ -64,7 +64,7 @@ model_dict = dict(zip(model_names, MODELS))
 METRIC_NAMES = ['Precision', 'Recall', 'F1_score']
 
 # provide input file
-input_file_name = 'symbolic_single_doc_similarity_features-100.csv' # input('Input the features file')
+input_file_name = 'symbolic_single_doc_similarity_features-50.csv' # input('Input the features file')
 assert input_file_name in os.listdir(), 'An input file is missing'
 
 # read input file

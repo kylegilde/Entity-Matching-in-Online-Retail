@@ -41,7 +41,7 @@ os.chdir(DATA_DIRECTORY)
 
 VARIANCE_EXPLAINED_MAX = 0.999
 # feature list
-ALL_FEATURES = ['name', 'description', 'brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'price'] #'category'
+ALL_FEATURES = ['name', 'description', 'brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'price']
 # offer pair index columns
 OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label', 'file_category']
 
