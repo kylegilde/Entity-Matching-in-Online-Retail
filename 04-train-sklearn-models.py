@@ -1,4 +1,6 @@
-# !/usr/bin/env/python365
+# !/usr/bin/env/ python3
+# -*- coding: utf-8 -*-
+
 """
 Created on Apr 27, 2019
 @author: Kyle Gilde
@@ -24,32 +26,19 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold, RandomizedSearchCV, cross_val_score
 from sklearn.metrics import classification_report, confusion_matrix, precision_score, recall_score, f1_score, make_scorer
 
-from sklearn.naive_bayes import GaussianNB #alpha smoothing?
+from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 
-from sklearn.linear_model import LogisticRegression  #LogisticRegression(random_state=0)
 
-
-def calculate_scores(test_labels, test_pred):
-    """
-
-    :param test_labels:
-    :param test_pred:
-    :return:
-    """
-    return [precision_score(test_labels, test_pred),
-            recall_score(test_labels, test_pred),
-            f1_score(test_labels, test_pred)]
-
-
+# global variables
 DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
 DATA_DIRECTORY = '//files/share/goods/OI Team'
 os.chdir(DATA_DIRECTORY)
 
 RANDOM_STATE = 5
 FOLDS = 2
-DEV_TEST_SIZE = .5
+DEV_TEST_SIZE = .95
 
 # ALL_FEATURES = ['brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'name', 'price', 'description'] # 'category'
 OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label', 'file_category']
@@ -67,17 +56,15 @@ MODELS = [GaussianNB(),
 model_names = [model.__class__.__name__ for model in MODELS]
 model_dict = dict(zip(model_names, MODELS))
 
-# SVC notes: https://scikit-learn.org/stable/modules/svm.html#complexity
-
 # list of scoring metrics
-SCORERS = {'Precision': make_scorer(precision_score),
-           'Recall': make_scorer(recall_score),
-           'F1_score': make_scorer(f1_score)}
-
-METRIC_NAMES = SCORERS.keys()
+# SCORERS = {'Precision': make_scorer(precision_score),
+#            'Recall': make_scorer(recall_score),
+#            'F1_score': make_scorer(f1_score)}
+#
+METRIC_NAMES = ['Precision', 'Recall', 'F1_score']
 
 # provide input file
-input_file_name = 'symbolic_single_doc_similarity_features-9.csv' # input('Input the features file')
+input_file_name = 'symbolic_single_doc_similarity_features-100.csv' # input('Input the features file')
 assert input_file_name in os.listdir(), 'An input file is missing'
 
 # read input file
@@ -117,23 +104,25 @@ print(dev_train_features.shape)
 
 nb_grid_params = None
 
-svc_grid_params = {'kernel': ['linear', 'poly', 'rbf']}
+# svc_grid_params = {'kernel': ['linear', 'poly', 'rbf']}
 
 # svc_grid_params = {'C': np.logspace(-1, 2, 4),
 #                    'gamma': np.logspace(0, 1, 2)}
 
-rf_grid_params = {'max_depth': [None, 5, 10],
+rf_grid_params = {'max_depth': [None, 5],
                   'max_features': ['auto', None],
                   'max_leaf_nodes': [None],
                   'min_impurity_decrease': [0.0],
                   'min_impurity_split': [None],
-                  'min_samples_leaf': [1, 2, 4],
+                  'min_samples_leaf': [1],
                   'min_samples_split': [2, 4],
                   'min_weight_fraction_leaf': [0.0],
                   'n_estimators': [500, 1000]}
 
-gbm_grid_params = {'learning_rate': [.025, .05, .1],
-                   'max_depth': [None, 5, 10],
+count_cv_models(rf_grid_params, FOLDS, .18)
+
+gbm_grid_params = {'learning_rate': [.025, .05],
+                   'max_depth': [None, 5],
                    'max_features': ['auto', None],
                    'max_leaf_nodes': [None],
                    'min_impurity_decrease': [0.0],
@@ -142,8 +131,9 @@ gbm_grid_params = {'learning_rate': [.025, .05, .1],
                    'min_samples_split': [2],
                    'min_weight_fraction_leaf': [0.0],
                    'n_estimators': [150, 300],
-                   'subsample': [.25, .5, .75]}
+                   'subsample': [.33, .67]}
 
+count_cv_models(gbm_grid_params, FOLDS, .07)
 
 # grid_param_list = [nb_grid_params, svc_grid_params, rf_grid_params, gbm_grid_params]
 grid_param_list = [nb_grid_params, rf_grid_params, gbm_grid_params]
@@ -198,9 +188,10 @@ for model_name, model in model_dict.items():
         dev_test_metrics.append(dev_test_scores)
         print(dev_test_scores)
 
-        # fit model to full training set
+        print('fit model to full training set')
         full_fit_model.set_params(**best_params)
         full_fit_model.fit(train_features, train_labels)
+        get_duration_hours(start_time)
 
     fit_models.append(full_fit_model)
 

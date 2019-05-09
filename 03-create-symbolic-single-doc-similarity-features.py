@@ -1,4 +1,6 @@
-# !/usr/bin/env/python365
+# !/usr/bin/env/ python3
+# -*- coding: utf-8 -*-
+
 """
 Created on Apr 27, 2019
 @author: Kyle Gilde
@@ -32,12 +34,11 @@ pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 500)
 pd.set_option('display.max_colwidth', 250)
 
-# initialize constants
+# global variables
 DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
 DATA_DIRECTORY = '//files/share/goods/OI Team'
 os.chdir(DATA_DIRECTORY)
 
-# constants
 VARIANCE_EXPLAINED_MAX = 0.999
 # feature list
 ALL_FEATURES = ['name', 'description', 'brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'price'] #'category'

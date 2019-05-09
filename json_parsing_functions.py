@@ -1,7 +1,11 @@
-# !/usr/bin/env/python365
+# !/usr/bin/env/ python3
+# -*- coding: utf-8 -*-
+
 """
 Created on Feb 10, 2019
 @author: Kyle Gilde
+
+These are the functions that are used in the 01-parse-json-to-dfs.py script
 
 """
 

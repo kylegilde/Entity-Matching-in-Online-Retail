@@ -1,4 +1,6 @@
-# !/usr/bin/env/python365
+# !/usr/bin/env/ python3
+# -*- coding: utf-8 -*-
+
 """
 Created on Apr 27, 2019
 @author: Kyle Gilde
@@ -21,7 +23,7 @@ from utility_functions import *
 from sklearn.preprocessing import StandardScaler
 
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, confusion_matrix, precision_score, recall_score, f1_score, make_scorer
+from sklearn.metrics import precision_score, recall_score, f1_score
 
 from sklearn.naive_bayes import GaussianNB #alpha smoothing?
 from sklearn.svm import SVC
@@ -37,36 +39,26 @@ DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
 DATA_DIRECTORY = '//files/share/goods/OI Team'
 os.chdir(DATA_DIRECTORY)
 
+# global variables
 RANDOM_STATE = 5
 FOLDS = 2
-DEV_TEST_SIZE = .75
-# ALL_FEATURES = ['brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'name', 'price', 'description'] # 'category'
+DEV_TEST_SIZE = .8
 OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label', 'file_category']
+METRIC_NAMES = ['Precision', 'Recall', 'F1_score']
 
 # list of models to fit
-# MODELS = [GaussianNB(),
-#           SVC(random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # , probability=True kernel='linear',
-#           RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
-#           GradientBoostingClassifier(random_state=RANDOM_STATE, n_iter_no_change=30, verbose=2)]
+MODELS = [GaussianNB(),
+          # SVC(random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # , probability=True kernel='linear',
+          RandomForestClassifier(random_state=RANDOM_STATE, n_estimators=750, class_weight='balanced', verbose=2),
+          GradientBoostingClassifier(random_state=RANDOM_STATE, n_estimators=300, n_iter_no_change=30, verbose=2)]
 
-MODELS = [SVC(kernel='linear', random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # , probability=True kernel='linear',
-          SVC(kernel='poly', random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
-          SVC(kernel='rbf', random_state=RANDOM_STATE, class_weight='balanced', verbose=2)]
+# MODELS = [SVC(kernel='linear', random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # , probability=True kernel='linear',
+#           SVC(kernel='poly', random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
+#           SVC(kernel='rbf', random_state=RANDOM_STATE, class_weight='balanced', verbose=2)]
 
-# model_names = [model.__class__.__name__ for model in MODELS]
-model_names = ['linear', 'poly', 'rbf']#['Naive Bayes', 'SVM', 'Random Forest', 'Gradient Boosting']
+model_names = [model.__class__.__name__ for model in MODELS]
+# model_names = ['linear', 'poly', 'rbf']#['Naive Bayes', 'SVM', 'Random Forest', 'Gradient Boosting']
 model_dict = dict(zip(model_names, MODELS))
-
-# SVC notes: https://scikit-learn.org/stable/modules/svm.html#complexity
-
-
-
-# list of scoring metrics
-SCORERS = {'Precision': make_scorer(precision_score),
-           'Recall': make_scorer(recall_score),
-           'F1_score': make_scorer(f1_score)}
-
-METRIC_NAMES = SCORERS.keys()
 
 # provide input file
 input_file_name = 'symbolic_single_doc_similarity_features-100.csv' #'attribute_comparison_features-9.csv' # 'symbolic_single_doc_similarity_features-9.csv' #input('Input the features file')

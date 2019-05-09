@@ -1,7 +1,19 @@
+# !/usr/bin/env/ python3
+# -*- coding: utf-8 -*-
+
+"""
+Created on Feb 10, 2019
+@author: Kyle Gilde
+
+These are some functions that are used in several of the scripts.
+
+"""
 from datetime import datetime
 import numpy as np
 import pandas as pd
 from pandas.api.types import is_numeric_dtype, is_string_dtype
+
+from sklearn.metrics import precision_score, recall_score, f1_score
 
 
 def reduce_mem_usage(df, n_unique_object_threshold=0.30):
@@ -77,7 +89,11 @@ def reduce_mem_usage(df, n_unique_object_threshold=0.30):
 def calculate_percent_nulls(df, print_series=True, return_series=False):
     """
 
-    :param df:
+    Counts the NaNs by column
+
+    :param df: a Pandas dataframe
+    :param print_series:
+    :param return_series:
     :return:
     """
     percentages = df.isnull().sum() / len(df) * 100
@@ -106,10 +122,47 @@ def get_duration_hours(start_time):
 def count_words(s):
     """
 
-    :param s:
-    :return:
+    Counts the words in Series of text
+
+    :param s: a Pandas object Series
+    :return: a Series containing the respective word counts
     """
     return s \
         .str.split(expand=True) \
         .apply(lambda x: np.sum(pd.notnull(x)), 1) \
         .sort_values(ascending=False)
+
+
+def count_cv_models(param_dict, folds, est_hours_per_model=None):
+    """
+
+    Measures and prints how many models will be fit given the search parameters and CV folds
+
+    :param param_dict: a dictionary containing lists of parameters to search
+    :param folds: the number of CV folds
+    :param est_hours_per_model: optional, if provided, it will print a time estimate
+    :return: None
+    """
+
+    if param_dict is not None:
+        n_models = np.prod([len(v) for v in param_dict.values()]) * folds
+        print("models: ", n_models)
+    else:
+        print("No parameters")
+
+    if est_hours_per_model is not None:
+        print("est. hours: ", n_models * est_hours_per_model)
+
+
+def calculate_scores(test_labels, test_pred):
+    """
+
+    Calculates the precision, recall and F1 for the actuals and predictions
+
+    :param test_labels: the actual labels
+    :param test_pred: the predictions
+    :return: a list containing the precision, recall and F1
+    """
+    return [precision_score(test_labels, test_pred),
+            recall_score(test_labels, test_pred),
+            f1_score(test_labels, test_pred)]
