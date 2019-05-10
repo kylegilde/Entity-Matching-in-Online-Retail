@@ -19,11 +19,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/04-train-cv-models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="453">
-              <caret line="252" column="69" selection-start-line="252" selection-start-column="69" selection-end-line="252" selection-end-column="69" />
+            <state relative-caret-position="352">
+              <caret line="40" column="18" lean-forward="true" selection-start-line="40" selection-start-column="18" selection-end-line="40" selection-end-column="18" />
+              <folding>
+                <element signature="e#296#305#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/04-train-non-cv-models.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="431">
+              <caret line="59" lean-forward="true" selection-start-line="59" selection-end-line="59" />
               <folding>
                 <element signature="e#296#305#0" expanded="true" />
               </folding>
@@ -32,10 +44,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/04-train-non-cv-models.py">
+        <entry file="file://$PROJECT_DIR$/05-tune-individual-models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="44">
-              <caret line="31" selection-start-line="31" selection-end-line="35" selection-end-column="42" />
+            <state relative-caret-position="484">
+              <caret line="133" column="20" lean-forward="true" selection-start-line="133" selection-start-column="20" selection-end-line="133" selection-end-column="20" />
               <folding>
                 <element signature="e#296#305#0" expanded="true" />
               </folding>
@@ -133,14 +145,15 @@
         <option value="$PROJECT_DIR$/train-non-cv-models.py" />
         <option value="$PROJECT_DIR$/03-create-symbolic-single-doc-similarity-features.py" />
         <option value="$PROJECT_DIR$/04-train-sklearn-models.py" />
-        <option value="$PROJECT_DIR$/04-train-non-cv-models.py" />
         <option value="$PROJECT_DIR$/04-train-cv-models.py" />
+        <option value="$PROJECT_DIR$/04-train-non-cv-models.py" />
+        <option value="$PROJECT_DIR$/05-tune-individual-models.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="-1498" />
-    <option name="width" value="1448" />
+  <component name="ProjectFrameBounds" extendedState="1">
+    <option name="x" value="-1613" />
+    <option name="width" value="1562" />
     <option name="height" value="1038" />
   </component>
   <component name="ProjectLevelVcsManager">
@@ -210,10 +223,9 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1582" y="0" width="1158" height="830" extended-state="0" />
-    <editor active="true" />
+    <frame x="-1674" y="0" width="1249" height="830" extended-state="0" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4981884" visible="true" weight="0.026737968" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4981884" visible="true" weight="0.02473207" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" sideWeight="0.5018116" side_tool="true" weight="0.029154519" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -224,7 +236,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.4987552" weight="0.32911393" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32857144" />
-      <window_info active="true" anchor="bottom" x="-1919" y="149" width="1337" height="675" id="Python Console" order="8" type="WINDOWED" visible="true" weight="0.3285968" />
+      <window_info anchor="bottom" x="-1892" y="107" width="1337" height="675" id="Python Console" order="8" type="WINDOWED" weight="0.3285968" />
       <window_info anchor="bottom" id="Educational.CheckDetails" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50124484" side_tool="true" weight="0.32911393" />
@@ -325,20 +337,30 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/models.py" />
-    <entry file="file://$PROJECT_DIR$/04-train-non-cv-models.py">
+    <entry file="file://$PROJECT_DIR$/04-train-cv-models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="44">
-          <caret line="31" selection-start-line="31" selection-end-line="35" selection-end-column="42" />
+        <state relative-caret-position="352">
+          <caret line="40" column="18" lean-forward="true" selection-start-line="40" selection-start-column="18" selection-end-line="40" selection-end-column="18" />
           <folding>
             <element signature="e#296#305#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/04-train-cv-models.py">
+    <entry file="file://$PROJECT_DIR$/05-tune-individual-models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="453">
-          <caret line="252" column="69" selection-start-line="252" selection-start-column="69" selection-end-line="252" selection-end-column="69" />
+        <state relative-caret-position="484">
+          <caret line="133" column="20" lean-forward="true" selection-start-line="133" selection-start-column="20" selection-end-line="133" selection-end-column="20" />
+          <folding>
+            <element signature="e#296#305#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/04-train-non-cv-models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="431">
+          <caret line="59" lean-forward="true" selection-start-line="59" selection-end-line="59" />
           <folding>
             <element signature="e#296#305#0" expanded="true" />
           </folding>

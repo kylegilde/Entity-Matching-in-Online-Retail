@@ -42,23 +42,20 @@ os.chdir(DATA_DIRECTORY)
 # global variables
 RANDOM_STATE = 5
 FOLDS = 2
-DEV_TEST_SIZE = .8
+DEV_TEST_SIZE = .5
 OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label', 'file_category']
 METRIC_NAMES = ['Precision', 'Recall', 'F1_score']
 
 # list of models to fit
 MODELS = [GaussianNB(),
-          SVC(random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # , probability=True kernel='linear',
-
+          SVC(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
           RandomForestClassifier(random_state=RANDOM_STATE, n_estimators=1000, class_weight='balanced', verbose=2),
           GradientBoostingClassifier(random_state=RANDOM_STATE, n_estimators=300, n_iter_no_change=30, verbose=2)]
 
-# MODELS = [SVC(kernel='linear', random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # , probability=True kernel='linear',
-#           SVC(kernel='poly', random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
-#           SVC(kernel='rbf', random_state=RANDOM_STATE, class_weight='balanced', verbose=2)]
+MODELS = [RandomForestClassifier(random_state=RANDOM_STATE, n_estimators=1000, class_weight='balanced', verbose=2),
+          GradientBoostingClassifier(random_state=RANDOM_STATE, n_estimators=300, n_iter_no_change=30, verbose=2)]
 
 model_names = [model.__class__.__name__ for model in MODELS]
-# model_names = ['linear', 'poly', 'rbf']#['Naive Bayes', 'SVM', 'Random Forest', 'Gradient Boosting']
 model_dict = dict(zip(model_names, MODELS))
 
 # provide input file

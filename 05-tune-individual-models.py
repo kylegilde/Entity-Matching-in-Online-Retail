@@ -37,17 +37,13 @@ DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
 os.chdir(DATA_DIRECTORY)
 
 RANDOM_STATE = 5
-FOLDS = 2
-DEV_TEST_SIZE = .5
+FOLDS = 3
+DEV_TEST_SIZE = .7
 METRIC_NAMES = ['Precision', 'Recall', 'F1_score']
-# ALL_FEATURES = ['brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'name', 'price', 'description'] # 'category'
 OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label', 'file_category']
 
 # list of models to fit
-# MODEL_NAMES = ['Naive Bayes', 'SVM', 'Random Forest', 'Gradient Boosting']
-MODELS = [GaussianNB(),
-          SVC(random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # probability=True,
-          RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
+MODELS = [RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
           GradientBoostingClassifier(random_state=RANDOM_STATE, n_iter_no_change=30, verbose=2)]
 
 model_names = [model.__class__.__name__ for model in MODELS]
@@ -88,6 +84,8 @@ print(symbolic_similarity_features.describe())
 scaler = StandardScaler()
 symbolic_similarity_features = scaler.fit_transform(symbolic_similarity_features)
 
+# n_features = symbolic_similarity_features.shape[1]
+
 # train and test features
 train_features, test_features = symbolic_similarity_features[train_indices, :],\
                                 symbolic_similarity_features[test_indices, :]
@@ -98,39 +96,33 @@ dev_train_features, dev_test_features, dev_train_labels, dev_test_labels =\
 print('Dev Train Feature Shape')
 print(dev_train_features.shape)
 
-nb_grid_params = None
-
-# svc_grid_params = {'kernel': ['linear', 'poly', 'rbf']}
-
-svc_grid_params = {'C': np.logspace(-1, 2, 4),
-                   'gamma': np.logspace(0, 1, 2)}
-
-rf_grid_params = {'max_depth': [None, 5],
+rf_grid_params = {'max_depth': [None, 10],
                   'max_features': ['auto', None],
                   'max_leaf_nodes': [None],
-                  'min_impurity_decrease': [0.0],
+                  'min_impurity_decrease': [0.0, .1],
                   'min_impurity_split': [None],
-                  'min_samples_leaf': [1],
-                  'min_samples_split': [2, 4],
+                  'min_samples_leaf': [1, 5],
+                  'min_samples_split': [2, 5],
                   'min_weight_fraction_leaf': [0.0],
-                  'n_estimators': [500, 1000]}
+                  'n_estimators': [1000, 1500]}
 
-count_cv_models(rf_grid_params, FOLDS, .18)
+count_cv_models(rf_grid_params, FOLDS, .21)
 
-gbm_grid_params = {'learning_rate': [.025, .05],
-                   'max_depth': [None, 5],
+gbm_grid_params = {'learning_rate': [.01, .025],
+                   'max_depth': [None, 10],
                    'max_features': ['auto', None],
-                   'max_leaf_nodes': [None],
-                   'min_impurity_decrease': [0.0],
-                   'min_samples_leaf': [1],
-                   'min_samples_split': [2],
+                   'max_leaf_nodes': [None, 10],
+                   'min_impurity_decrease': [0.0, .1],
+                   'min_samples_leaf': [1, 5],
+                   'min_samples_split': [2, 5],
                    'min_weight_fraction_leaf': [0.0],
-                   'n_estimators': [150, 300],
-                   'subsample': [.33, .67]}
+                   'n_estimators': [150, 300, 450],
+                   'subsample': [.15, .33],
+                   'warm_start': [True, False]}
 
 count_cv_models(gbm_grid_params, FOLDS, .07)
 
-grid_param_list = [nb_grid_params, svc_grid_params, rf_grid_params, gbm_grid_params]
+grid_param_list = [rf_grid_params, gbm_grid_params]
 grid_param_dict = dict(zip(model_names, grid_param_list))
 
 # create stratified folds
@@ -153,8 +145,6 @@ for model_name, model in model_dict.items():
 
     print(model_name, model)
 
-    # i = 1
-    # model = MODELS[1]
     start_time = datetime.now()
     model_params = grid_param_dict[model_name]
     full_fit_model = model
@@ -233,7 +223,7 @@ if not os.path.exists(output_directory):
     os.makedirs(output_directory)
 
 # create output filename
-output_file_name = output_directory + '-results.csv'
+output_file_name = output_directory + '-tuned-results.csv'
 
 os.chdir(output_directory)
 with open('sklearn_models.pkl', 'wb') as f:
