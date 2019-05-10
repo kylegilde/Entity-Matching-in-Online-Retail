@@ -36,7 +36,7 @@ pd.set_option('display.width', 500)
 pd.set_option('display.max_colwidth', 250)
 
 DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
-DATA_DIRECTORY = '//files/share/goods/OI Team'
+# DATA_DIRECTORY = '//files/share/goods/OI Team'
 os.chdir(DATA_DIRECTORY)
 
 # global variables
@@ -48,8 +48,9 @@ METRIC_NAMES = ['Precision', 'Recall', 'F1_score']
 
 # list of models to fit
 MODELS = [GaussianNB(),
-          # SVC(random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # , probability=True kernel='linear',
-          RandomForestClassifier(random_state=RANDOM_STATE, n_estimators=750, class_weight='balanced', verbose=2),
+          SVC(random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # , probability=True kernel='linear',
+
+          RandomForestClassifier(random_state=RANDOM_STATE, n_estimators=1000, class_weight='balanced', verbose=2),
           GradientBoostingClassifier(random_state=RANDOM_STATE, n_estimators=300, n_iter_no_change=30, verbose=2)]
 
 # MODELS = [SVC(kernel='linear', random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # , probability=True kernel='linear',
@@ -61,7 +62,7 @@ model_names = [model.__class__.__name__ for model in MODELS]
 model_dict = dict(zip(model_names, MODELS))
 
 # provide input file
-input_file_name = 'symbolic_single_doc_similarity_features-100.csv' #'attribute_comparison_features-9.csv' # 'symbolic_single_doc_similarity_features-9.csv' #input('Input the features file')
+input_file_name = 'single_doc_similarity_features-100.csv' #'attribute_comparison_features-9.csv' # 'symbolic_single_doc_similarity_features-9.csv' #input('Input the features file')
 assert input_file_name in os.listdir(), 'An input file is missing'
 
 # read input file

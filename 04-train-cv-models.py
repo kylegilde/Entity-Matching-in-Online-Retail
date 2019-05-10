@@ -33,38 +33,34 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 
 # global variables
 DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
-DATA_DIRECTORY = '//files/share/goods/OI Team'
+# DATA_DIRECTORY = '//files/share/goods/OI Team'
 os.chdir(DATA_DIRECTORY)
 
 RANDOM_STATE = 5
 FOLDS = 2
-DEV_TEST_SIZE = .95
-
+DEV_TEST_SIZE = .5
+METRIC_NAMES = ['Precision', 'Recall', 'F1_score']
 # ALL_FEATURES = ['brand', 'manufacturer', 'gtin', 'mpn', 'sku', 'identifier', 'name', 'price', 'description'] # 'category'
 OFFER_PAIR_COLUMNS = ['offer_id_1', 'offer_id_2', 'filename', 'dataset', 'label', 'file_category']
 
 # list of models to fit
 # MODEL_NAMES = ['Naive Bayes', 'SVM', 'Random Forest', 'Gradient Boosting']
-# MODELS = [GaussianNB(),
-#           SVC(random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # probability=True,
-#           RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
-#           GradientBoostingClassifier(random_state=RANDOM_STATE, n_iter_no_change=30, verbose=2)]
-
 MODELS = [GaussianNB(),
+          SVC(random_state=RANDOM_STATE, class_weight='balanced', verbose=2), # probability=True,
           RandomForestClassifier(random_state=RANDOM_STATE, class_weight='balanced', verbose=2),
           GradientBoostingClassifier(random_state=RANDOM_STATE, n_iter_no_change=30, verbose=2)]
+
 model_names = [model.__class__.__name__ for model in MODELS]
 model_dict = dict(zip(model_names, MODELS))
 
-# list of scoring metrics
-# SCORERS = {'Precision': make_scorer(precision_score),
-#            'Recall': make_scorer(recall_score),
-#            'F1_score': make_scorer(f1_score)}
-#
-METRIC_NAMES = ['Precision', 'Recall', 'F1_score']
+# set display options
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 500)
+pd.set_option('display.max_colwidth', 250)
 
 # provide input file
-input_file_name = 'symbolic_single_doc_similarity_features-50.csv' # input('Input the features file')
+input_file_name = 'attribute_comparison_features-7.csv' # input('Input the features file')
 assert input_file_name in os.listdir(), 'An input file is missing'
 
 # read input file
@@ -106,8 +102,8 @@ nb_grid_params = None
 
 # svc_grid_params = {'kernel': ['linear', 'poly', 'rbf']}
 
-# svc_grid_params = {'C': np.logspace(-1, 2, 4),
-#                    'gamma': np.logspace(0, 1, 2)}
+svc_grid_params = {'C': np.logspace(-1, 2, 4),
+                   'gamma': np.logspace(0, 1, 2)}
 
 rf_grid_params = {'max_depth': [None, 5],
                   'max_features': ['auto', None],
@@ -135,8 +131,7 @@ gbm_grid_params = {'learning_rate': [.025, .05],
 
 count_cv_models(gbm_grid_params, FOLDS, .07)
 
-# grid_param_list = [nb_grid_params, svc_grid_params, rf_grid_params, gbm_grid_params]
-grid_param_list = [nb_grid_params, rf_grid_params, gbm_grid_params]
+grid_param_list = [nb_grid_params, svc_grid_params, rf_grid_params, gbm_grid_params]
 grid_param_dict = dict(zip(model_names, grid_param_list))
 
 # create stratified folds
@@ -196,12 +191,11 @@ for model_name, model in model_dict.items():
     fit_models.append(full_fit_model)
 
     # make test predictions
-    test_pred, test_class_probabilities = full_fit_model.predict(test_features), \
-                                          full_fit_model.predict_proba(test_features)
+    test_pred = full_fit_model.predict(test_features)
+    # test_class_probabilities = full_fit_model.predict_proba(test_features)
 
     test_predictions.append(test_pred)
-    class_probabilities_list.append(test_class_probabilities)
-    # test_class_probabilities = model.predict_proba(test_features)
+    # class_probabilities_list.append(test_class_probabilities)
 
     # get the classification report
     class_report = classification_report(test_labels, test_pred)
@@ -210,8 +204,8 @@ for model_name, model in model_dict.items():
 
     # get confusion matrix
     confusion_df = pd.DataFrame(confusion_matrix(test_labels, test_pred),
-                                columns = ["Predicted Class " + str(class_name) for class_name in class_labels],
-                                index = ["Class " + str(class_name) for class_name in class_labels])
+                                columns=["Predicted Class " + str(class_name) for class_name in class_labels],
+                                index=["Class " + str(class_name) for class_name in class_labels])
     confusion_matrices.append(confusion_df)
     print(confusion_df)
 
@@ -257,11 +251,3 @@ with open('sklearn_confusion_matrices.pkl', 'wb') as f:
 
 # save the model metrics
 sklearn_models_df.reset_index().to_csv(output_file_name, index=False)
-
-# print('feature importance')
-# print(cv_model.best_estimator_.feature_importances_)
-
-
-
-
-get_duration_hours(start_time)
