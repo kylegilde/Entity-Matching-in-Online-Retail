@@ -1,0 +1,201 @@
+---
+title: "Product Matching Variable Importance"
+subtitle: Symbolic Similarity Features
+author: "Kyle Gilde"
+date: "January 27, 2019"
+output:
+  html_document:
+    code_folding: show
+    toc: yes
+    toc_float: yes
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+load_install <- function(pkg){
+  # Load packages. Install them if needed.
+  # CODE SOURCE: https://gist.github.com/stevenworthington/3178163
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
+}
+# required packages
+packages <- c("tidyverse", "caret", "pROC", "car") 
+
+
+data.frame(load_install(packages)) 
+```
+
+
+
+```{r data}
+symbolic_similarity_features <- read.csv("D:/Documents/Large-Scale Product Matching/symbolic_similarity_features.csv")
+
+SHORT_TEXT_FEATURES = c('gtin', 'mpn', 'sku', 'identifier', 'brand', 'manufacturer')
+MEDIUM_LONG_TEXT_FEATURES = c('name', 'description')
+OTHER_FEATURES = c('price')  # 'category', 
+ALL_FEATURES = c(SHORT_TEXT_FEATURES, MEDIUM_LONG_TEXT_FEATURES, OTHER_FEATURES)
+
+
+symbolic_similarity_features_only <- symbolic_similarity_features[, ALL_FEATURES]
+
+all_y <- as.factor(make.names(as.character(symbolic_similarity_features$label)))
+train_indices <- symbolic_similarity_features$dataset == "train"
+
+```
+
+```{r}
+str(symbolic_similarity_features_only)
+```
+
+# Pre-Process
+
+```{r preprocess}
+(preprocess_features <- preProcess(symbolic_similarity_features_only,
+                                   method = c("nzv", "corr", "center", "scale")))
+processed_features <- predict(preprocess_features, symbolic_similarity_features_only)
+
+highly_correlated <- findCorrelation(cor(symbolic_similarity_features_only))
+low_var_features <- nearZeroVar(symbolic_similarity_features_only, names = T)
+
+print(preprocess_features$method$remove)
+```
+
+# Split Test and Training Data
+
+```{r}
+train_features <- processed_features[train_indices, ]
+test_features <- processed_features[!train_indices, ]
+
+train_y <- all_y[train_indices]
+test_y <- all_y[!train_indices]
+
+train_set <- cbind(train_features, train_y)
+
+```
+
+
+# 1st ElasticNet Model
+
+```{r}
+set.seed(5)
+lm_control <- trainControl(
+  method = "repeatedcv",
+  number = 5, #num_cvs,
+  repeats = 3,
+  classProbs = T,
+  allowParallel = T,
+  verboseIter = T,
+  savePredictions = "final",
+  summaryFunction = prSummary
+)
+
+
+class_freq <- table(train_y)
+more_weighting <- 1
+model_class_weights <- ifelse(train_y == names(class_freq[1]),
+                           1 / class_freq[1] * (1 / more_weighting),
+                           1 / class_freq[2] * more_weighting)
+
+print(max(model_class_weights) / min(model_class_weights))
+
+lm_grid <-  expand.grid(alpha=10^c(-3:3),
+                        lambda=10^c(-3:3))
+
+
+(lmod <- train(train_y ~ .,
+                   data = train_set,
+                   method = "glmnet",
+                   weights = model_class_weights,
+                   trControl = lm_control,
+                   tuneGrid = lm_grid))
+
+
+print(lmod$bestTune)
+
+# https://stats.stackexchange.com/questions/67827/caret-and-coefficients-glmnet
+y_test_pred <- predict(lmod, test_features)
+
+confusionMatrix(y_test_pred, test_y, mode = "prec_recall", positive = "X1")
+
+(lmod_var_imp <- varImp(lmod))
+plot(lmod_var_imp)
+
+
+data.frame(Coefficient = coef(lmod$finalModel, lmod$bestTune$lambda)[, 1]) %>% 
+  tibble::rownames_to_column(., "Feature") %>% 
+  arrange(-Coefficient) 
+```
+
+# 2nd ElasticNet Model
+
+```{r new_lmod}
+
+get_more_granular <- function(param, multiplier = 3){
+  
+  lesser_seq <- seq(param, multiplier * param, param)
+  greater_seq <- seq((param / multiplier), param, param / multiplier)                
+  sort(unique(c(lesser_seq, greater_seq)))
+
+}
+
+
+new_lm_grid <-  expand.grid(alpha=get_more_granular(lmod$bestTune$alpha),
+                        lambda=get_more_granular(lmod$bestTune$lambda))
+
+(new_lmod <- train(train_y ~ .,
+                   data = train_set,
+                   method = "glmnet",
+                   weights = model_class_weights,
+                   trControl = lm_control,
+                   tuneGrid = new_lm_grid))
+
+
+(new_lmod$bestTune)
+
+print(new_lmod$bestTune)
+
+# https://stats.stackexchange.com/questions/67827/caret-and-coefficients-glmnet
+new_y_test_pred <- predict(new_lmod, test_features)
+
+confusionMatrix(new_y_test_pred, test_y, mode = "prec_recall", positive = "X1")
+
+(new_lmod_var_imp <- 
+    varImp(new_lmod, scale = F))
+plot(new_lmod_var_imp)
+
+
+
+coef_df <- 
+  data.frame(Coefficient = coef(new_lmod$finalModel, new_lmod$bestTune$lambda)[, 1]) %>% 
+    tibble::rownames_to_column(., "Feature") %>% 
+    arrange(-Coefficient) 
+
+imp_df <-
+  data.frame(Importance = new_lmod_var_imp$importance) %>% 
+    tibble::rownames_to_column(., "Feature")
+
+
+coef_imp_df <- merge(coef_df, imp_df)
+
+setwd('D:/Documents/Large-Scale Product Matching/')
+write.csv(coef_imp_df, 'logreg-variable-coefficients-importance.csv')
+```
+
+
+```{r}
+glmod <- glm(train_y ~ ., family = "binomial", data = train_set)
+BIC_glmod <- step(glmod, k = log(nrow(train_set)), trace = 0)
+
+summary(BIC_glmod)
+
+BIC_glmod_y_test_pred <- as.factor(ifelse(predict(BIC_glmod, test_features, type = "response") > .5, "X0", "X1"))
+summary(BIC_glmod_y_test_pred)
+
+
+confusionMatrix(BIC_glmod_y_test_pred, test_y, mode = "prec_recall", positive = "X1")
+car::vif(BIC_glmod)
+```
+
