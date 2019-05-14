@@ -20,9 +20,9 @@ import pandas as pd
 def read_train_test_files(file_dir, sep='#####', col_names=['offer_id_1', 'offer_id_2', 'label']):
     """
     Read all files from the director & use the file name for the category column
-    :param file_dir:
-    :param delimitor:
-    :param category_position:
+
+    :param file_dir: a director
+    :param delimitor: default is #####
     :return:
     """
     original_wd = os.getcwd()
@@ -44,6 +44,7 @@ def read_train_test_files(file_dir, sep='#####', col_names=['offer_id_1', 'offer
 
 def rbind_train_test_offers(train_df, test_df):
     """
+    Combines the test and train dfs
 
     :param train_df:
     :param test_df:

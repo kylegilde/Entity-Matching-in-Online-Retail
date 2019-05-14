@@ -18,9 +18,12 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 
 def reduce_mem_usage(df, n_unique_object_threshold=0.30):
     """
+
+    Converts the data type when possible in order to reduce memory usage
+
     source: https://www.kaggle.com/arjanso/reducing-dataframe-memory-size-by-65
-    :param df:
-    :return:
+    :param df: a DataFrame
+    :return: returns a smaller df if possible
     """
     print("------------------------------------")
     start_mem_usg = df.memory_usage().sum() / 1024**2
@@ -92,9 +95,9 @@ def calculate_percent_nulls(df, print_series=True, return_series=False):
     Counts the NaNs by column
 
     :param df: a Pandas dataframe
-    :param print_series:
-    :param return_series:
-    :return:
+    :param print_series: print statement
+    :param return_series: print statement
+    :return: a series
     """
     percentages = df.isnull().sum() / len(df) * 100
     percentages_sorted = percentages.sort_values(ascending=False)

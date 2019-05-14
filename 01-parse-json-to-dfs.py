@@ -1,7 +1,15 @@
-# !/usr/bin/env/python365
+# !/usr/bin/env/python3
+# -*- coding: utf-8 -*-
 """
 Created on Feb 10, 2019
 @author: Kyle Gilde
+
+This script is used to process the  the WDC Training Dataset and Gold Standard for Large-Scale Product Matching (LSPM),
+which was created from the Common Crawl web-data corpus
+and published in December 2018 by a group of researchers at the University of Mannheim.
+
+Data can be downloaded here: http://webdatacommons.org/largescaleproductcorpus/index.html
+
 """
 import os
 from datetime import datetime
@@ -18,7 +26,6 @@ from utility_functions import *
 TRAIN_TEST_CATEGORIES = ['Computers_and_Accessories', 'Camera_and_Photo', 'Shoes', 'Jewelry']
 PRICE_COLUMN_NAMES = ['price','parent_price']
 DATA_DIRECTORY = 'D:/Documents/Large-Scale Product Matching/'
-DATA_DIRECTORY = '//files/share/goods/OI Team'
 os.chdir(DATA_DIRECTORY)
 
 # set display options

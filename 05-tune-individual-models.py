@@ -5,11 +5,10 @@
 Created on Apr 27, 2019
 @author: Kyle Gilde
 
-This script takes the outputs of create-symbolic-features.py
-and parse-json-to-dfs.py.
+This script is used to more extensively tune and train CV versions of the models.
 
-It outputs a df that contains the similarity vectors of the offer pairs
-in the test and training sets.
+This script takes the feature set outputs of 03-create-attribute-comparison-features.py
+and 03-create-single-doc-similarity-features.py
 
 """
 
